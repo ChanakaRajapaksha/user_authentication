@@ -11,7 +11,7 @@ const handleLogout = async (req, res) => {
 
     try {
         // Check if refreshToken exists in the database
-        const foundUser = await prisma.user.findUnique({
+        const foundUser = await prisma.user.findFirst({
             where: {
                 refreshToken: refreshToken,
             },
