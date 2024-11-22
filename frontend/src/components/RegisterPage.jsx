@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 const RegisterPage = () => {
@@ -86,8 +86,6 @@ const RegisterPage = () => {
                     </p>
                 </div>
             </div>
-
-            <ToastContainer />
         </div>
     );
 };

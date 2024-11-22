@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import useAuth from "../../hooks/useAuth";
 
 const AuthPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [rememberMe, setRememberMe] = useState(false); // Add this state
+    const [rememberMe, setRememberMe] = useState(false); 
     const { setAuth } = useAuth();
     const navigate = useNavigate();
 
@@ -27,7 +28,7 @@ const AuthPage = () => {
                 setAuth({ email: data.email, roles: data.roles, accessToken: data.accessToken });
                 navigate("/dashboard");
             } else {
-                alert(data.message || "Login failed.");
+                toast.error(data.message || "Login failed.", { position: "top-right" });
             }
         } catch (error) {
             console.error("Login Error:", error);
