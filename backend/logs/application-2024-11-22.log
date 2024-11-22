@@ -1,0 +1,15 @@
+{"level":"info","message":{"action":"findUnique","duration":"11ms","model":"User"}}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"}}
+{"level":"info","message":{"action":"create","duration":"7ms","model":"User"}}
+{"level":"info","message":"User registered: kamal@gmail.com"}
+{"level":"info","message":{"action":"findUnique","duration":"24ms","model":"User"}}
+{"level":"info","message":{"action":"update","duration":"6ms","model":"User"}}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"}}
+{"level":"info","message":{"action":"update","duration":"46ms","model":"User"}}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"}}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"}}
+{"level":"info","message":{"action":"update","duration":"3ms","model":"User"}}
+{"level":"info","message":"{\n  \"model\": \"User\",\n  \"action\": \"findUnique\",\n  \"args\": {\n    \"where\": {\n      \"email\": \"kamal@gmail.com\"\n    }\n  },\n  \"duration\": \"11ms\"\n}","timestamp":"2024-11-22T05:35:00.221Z"}
+{"level":"info","message":"{\n  \"model\": \"User\",\n  \"action\": \"update\",\n  \"args\": {\n    \"where\": {\n      \"id\": 12\n    },\n    \"data\": {\n      \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJlbWFpbCI6ImthbWFsQGdtYWlsLmNvbSIsImlhdCI6MTczMjI1MzcwMCwiZXhwIjoxNzMyODU4NTAwfQ.wi7V2Wq0LOwJmPQq8klasRu4N4JxHMmYwCsgztQDI14\"\n    }\n  },\n  \"duration\": \"5ms\"\n}","timestamp":"2024-11-22T05:35:00.294Z"}
+{"level":"info","message":{"action":"findFirst","args":{"where":{"refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJlbWFpbCI6ImthbWFsQGdtYWlsLmNvbSIsImlhdCI6MTczMjI1MzcwMCwiZXhwIjoxNzMyODU4NTAwfQ.wi7V2Wq0LOwJmPQq8klasRu4N4JxHMmYwCsgztQDI14"}},"duration":"131ms","model":"User"},"timestamp":"2024-11-22T05:47:29.829Z"}
+{"level":"info","message":{"action":"findFirst","args":{"where":{"refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJlbWFpbCI6ImthbWFsQGdtYWlsLmNvbSIsImlhdCI6MTczMjI1MzcwMCwiZXhwIjoxNzMyODU4NTAwfQ.wi7V2Wq0LOwJmPQq8klasRu4N4JxHMmYwCsgztQDI14"}},"duration":"2ms","model":"User"},"timestamp":"2024-11-22T05:47:31.381Z"}

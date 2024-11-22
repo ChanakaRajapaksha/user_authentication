@@ -1,6 +1,8 @@
 const prisma = require('../database/prismaClient'); // Import Prisma client
 const bcrypt = require('bcrypt');
 
+const logger = require("../logger");
+
 // Handle new user registration
 const handleNewUser = async (req, res) => {
     const { username, email, password } = req.body;
@@ -35,9 +37,11 @@ const handleNewUser = async (req, res) => {
             },
         });
 
+        logger.info(`User registered: ${email}`); // Log additional details
         res.status(201).json({ success: `New user ${newUser.username} created!` });
     } catch (err) {
         console.error(err);
+        logger.error(`Error during registration: ${error.message}`);
         res.status(500).json({ message: 'Internal Server Error.' });
     }
 };
