@@ -1,0 +1,15 @@
+{"level":"info","message":{"action":"findUnique","duration":"412ms","model":"User"},"timestamp":"2024-11-23T13:19:45.326Z"}
+{"level":"info","message":{"action":"create","duration":"12ms","model":"Otp"},"timestamp":"2024-11-23T13:19:45.434Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-11-23T13:20:12.201Z"}
+{"level":"info","message":{"action":"findUnique","duration":"13ms","model":"User"},"timestamp":"2024-11-23T13:32:07.068Z"}
+{"level":"info","message":{"action":"create","duration":"6ms","model":"Otp"},"timestamp":"2024-11-23T13:32:07.152Z"}
+{"level":"info","message":{"action":"findUnique","duration":"3ms","model":"User"},"timestamp":"2024-11-23T13:32:36.509Z"}
+{"level":"info","message":{"action":"findFirst","duration":"125ms","model":"Otp"},"timestamp":"2024-11-23T13:32:36.634Z"}
+{"level":"info","message":{"action":"delete","duration":"50ms","model":"Otp"},"timestamp":"2024-11-23T13:32:36.685Z"}
+{"level":"info","message":{"action":"update","duration":"9ms","model":"User"},"timestamp":"2024-11-23T13:32:36.699Z"}
+{"level":"info","message":{"action":"findUnique","duration":"416ms","model":"User"},"timestamp":"2024-11-23T14:07:14.269Z"}
+{"level":"info","message":{"action":"create","duration":"10ms","model":"Otp"},"timestamp":"2024-11-23T14:07:14.402Z"}
+{"level":"info","message":{"action":"findUnique","duration":"3ms","model":"User"},"timestamp":"2024-11-23T14:10:16.247Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"Otp"},"timestamp":"2024-11-23T14:10:16.317Z"}
+{"level":"info","message":{"action":"findUnique","duration":"145ms","model":"User"},"timestamp":"2024-11-23T17:40:06.819Z"}
+{"level":"info","message":{"action":"create","duration":"5ms","model":"Otp"},"timestamp":"2024-11-23T17:40:06.886Z"}

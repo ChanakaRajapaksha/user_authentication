@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import useAuth from "../../hooks/useAuth";
+import OtpPopup from "./OtpPopup"; // Import the OtpPopup component
 
 const AuthPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [rememberMe, setRememberMe] = useState(false); 
+    const [rememberMe, setRememberMe] = useState(false);
+    const [showOtpPopup, setShowOtpPopup] = useState(false); // State to toggle OTP popup
     const { setAuth } = useAuth();
     const navigate = useNavigate();
 
@@ -25,14 +27,28 @@ const AuthPage = () => {
 
             const data = await response.json();
             if (response.ok) {
-                setAuth({ email: data.email, roles: data.roles, accessToken: data.accessToken });
-                navigate("/dashboard");
+                if (data.otpRequired) {
+                    // Display toast and show OTP popup if OTP is required
+                    toast.info("OTP sent to your email address.", { position: "top-right" });
+                    setShowOtpPopup(true);
+                } else {
+                    // If OTP is not required, proceed with login
+                    setAuth({ email: data.email, roles: data.roles, accessToken: data.accessToken });
+                    navigate("/dashboard");
+                }
             } else {
                 toast.error(data.message || "Login failed.", { position: "top-right" });
             }
         } catch (error) {
             console.error("Login Error:", error);
         }
+    };
+
+    const handleOtpVerify = (accessToken) => {
+        // Callback when OTP is successfully verified
+        setAuth({ email, accessToken });
+        setShowOtpPopup(false);
+        navigate("/dashboard");
     };
 
     return (
@@ -42,7 +58,7 @@ const AuthPage = () => {
             </div>
             <div className="w-1/2 flex items-center justify-center p-6">
                 <div className="w-full max-w-lg">
-                    <h1 className="flex justify-center text-[46px] font-bold mb-8 leading-[58px]">Welcome !</h1>
+                    <h1 className="flex justify-center text-[46px] font-bold mb-8 leading-[58px]">Welcome!</h1>
                     <form onSubmit={handleLogin}>
                         <div className="flex flex-col gap-[4px] mb-8">
                             <label className="block text-gray-700 text-[14px] font-normal">Email address</label>
@@ -88,6 +104,15 @@ const AuthPage = () => {
                     </form>
                 </div>
             </div>
+
+            {/* Render OTP popup when showOtpPopup is true */}
+            {showOtpPopup && (
+                <OtpPopup
+                    email={email}
+                    onClose={() => setShowOtpPopup(false)}
+                    onVerify={handleOtpVerify}
+                />
+            )}
         </div>
     );
 };

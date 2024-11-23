@@ -8,6 +8,7 @@ const refreshRoute = require('./routes/refresh');
 const logoutRoute = require('./routes/logout');
 const forgotPasswordRoute = require('./routes/forgotpassword');
 const resetPasswordRoute = require('./routes/resetpassword');
+const verifyOTPRoute = require('./routes/verifyotp');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/auth', refreshRoute);
 app.use('/auth', logoutRoute);
 app.use('/auth', forgotPasswordRoute);
 app.use('/auth', resetPasswordRoute);
+app.use('/auth', verifyOTPRoute);
 
 app.listen(5000, () => {
     console.log('Server running on http://localhost:5000');
