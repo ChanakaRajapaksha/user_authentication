@@ -13,3 +13,9 @@
 {"level":"info","message":{"action":"create","duration":"4ms","model":"Otp"},"timestamp":"2024-11-23T14:10:16.317Z"}
 {"level":"info","message":{"action":"findUnique","duration":"145ms","model":"User"},"timestamp":"2024-11-23T17:40:06.819Z"}
 {"level":"info","message":{"action":"create","duration":"5ms","model":"Otp"},"timestamp":"2024-11-23T17:40:06.886Z"}
+{"level":"info","message":{"action":"findUnique","duration":"11ms","model":"User"},"timestamp":"2024-11-23T17:49:44.986Z"}
+{"level":"info","message":{"action":"create","duration":"7ms","model":"Otp"},"timestamp":"2024-11-23T17:49:45.054Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"},"timestamp":"2024-11-23T17:50:03.852Z"}
+{"level":"info","message":{"action":"findFirst","duration":"122ms","model":"Otp"},"timestamp":"2024-11-23T17:50:03.975Z"}
+{"level":"info","message":{"action":"delete","duration":"52ms","model":"Otp"},"timestamp":"2024-11-23T17:50:04.027Z"}
+{"level":"info","message":{"action":"update","duration":"16ms","model":"User"},"timestamp":"2024-11-23T17:50:04.047Z"}
