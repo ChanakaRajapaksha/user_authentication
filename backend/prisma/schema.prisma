@@ -12,19 +12,20 @@ model User {
   username         String    @unique
   email            String    @unique
   password         String
+  role             String?   @default("admin")
   refreshToken     String?   @db.Text
-  resetToken       String?   // Token for password reset
+  resetToken       String? // Token for password reset
   resetTokenExpiry DateTime? // Expiry time for the reset token
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
-  otps             Otp[] 
-}
-model Otp {
-  id        Int      @id @default(autoincrement())
-  userId    Int     
-  user      User     @relation(fields: [userId], references: [id])
-  otp       String  
-  expiresAt DateTime 
-  createdAt DateTime @default(now())
+  otps             Otp[]
 }
 
+model Otp {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

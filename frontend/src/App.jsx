@@ -13,7 +13,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/" element={<RegisterPage />} />
         <Route path="/login" element={<AuthPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:resetToken" element={<ResetPasswordPage />} />

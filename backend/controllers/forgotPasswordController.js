@@ -1,4 +1,3 @@
-const express = require('express');
 const crypto = require('crypto');
 const prisma = require('../database/prismaClient');
 const sendResetEmail = require('../utils/sendResetEmail');
