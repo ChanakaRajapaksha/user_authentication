@@ -1,54 +1,99 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import useAuth from "../../hooks/useAuth";
-import OtpPopup from "./OtpPopup"; // Import the OtpPopup component
+import OtpPopup from "./OtpPopup";
 
 const AuthPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
-    const [showOtpPopup, setShowOtpPopup] = useState(false); // State to toggle OTP popup
+    const [showOtpPopup, setShowOtpPopup] = useState(false);
     const { setAuth } = useAuth();
     const navigate = useNavigate();
+
+    // Prefill email if saved in sessionStorage
+    useEffect(() => {
+        const savedEmail = sessionStorage.getItem("rememberedEmail");
+        if (savedEmail) {
+            setEmail(savedEmail);
+            setRememberMe(true);
+        }
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             const response = await fetch("http://localhost:5000/auth/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
                 credentials: "include",
             });
 
             const data = await response.json();
+
+            console.log("Login response data:", data);
+
             if (response.ok) {
                 if (data.otpRequired) {
-                    // Display toast and show OTP popup if OTP is required
                     toast.info("OTP sent to your email address.", { position: "top-right" });
                     setShowOtpPopup(true);
                 } else {
-                    // If OTP is not required, proceed with login
-                    setAuth({ email: data.email, roles: data.roles, accessToken: data.accessToken });
-                    navigate("/dashboard");
+                    handleRoleBasedRedirection(data); // Redirect after successful login
+                }
+
+                // Save email if "Remember Me" is checked
+                if (rememberMe) {
+                    sessionStorage.setItem("rememberedEmail", email);
+                } else {
+                    sessionStorage.removeItem("rememberedEmail");
                 }
             } else {
                 toast.error(data.message || "Login failed.", { position: "top-right" });
             }
         } catch (error) {
-            console.error("Login Error:", error);
+            toast.error("An error occurred. Please try again.", { position: "top-right" });
+        }
+    };
+
+    const handleRoleBasedRedirection = async (data) => {
+        const roles = data.roles?.length ? data.roles : [];
+        const accessToken = data.accessToken;
+
+        if (!roles.length) {
+            toast.error("User has no roles assigned!", { position: "top-right" });
+            return;
+        }
+
+        setAuth({ email: data.email, roles, accessToken });
+
+        const role = roles.includes("admin") ? "admin" : "doctor"; // Default to 'doctor' if no admin role
+        const endpoint = role === "admin" ? "/api/dashboard" : "/api/doctor";
+
+        try {
+            const response = await fetch(`http://localhost:5000${endpoint}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            if (response.ok) {
+                navigate(role === "admin" ? "/dashboard" : "/doctor");
+            } else {
+                throw new Error("Access denied or unexpected role.");
+            }
+        } catch (error) {
+            toast.error(error.message || "Redirection failed.", { position: "top-right" });
         }
     };
 
     const handleOtpVerify = (accessToken) => {
-        // Callback when OTP is successfully verified
-        setAuth({ email, accessToken });
+        const roles = accessToken?.roles || ["doctor"]; // Default to 'doctor' if roles are undefined
+        const email = accessToken?.email || "Unknown";
+
+        handleRoleBasedRedirection({ email, roles, accessToken });
         setShowOtpPopup(false);
-        navigate("/dashboard");
     };
 
     return (
@@ -70,6 +115,7 @@ const AuthPage = () => {
                                 required
                             />
                         </div>
+
                         <div className="flex flex-col gap-[4px] mb-10">
                             <label className="block text-gray-700 text-[14px] font-normal">Your password</label>
                             <input
@@ -80,6 +126,7 @@ const AuthPage = () => {
                                 required
                             />
                         </div>
+
                         <button
                             type="submit"
                             className="w-full h-[48px] bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 mb-4"
@@ -105,7 +152,6 @@ const AuthPage = () => {
                 </div>
             </div>
 
-            {/* Render OTP popup when showOtpPopup is true */}
             {showOtpPopup && (
                 <OtpPopup
                     email={email}

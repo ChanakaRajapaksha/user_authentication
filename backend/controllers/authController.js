@@ -25,43 +25,52 @@ const transporter = nodemailer.createTransport({
 const handleLogin = async (req, res) => {
     const { email, password, otp } = req.body;
 
+    // Validate input
     if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required.' });
     }
 
     try {
-        const foundUser = await prisma.user.findUnique({ where: { email } });
+        // Find user by email and branch
+        const foundUser = await prisma.user.findFirst({
+            where: { email },
+        });
 
         if (!foundUser) {
             return res.status(401).json({ message: 'Unauthorized: Invalid email or password.' });
         }
 
+        // Validate password
         const match = await bcrypt.compare(password, foundUser.password);
 
         if (!match) {
             return res.status(401).json({ message: 'Unauthorized: Invalid email or password.' });
         }
 
-        // Check if the user has the "admin" role
+        // Ensure roles are always returned as an array
+        const roles = [foundUser.role];
+
+        // Admins skip OTP and log in directly
         if (foundUser.role === 'admin') {
-            // Admins skip OTP and log in directly
             const accessToken = jwt.sign(
-                { userId: foundUser.id, email: foundUser.email, role: foundUser.role },
+                { userId: foundUser.id, email: foundUser.email, roles },
                 process.env.ACCESS_TOKEN_SECRET,
                 { expiresIn: '30m' }
             );
 
             const refreshToken = jwt.sign(
-                { userId: foundUser.id, email: foundUser.email, role: foundUser.role },
+                { userId: foundUser.id, email: foundUser.email, roles },
                 process.env.REFRESH_TOKEN_SECRET,
                 { expiresIn: '7d' }
             );
 
+            // Save refresh token in the database
             await prisma.user.update({
                 where: { id: foundUser.id },
                 data: { refreshToken },
             });
 
+            // Set secure HTTP-only cookie for the refresh token
             res.cookie('jwt', refreshToken, {
                 httpOnly: true,
                 sameSite: 'Strict',
@@ -72,6 +81,7 @@ const handleLogin = async (req, res) => {
             return res.status(200).json({
                 success: `Admin ${foundUser.email} is logged in!`,
                 accessToken,
+                roles,
                 otpRequired: false,
             });
         }
@@ -79,8 +89,9 @@ const handleLogin = async (req, res) => {
         // Non-admin users require OTP verification
         if (!otp) {
             const generatedOTP = generateOTP();
-            const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+            const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // OTP valid for 5 minutes
 
+            // Save OTP in the database
             await prisma.otp.create({
                 data: {
                     userId: foundUser.id,
@@ -89,6 +100,7 @@ const handleLogin = async (req, res) => {
                 },
             });
 
+            // Send OTP to the user's email
             await transporter.sendMail({
                 from: process.env.EMAIL_USER,
                 to: email,

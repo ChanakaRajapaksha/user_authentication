@@ -1,10 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 const OtpPopup = ({ email, onClose, onVerify }) => {
     const [otp, setOtp] = useState("");
 
-    const handleOtpSubmit = async () => {
+    const handleOtpSubmit = async (e) => {
+        e.preventDefault();
         try {
             const response = await fetch("http://localhost:5000/auth/verify-otp", {
                 method: "POST",
@@ -12,41 +13,49 @@ const OtpPopup = ({ email, onClose, onVerify }) => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ email, otp }),
+                credentials: "include",
             });
 
             const data = await response.json();
             if (response.ok) {
-                toast.success("Login successful!");
-                onVerify(data.accessToken);
+                onVerify(data.accessToken); // Pass the token or role to the parent
             } else {
-                toast.error(data.message || "Invalid OTP.");
+                toast.error(data.message || "Invalid OTP.", { position: "top-right" });
             }
         } catch (error) {
-            console.error("OTP Verification Error:", error);
-            toast.error("Something went wrong. Please try again.");
+            toast.error("An error occurred during OTP verification.", { position: "top-right" });
         }
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg">
-                <h2 className="text-xl font-bold mb-4">Enter OTP</h2>
-                <input
-                    type="text"
-                    className="w-full mb-4 p-2 border rounded"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    placeholder="Enter 6-digit OTP"
-                />
-                <button
-                    onClick={handleOtpSubmit}
-                    className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 w-full"
-                >
-                    Verify
-                </button>
-                <button onClick={onClose} className="mt-4 text-red-500">
-                    Cancel
-                </button>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-bold mb-4">Enter OTP</h2>
+                <form onSubmit={handleOtpSubmit}>
+                    <input
+                        type="text"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                        placeholder="Enter OTP"
+                        className="w-full p-2 border rounded-lg mb-4"
+                        required
+                    />
+                    <div className="flex justify-end gap-4">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                        >
+                            Verify
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     );

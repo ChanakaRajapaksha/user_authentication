@@ -2,7 +2,7 @@ const express = require('express');
 const verifyJWT = require('../middleware/verifyJWT');
 const router = express.Router();
 
-router.get('/admin', verifyJWT, (req, res) => {
+router.get('/dashboard', verifyJWT, (req, res) => {
     if (req.user.role !== 'admin') {
         return res.status(403).json({ message: 'Access denied: Admins only.' });
     }

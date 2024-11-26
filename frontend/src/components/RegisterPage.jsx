@@ -2,10 +2,18 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
+
+const branches = [
+    { id: 1, name: "Branch One" },
+    { id: 2, name: "Branch Two" },
+    { id: 3, name: "Branch Three" },
+];
+
 const RegisterPage = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [branch, setBranch] = useState(""); 
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -71,6 +79,26 @@ const RegisterPage = () => {
                                 required
                             />
                         </div>
+
+                        <div className="flex flex-col gap-[4px] mb-10">
+                            <label className="block text-gray-700 text-[14px] font-normal">Branch</label>
+                            <select
+                                className="w-full h-[48px] p-2 border rounded-lg focus:outline-none"
+                                value={branch}
+                                onChange={(e) => setBranch(e.target.value)}
+                                required
+                            >
+                                <option value="" disabled>
+                                    Select Branch
+                                </option>
+                                {branches.map((b) => (
+                                    <option key={b.id} value={b.name}>
+                                        {b.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
                         <button
                             type="submit"
                             className="w-full h-[48px] bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 mb-4"

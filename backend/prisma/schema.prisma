@@ -1,17 +1,16 @@
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
 model User {
   id               Int       @id @default(autoincrement())
   username         String    @unique
   email            String    @unique
   password         String
+  branch           String
   role             String?   @default("admin")
   refreshToken     String?   @db.Text
   resetToken       String? // Token for password reset
@@ -28,4 +27,34 @@ model Otp {
   otp       String
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+model Patient {
+  patientId           String         @id @default(cuid()) // Unique identifier
+  fullName            String         @db.VarChar(100) // Maximum length: 100 characters
+  dateOfBirth         DateTime
+  age                 Int            @db.SmallInt // Auto-calculated, not stored as input
+  gender              Gender
+  nationality         String         @db.VarChar(50) // Predefined data
+  email               String         @db.VarChar(50)
+  maritalStatus       String         @db.VarChar(20) // Predefined data
+  visaType            String         @db.VarChar(20) // Predefined data
+  nationalId          String         @db.VarChar(20) // Maximum length: 20 characters
+  otherIdType         String?        @db.VarChar(50) // Dropdown predefined data
+  otherIdValue        String?        @db.VarChar(20) // 15-20 characters
+  contactNumberMobile ContactNumber  @relation("MobileContact", fields: [mobileContactId], references: [id])
+  contactNumberWork   ContactNumber? @relation("WorkContact", fields: [workContactId], references: [id])
+  mobileContactId     String
+  workContactId       String?
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+model ContactNumber {
+  id          String    @id @default(cuid())
+  countryCode String    @db.VarChar(5) // Predefined dropdown values
+  number      String    @db.VarChar(15) // Editable text field
+  mobileUsers Patient[] @relation("MobileContact")
+  workUsers   Patient[] @relation("WorkContact")
 }
