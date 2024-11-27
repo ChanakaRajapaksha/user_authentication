@@ -1,10 +1,12 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
 model User {
   id               Int       @id @default(autoincrement())
   username         String    @unique
@@ -28,33 +30,26 @@ model Otp {
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
+
 model Patient {
-  patientId           String         @id @default(cuid()) // Unique identifier
-  fullName            String         @db.VarChar(100) // Maximum length: 100 characters
+  patientId           String   @id @default(cuid())
+  fullName            String   @db.VarChar(100) 
   dateOfBirth         DateTime
-  age                 Int            @db.SmallInt // Auto-calculated, not stored as input
+  age                 Int      @db.SmallInt 
   gender              Gender
-  nationality         String         @db.VarChar(50) // Predefined data
-  email               String         @db.VarChar(50)
-  maritalStatus       String         @db.VarChar(20) // Predefined data
-  visaType            String         @db.VarChar(20) // Predefined data
-  nationalId          String         @db.VarChar(20) // Maximum length: 20 characters
-  otherIdType         String?        @db.VarChar(50) // Dropdown predefined data
-  otherIdValue        String?        @db.VarChar(20) // 15-20 characters
-  contactNumberMobile ContactNumber  @relation("MobileContact", fields: [mobileContactId], references: [id])
-  contactNumberWork   ContactNumber? @relation("WorkContact", fields: [workContactId], references: [id])
-  mobileContactId     String
-  workContactId       String?
+  nationality         String?  @db.VarChar(50) 
+  email               String   @unique @db.VarChar(50)
+  maritalStatus       String?  @db.VarChar(20) 
+  visaType            String?  @db.VarChar(20) 
+  nationalId          String   @unique @db.VarChar(20) 
+  otherIdType         String?  @db.VarChar(50) 
+  otherIdValue        String?  @db.VarChar(20) 
+  contactNumberMobile String   @db.VarChar(15) 
+  contactNumberWork   String?  @db.VarChar(15) 
 }
 
 enum Gender {
-  MALE
-  FEMALE
-}
-model ContactNumber {
-  id          String    @id @default(cuid())
-  countryCode String    @db.VarChar(5) // Predefined dropdown values
-  number      String    @db.VarChar(15) // Editable text field
-  mobileUsers Patient[] @relation("MobileContact")
-  workUsers   Patient[] @relation("WorkContact")
+  Male
+  Female
+  Other 
 }

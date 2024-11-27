@@ -1,4 +1,4 @@
-const prisma = require('../database/prismaClient'); // Import Prisma client
+const prisma = require('../database/prismaClient');
 const bcrypt = require('bcrypt');
 const logger = require('../logger');
 

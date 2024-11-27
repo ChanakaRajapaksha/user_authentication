@@ -14,6 +14,7 @@ import DoctorHome from "./pages/DoctorHome";
 import Unauthorized from "./components/Unauthorized";
 import Layout from "./components/Layout";
 import PrivateRoute from "./utility/PrivateRoute";
+import PatientRegisterPage from "./components/PatientRegisterPage";
 
 export default function App() {
   return (
@@ -37,6 +38,8 @@ export default function App() {
 
           {/* Catch unauthorized access */}
           <Route path="/unauthorized" element={<Unauthorized />} />
+
+          <Route path="/patient-register" element={<PatientRegisterPage />} />
         </Route>
       </Routes>
 

@@ -30,3 +30,26 @@
 {"level":"info","message":{"action":"findFirst","duration":"2ms","model":"Otp"},"timestamp":"2024-11-26T06:42:43.590Z"}
 {"level":"info","message":{"action":"delete","duration":"2ms","model":"Otp"},"timestamp":"2024-11-26T06:42:43.592Z"}
 {"level":"info","message":{"action":"update","duration":"4ms","model":"User"},"timestamp":"2024-11-26T06:42:43.599Z"}
+{"level":"info","message":{"action":"findFirst","duration":"10ms","model":"User"},"timestamp":"2024-11-26T07:00:48.052Z"}
+{"level":"info","message":{"action":"create","duration":"3ms","model":"Otp"},"timestamp":"2024-11-26T07:00:48.116Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-11-26T07:01:07.895Z"}
+{"level":"info","message":{"action":"findFirst","duration":"1ms","model":"Otp"},"timestamp":"2024-11-26T07:01:07.897Z"}
+{"level":"info","message":{"action":"delete","duration":"2ms","model":"Otp"},"timestamp":"2024-11-26T07:01:07.900Z"}
+{"level":"info","message":{"action":"update","duration":"4ms","model":"User"},"timestamp":"2024-11-26T07:01:07.907Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"},"timestamp":"2024-11-26T07:01:07.919Z"}
+{"level":"info","message":{"action":"findFirst","duration":"1ms","model":"User"},"timestamp":"2024-11-26T07:02:06.630Z"}
+{"level":"info","message":{"action":"update","duration":"6ms","model":"User"},"timestamp":"2024-11-26T07:02:06.698Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"},"timestamp":"2024-11-26T07:02:06.710Z"}
+{"level":"info","message":{"action":"findFirst","duration":"5ms","model":"User"},"timestamp":"2024-11-26T07:14:52.154Z"}
+{"level":"info","message":{"action":"update","duration":"3ms","model":"User"},"timestamp":"2024-11-26T07:14:52.219Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-11-26T07:14:52.230Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"User"},"timestamp":"2024-11-26T07:15:09.056Z"}
+{"level":"info","message":{"action":"update","duration":"4ms","model":"User"},"timestamp":"2024-11-26T07:15:09.120Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"},"timestamp":"2024-11-26T07:15:09.129Z"}
+{"level":"error","message":"Error during patient registration: \nInvalid `prisma.patient.findUnique()` invocation in\nD:\\Projects\\user_authentication\\backend\\controllers\\patientRegisterController.js:38:53\n\n  35 \n  36 try {\n  37     // Check for duplicate email or national ID in the database\n→ 38     const duplicateEmail = await prisma.patient.findUnique({\n           where: {\n             email: \"johndoe@example.com\",\n         ?   patientId?: String,\n         ?   AND?: PatientWhereInput | PatientWhereInput[],\n         ?   OR?: PatientWhereInput[],\n         ?   NOT?: PatientWhereInput | PatientWhereInput[],\n         ?   fullName?: StringFilter | String,\n         ?   dateOfBirth?: DateTimeFilter | DateTime,\n         ?   age?: IntFilter | Int,\n         ?   gender?: EnumGenderFilter | Gender,\n         ?   nationality?: StringFilter | String,\n         ?   maritalStatus?: StringFilter | String,\n         ?   visaType?: StringFilter | String,\n         ?   nationalId?: StringFilter | String,\n         ?   otherIdType?: StringNullableFilter | String | Null,\n         ?   otherIdValue?: StringNullableFilter | String | Null,\n         ?   mobileContactId?: StringFilter | String,\n         ?   workContactId?: StringNullableFilter | String | Null,\n         ?   contactNumberMobile?: ContactNumberRelationFilter | ContactNumberWhereInput,\n         ?   contactNumberWork?: ContactNumberNullableRelationFilter | ContactNumberWhereInput | Null\n           }\n         })\n\nArgument `where` of type PatientWhereUniqueInput needs at least one of `patientId` arguments. Available options are marked with ?.","timestamp":"2024-11-26T09:28:50.429Z"}
+{"level":"info","message":{"action":"findUnique","duration":"12ms","model":"Patient"},"timestamp":"2024-11-26T09:32:44.146Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"Patient"},"timestamp":"2024-11-26T09:32:44.151Z"}
+{"level":"info","message":{"action":"create","duration":"89ms","model":"ContactNumber"},"timestamp":"2024-11-26T09:32:44.241Z"}
+{"level":"info","message":{"action":"create","duration":"2ms","model":"ContactNumber"},"timestamp":"2024-11-26T09:32:44.244Z"}
+{"level":"info","message":{"action":"create","duration":"12ms","model":"Patient"},"timestamp":"2024-11-26T09:32:44.257Z"}
+{"level":"info","message":"Patient registered: johndoe@example.com","timestamp":"2024-11-26T09:32:44.258Z"}
