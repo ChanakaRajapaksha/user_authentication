@@ -56,3 +56,13 @@
 {"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-11-27T09:04:43.035Z"}
 {"level":"info","message":{"action":"create","duration":"52ms","model":"Patient"},"timestamp":"2024-11-27T09:04:43.087Z"}
 {"level":"info","message":"Patient registered: chanakaprasath456@gmail.com","timestamp":"2024-11-27T09:04:43.088Z"}
+{"level":"info","message":{"action":"findUnique","duration":"145ms","model":"Patient"},"timestamp":"2024-11-27T11:23:08.740Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"Patient"},"timestamp":"2024-11-27T11:23:08.823Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"Patient"},"timestamp":"2024-11-27T11:23:18.395Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-11-27T11:23:18.397Z"}
+{"level":"info","message":{"action":"create","duration":"13ms","model":"Patient"},"timestamp":"2024-11-27T11:23:18.410Z"}
+{"level":"info","message":"Patient registered: chanakaprasath4565555@gmail.com","timestamp":"2024-11-27T11:23:18.410Z"}
+{"level":"info","message":{"action":"findUnique","duration":"14ms","model":"Patient"},"timestamp":"2024-11-27T12:08:21.470Z"}
+{"level":"info","message":{"action":"findUnique","duration":"3ms","model":"Patient"},"timestamp":"2024-11-27T12:08:21.475Z"}
+{"level":"info","message":{"action":"create","duration":"42ms","model":"Patient"},"timestamp":"2024-11-27T12:08:21.517Z"}
+{"level":"info","message":"Patient registered: rajapaksha@example.com","timestamp":"2024-11-27T12:08:21.518Z"}

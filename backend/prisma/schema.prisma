@@ -46,6 +46,7 @@ model Patient {
   otherIdValue        String?  @db.VarChar(20) 
   contactNumberMobile String   @db.VarChar(15) 
   contactNumberWork   String?  @db.VarChar(15) 
+  customFields        Json?
 }
 
 enum Gender {

@@ -87,6 +87,13 @@ const PatientRegisterPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const dynamicData = dynamicFields
+            .filter((field) => field.isVisible)
+            .reduce((acc, field) => {
+                acc[field.id] = field.value || null;
+                return acc;
+            }, {});
+
         const formData = [...commonFields, ...dynamicFields.filter((field) => field.isVisible)]
             .reduce((acc, field) => {
                 if (field.id === "contactNumberMobile") {
@@ -108,7 +115,7 @@ const PatientRegisterPage = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({ ...formData, ...dynamicData }),
             });
 
             const data = await response.json();
@@ -143,7 +150,7 @@ const PatientRegisterPage = () => {
                                         ? setCountryCode(e.target.value)
                                         : setWorkCountryCode(e.target.value)
                                 }
-                                className="w-[220px] p-2 border border-gray-300 rounded-l-lg focus:ring-blue-500 focus:border-blue-500"
+                                className="w-[220px] p-2 border border-gray-300 rounded-l-lg focus:ring-blue-500 focus:outline-none"
                             >
                                 {countryCodes.map((country, index) => (
                                     <option key={index} value={country.code}>
@@ -156,7 +163,7 @@ const PatientRegisterPage = () => {
                                 type="text"
                                 value={field.value}
                                 onChange={(e) => handleChange(field.id, e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded-r-lg focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full p-2 border border-gray-300 rounded-r-lg focus:ring-blue-500 focus:outline-none"
                             />
                         </div>
                     ) : field.type === "select" ? (
@@ -164,7 +171,7 @@ const PatientRegisterPage = () => {
                             id={field.id}
                             value={field.value}
                             onChange={(e) => handleChange(field.id, e.target.value)}
-                            className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:outline-none"
                         >
                             <option value="">Select {field.label}</option>
                             {field.options.map((option, index) => (
@@ -179,7 +186,7 @@ const PatientRegisterPage = () => {
                             type={field.type}
                             value={field.value}
                             onChange={(e) => handleChange(field.id, e.target.value)}
-                            className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:outline-none"
                         />
                     )}
                     {dynamicFields.some((f) => f.id === field.id) && (

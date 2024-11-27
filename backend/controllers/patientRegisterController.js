@@ -16,6 +16,7 @@ const handleNewPatient = async (req, res) => {
         otherIdValue = null,
         contactNumberMobile,
         contactNumberWork = null,
+        ...dynamicFields
     } = req.body;
 
     // Validate required fields
@@ -73,6 +74,7 @@ const handleNewPatient = async (req, res) => {
                 otherIdValue,
                 contactNumberMobile,
                 contactNumberWork,
+                customFields: dynamicFields,
             },
         });
 
