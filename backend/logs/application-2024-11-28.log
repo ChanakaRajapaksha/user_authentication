@@ -1,0 +1,7 @@
+{"level":"info","message":{"action":"findFirst","duration":"624ms","model":"User"},"timestamp":"2024-11-28T04:06:34.923Z"}
+{"level":"info","message":{"action":"update","duration":"32ms","model":"User"},"timestamp":"2024-11-28T04:06:35.042Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-11-28T04:06:35.056Z"}
+{"level":"info","message":{"action":"findUnique","duration":"43ms","model":"Patient"},"timestamp":"2024-11-28T04:49:47.164Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-11-28T04:49:47.166Z"}
+{"level":"info","message":{"action":"create","duration":"150ms","model":"Patient"},"timestamp":"2024-11-28T04:49:47.317Z"}
+{"level":"info","message":"Patient registered: kamal@gmail.com","timestamp":"2024-11-28T04:49:47.317Z"}

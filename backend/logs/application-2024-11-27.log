@@ -66,3 +66,17 @@
 {"level":"info","message":{"action":"findUnique","duration":"3ms","model":"Patient"},"timestamp":"2024-11-27T12:08:21.475Z"}
 {"level":"info","message":{"action":"create","duration":"42ms","model":"Patient"},"timestamp":"2024-11-27T12:08:21.517Z"}
 {"level":"info","message":"Patient registered: rajapaksha@example.com","timestamp":"2024-11-27T12:08:21.518Z"}
+{"level":"info","message":{"action":"findUnique","duration":"427ms","model":"Patient"},"timestamp":"2024-11-27T15:37:05.149Z"}
+{"level":"info","message":{"action":"findUnique","duration":"3ms","model":"Patient"},"timestamp":"2024-11-27T15:37:05.153Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-11-27T15:37:11.283Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-11-27T15:37:11.285Z"}
+{"level":"info","message":{"action":"create","duration":"60ms","model":"Patient"},"timestamp":"2024-11-27T15:37:11.345Z"}
+{"level":"info","message":"Patient registered: saman@gmail.com","timestamp":"2024-11-27T15:37:11.345Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"Patient"},"timestamp":"2024-11-27T15:39:40.234Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-11-27T15:39:40.236Z"}
+{"level":"info","message":{"action":"create","duration":"3ms","model":"Patient"},"timestamp":"2024-11-27T15:39:40.239Z"}
+{"level":"info","message":"Patient registered: prasath@gmail.com","timestamp":"2024-11-27T15:39:40.239Z"}
+{"level":"info","message":{"action":"findUnique","duration":"6ms","model":"Patient"},"timestamp":"2024-11-27T15:47:51.841Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"Patient"},"timestamp":"2024-11-27T15:47:51.843Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"Patient"},"timestamp":"2024-11-27T15:47:51.847Z"}
+{"level":"info","message":"Patient registered: ramath@gmail.com","timestamp":"2024-11-27T15:47:51.847Z"}

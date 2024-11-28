@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.react-tel-input {
+     margin-top: 0.25rem !important;  
+     
+}
+.react-tel-input .form-control {
+    width: 300px !important;
+    height: 40px !important;
+    border-width: 1px  !important;
+    border-radius: 0.5rem !important;
+}
+.flag-dropdown {
+  border-top-left-radius: 0.5rem !important;
+  border-bottom-left-radius: 0.5rem !important;
+}
+.react-tel-input .selected-flag {
+  border-top-left-radius: 0.5rem !important;
+  border-bottom-left-radius: 0.5rem !important;
+}
