@@ -5,3 +5,7 @@
 {"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-11-28T04:49:47.166Z"}
 {"level":"info","message":{"action":"create","duration":"150ms","model":"Patient"},"timestamp":"2024-11-28T04:49:47.317Z"}
 {"level":"info","message":"Patient registered: kamal@gmail.com","timestamp":"2024-11-28T04:49:47.317Z"}
+{"level":"info","message":{"action":"findUnique","duration":"413ms","model":"Patient"},"timestamp":"2024-11-28T11:35:36.872Z"}
+{"level":"info","message":{"action":"findUnique","duration":"12ms","model":"Patient"},"timestamp":"2024-11-28T11:35:36.894Z"}
+{"level":"info","message":{"action":"create","duration":"208ms","model":"Patient"},"timestamp":"2024-11-28T11:35:37.103Z"}
+{"level":"info","message":"Patient registered: test@gmail.com","timestamp":"2024-11-28T11:35:37.123Z"}

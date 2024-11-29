@@ -5,7 +5,7 @@ const useAuth = () => {
     const authContext = useContext(AuthContext);
 
     useDebugValue(authContext.auth, (auth) =>
-        auth?.user ? "Logged In" : "Logged Out"
+        auth?.username ? "User Logged In" : "User Logged Out"
     );
 
     return authContext;

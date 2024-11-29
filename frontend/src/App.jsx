@@ -8,7 +8,7 @@ import RegisterPage from "./components/RegisterPage";
 import ForgotPasswordPage from "./components/ForgotPasswordPage";
 import ResetPasswordPage from "./components/ResetPasswordPage";
 
-import AdminDashboard from "./pages/AdminDashboard";
+import Dashboard from "./pages/Dashboard";
 import DoctorHome from "./pages/DoctorHome";
 
 import Unauthorized from "./components/Unauthorized";
@@ -29,7 +29,7 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           {/* Protected Routes */}
           <Route element={<PrivateRoute allowedRoles={['admin']} />}>
-            <Route path="/dashboard" element={<AdminDashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Route>
 
           <Route element={<PrivateRoute allowedRoles={['admin', 'doctor']} />}>

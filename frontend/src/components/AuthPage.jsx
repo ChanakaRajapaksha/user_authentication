@@ -12,7 +12,6 @@ const AuthPage = () => {
     const { setAuth } = useAuth();
     const navigate = useNavigate();
 
-    // Prefill email if saved in sessionStorage
     useEffect(() => {
         const savedEmail = sessionStorage.getItem("rememberedEmail");
         if (savedEmail) {
@@ -40,10 +39,9 @@ const AuthPage = () => {
                     toast.info("OTP sent to your email address.", { position: "top-right" });
                     setShowOtpPopup(true);
                 } else {
-                    handleRoleBasedRedirection(data); // Redirect after successful login
+                    handleRoleBasedRedirection(data); 
                 }
 
-                // Save email if "Remember Me" is checked
                 if (rememberMe) {
                     sessionStorage.setItem("rememberedEmail", email);
                 } else {
@@ -58,17 +56,16 @@ const AuthPage = () => {
     };
 
     const handleRoleBasedRedirection = async (data) => {
-        const roles = data.roles?.length ? data.roles : [];
-        const accessToken = data.accessToken;
+        const { roles = [], accessToken, username } = data;
 
         if (!roles.length) {
             toast.error("User has no roles assigned!", { position: "top-right" });
             return;
         }
 
-        setAuth({ email: data.email, roles, accessToken });
+        setAuth({ email, roles, accessToken, username });
 
-        const role = roles.includes("admin") ? "admin" : "doctor"; // Default to 'doctor' if no admin role
+        const role = roles.includes("admin") ? "admin" : "doctor"; 
         const endpoint = role === "admin" ? "/api/dashboard" : "/api/doctor";
 
         try {
@@ -89,7 +86,7 @@ const AuthPage = () => {
     };
 
     const handleOtpVerify = (accessToken) => {
-        const roles = accessToken?.roles || ["doctor"]; // Default to 'doctor' if roles are undefined
+        const roles = accessToken?.roles || ["doctor"]; 
         const email = accessToken?.email || "Unknown";
 
         handleRoleBasedRedirection({ email, roles, accessToken });

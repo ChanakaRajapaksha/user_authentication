@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const handleLogin = async (req, res) => {
-    const { email, password, otp } = req.body;
+    const { email, password, username, otp } = req.body;
 
     // Validate input
     if (!email || !password) {
@@ -49,6 +49,7 @@ const handleLogin = async (req, res) => {
 
         // Ensure roles are always returned as an array
         const roles = [foundUser.role];
+        const username = foundUser.username;
 
         // Admins skip OTP and log in directly
         if (foundUser.role === 'admin') {
@@ -82,6 +83,7 @@ const handleLogin = async (req, res) => {
                 success: `Admin ${foundUser.email} is logged in!`,
                 accessToken,
                 roles,
+                username,
                 otpRequired: false,
             });
         }
