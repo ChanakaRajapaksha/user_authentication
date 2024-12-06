@@ -31,7 +31,7 @@ const ForgotPasswordPage = () => {
     };
 
     return (
-        <div className="flex h-screen items-center justify-center">
+        <div className="flex h-[100vh] items-center justify-center">
             <form onSubmit={handleForgotPassword} className="w-full max-w-md p-10 border rounded-lg">
                 <h2 className="text-xl font-bold mb-4">Forgot Password</h2>
                 <label className="block mb-2 text-gray-700 text-[14px] font-normal">Enter your email</label>

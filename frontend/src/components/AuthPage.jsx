@@ -2,15 +2,17 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAuth from "../../hooks/useAuth";
-import OtpPopup from "./OtpPopup";
 
 const AuthPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
-    const [showOtpPopup, setShowOtpPopup] = useState(false);
     const { setAuth } = useAuth();
     const navigate = useNavigate();
+
+    const handleMicrosoftLogin = () => {
+        window.location.href = "http://localhost:5000/auth/microsoft"; 
+    };
 
     useEffect(() => {
         const savedEmail = sessionStorage.getItem("rememberedEmail");
@@ -39,7 +41,7 @@ const AuthPage = () => {
                     toast.info("OTP sent to your email address.", { position: "top-right" });
                     setShowOtpPopup(true);
                 } else {
-                    handleRoleBasedRedirection(data); 
+                    handleRoleBasedRedirection(data);
                 }
 
                 if (rememberMe) {
@@ -65,7 +67,7 @@ const AuthPage = () => {
 
         setAuth({ email, roles, accessToken, username });
 
-        const role = roles.includes("admin") ? "admin" : "doctor"; 
+        const role = roles.includes("admin") ? "admin" : "doctor";
         const endpoint = role === "admin" ? "/api/dashboard" : "/api/doctor";
 
         try {
@@ -85,16 +87,8 @@ const AuthPage = () => {
         }
     };
 
-    const handleOtpVerify = (accessToken) => {
-        const roles = accessToken?.roles || ["doctor"]; 
-        const email = accessToken?.email || "Unknown";
-
-        handleRoleBasedRedirection({ email, roles, accessToken });
-        setShowOtpPopup(false);
-    };
-
     return (
-        <div className="flex h-screen">
+        <div className="flex h-[100vh]">
             <div className="w-1/2 bg-gray-200 flex items-center justify-center">
                 <div className="rounded-full bg-gray-300 w-96 h-96"></div>
             </div>
@@ -131,6 +125,19 @@ const AuthPage = () => {
                             Log in
                         </button>
 
+                        <button
+                            type="button"
+                            className="w-full h-[48px] bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 flex items-center justify-center mb-4"
+                            onClick={handleMicrosoftLogin}
+                        >
+                            <img
+                                src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+                                alt="Microsoft Icon"
+                                className="h-6 w-6 mr-2"
+                            />
+                            Sign in with Microsoft
+                        </button>
+
                         <div className="flex justify-between items-center mb-6">
                             <label className="flex items-center text-[16px] font-medium">
                                 <input
@@ -148,14 +155,6 @@ const AuthPage = () => {
                     </form>
                 </div>
             </div>
-
-            {showOtpPopup && (
-                <OtpPopup
-                    email={email}
-                    onClose={() => setShowOtpPopup(false)}
-                    onVerify={handleOtpVerify}
-                />
-            )}
         </div>
     );
 };

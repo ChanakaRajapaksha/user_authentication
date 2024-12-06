@@ -9,7 +9,7 @@ const Unauthorized = () => {
     };
 
     return (
-        <div className="flex h-screen items-center justify-center bg-gray-100">
+        <div className="flex h-[100vh] items-center justify-center bg-gray-100">
             <div className="max-w-md bg-white rounded-lg shadow-lg p-8">
                 <h2 className="text-3xl font-bold text-red-500 mb-4">Unauthorized</h2>
                 <p className="text-lg text-gray-700 mb-6">

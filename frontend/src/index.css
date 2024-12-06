@@ -7,16 +7,12 @@
      
 }
 .react-tel-input .form-control {
-    width: 300px !important;
-    height: 40px !important;
+    width: full !important;
+    padding-left: 45px !important;
+    height: 42px !important;
     border-width: 1px  !important;
     border-radius: 0.5rem !important;
 }
-.flag-dropdown {
-  border-top-left-radius: 0.5rem !important;
-  border-bottom-left-radius: 0.5rem !important;
-}
-.react-tel-input .selected-flag {
-  border-top-left-radius: 0.5rem !important;
-  border-bottom-left-radius: 0.5rem !important;
+.h-screen {
+  height: auto !important;
 }

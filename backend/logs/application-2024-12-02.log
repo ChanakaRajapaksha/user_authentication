@@ -1,0 +1,48 @@
+{"level":"info","message":{"action":"findFirst","duration":"555ms","model":"User"},"timestamp":"2024-12-02T10:06:03.533Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"User"},"timestamp":"2024-12-02T10:06:34.953Z"}
+{"level":"info","message":{"action":"update","duration":"47ms","model":"User"},"timestamp":"2024-12-02T10:06:35.075Z"}
+{"level":"info","message":{"action":"findUnique","duration":"42ms","model":"User"},"timestamp":"2024-12-02T10:06:35.127Z"}
+{"level":"info","message":{"action":"findMany","duration":"23ms","model":"Patient"},"timestamp":"2024-12-02T10:06:35.170Z"}
+{"level":"info","message":"Fetched 10 patients from the database.","timestamp":"2024-12-02T10:06:35.170Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"Patient"},"timestamp":"2024-12-02T10:06:40.296Z"}
+{"level":"info","message":"Fetched details for patient ID: cm3zlgejc0000h9h6taue3gea","timestamp":"2024-12-02T10:06:40.296Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-12-02T10:06:41.232Z"}
+{"level":"info","message":"Fetched details for patient ID: cm3zntdw50000f68i7edpn3y5","timestamp":"2024-12-02T10:06:41.232Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-12-02T10:06:42.244Z"}
+{"level":"info","message":"Fetched details for patient ID: cm3zntjq40001f68i5y3isdgk","timestamp":"2024-12-02T10:06:42.245Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"Patient"},"timestamp":"2024-12-02T10:06:43.057Z"}
+{"level":"info","message":"Fetched details for patient ID: cm3zsrrwe0002f68i3phgkod8","timestamp":"2024-12-02T10:06:43.057Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-12-02T10:06:43.511Z"}
+{"level":"info","message":"Fetched details for patient ID: cm3zudpmh000093ggsc1tl1qe","timestamp":"2024-12-02T10:06:43.511Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-12-02T10:06:43.900Z"}
+{"level":"info","message":"Fetched details for patient ID: cm401u9o70000j5ztg23cf9db","timestamp":"2024-12-02T10:06:43.901Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-12-02T10:06:44.289Z"}
+{"level":"info","message":"Fetched details for patient ID: cm401xglp0001j5ztk5pe7czd","timestamp":"2024-12-02T10:06:44.289Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-12-02T10:06:44.713Z"}
+{"level":"info","message":"Fetched details for patient ID: cm4027zxg0002j5ztqzdkads2","timestamp":"2024-12-02T10:06:44.713Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"Patient"},"timestamp":"2024-12-02T10:06:45.109Z"}
+{"level":"info","message":"Fetched details for patient ID: cm40u5k1p000070z937sb46hl","timestamp":"2024-12-02T10:06:45.109Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-12-02T10:06:50.476Z"}
+{"level":"info","message":"Fetched details for patient ID: cm401xglp0001j5ztk5pe7czd","timestamp":"2024-12-02T10:06:50.476Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"Patient"},"timestamp":"2024-12-02T10:06:52.179Z"}
+{"level":"info","message":"Fetched details for patient ID: cm3zntdw50000f68i7edpn3y5","timestamp":"2024-12-02T10:06:52.179Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"User"},"timestamp":"2024-12-02T10:07:23.346Z"}
+{"level":"info","message":{"action":"create","duration":"47ms","model":"Otp"},"timestamp":"2024-12-02T10:07:23.453Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-12-02T10:07:44.865Z"}
+{"level":"info","message":{"action":"findFirst","duration":"74ms","model":"Otp"},"timestamp":"2024-12-02T10:07:44.939Z"}
+{"level":"info","message":{"action":"delete","duration":"55ms","model":"Otp"},"timestamp":"2024-12-02T10:07:44.995Z"}
+{"level":"info","message":{"action":"update","duration":"13ms","model":"User"},"timestamp":"2024-12-02T10:07:45.011Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"},"timestamp":"2024-12-02T10:07:45.024Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"},"timestamp":"2024-12-02T10:08:07.860Z"}
+{"level":"info","message":{"action":"update","duration":"33ms","model":"User"},"timestamp":"2024-12-02T10:08:07.893Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"User"},"timestamp":"2024-12-02T10:08:35.010Z"}
+{"level":"info","message":{"action":"update","duration":"33ms","model":"User"},"timestamp":"2024-12-02T10:08:35.119Z"}
+{"level":"info","message":{"action":"findFirst","duration":"1ms","model":"User"},"timestamp":"2024-12-02T10:09:02.503Z"}
+{"level":"info","message":{"action":"findFirst","duration":"1ms","model":"User"},"timestamp":"2024-12-02T10:09:11.261Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"User"},"timestamp":"2024-12-02T10:09:20.278Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"Otp"},"timestamp":"2024-12-02T10:09:20.340Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-12-02T10:09:39.657Z"}
+{"level":"info","message":{"action":"findFirst","duration":"1ms","model":"Otp"},"timestamp":"2024-12-02T10:09:39.659Z"}
+{"level":"info","message":{"action":"delete","duration":"3ms","model":"Otp"},"timestamp":"2024-12-02T10:09:39.662Z"}
+{"level":"info","message":{"action":"update","duration":"3ms","model":"User"},"timestamp":"2024-12-02T10:09:39.667Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"},"timestamp":"2024-12-02T10:09:39.675Z"}

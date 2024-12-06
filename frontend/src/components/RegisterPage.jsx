@@ -41,7 +41,7 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="flex h-screen">
+        <div className="flex h-[100vh]">
             <div className="w-1/2 bg-gray-200 flex items-center justify-center">
                 <div className="rounded-full bg-gray-300 w-96 h-96"></div>
             </div>

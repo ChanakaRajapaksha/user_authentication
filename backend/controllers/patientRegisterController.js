@@ -1,38 +1,57 @@
 const prisma = require('../database/prismaClient');
 const logger = require('../logger');
 
-// Handle new patient registration
+
 const handleNewPatient = async (req, res) => {
+    console.log(req.body);
+
     const {
-        fullName,
-        dateOfBirth,
-        gender,
+        fullName = null,
+        dateOfBirth = null,
+        gender = null,
         nationality = null,
-        email,
+        email = null,
         maritalStatus = null,
         visaType = null,
-        nationalId,
+        nationalId = null,
         otherIdType = null,
         otherIdValue = null,
-        contactNumberMobile,
+        contactNumberMobile = null,
         contactNumberWork = null,
-        ...dynamicFields
+        consultationType = null,
+        doctorName = null,
+        appointmentDate = null,
+        speciality = null,
+        consultationReason = null,
+        paymentType = null,
+        insurancePlan = null,
+        policyNumber = null,
+        policyExpiryDate = null,
+        insuranceCardNumber = null,
+        insuranceProvider = null,
+        insuranceSubProvider = null,
+        ...dynamicFields 
     } = req.body;
-
+    
     // Validate required fields
-    if (
-        !fullName ||
-        !dateOfBirth ||
-        !gender ||
-        !email ||
-        !nationalId ||
-        !contactNumberMobile
-    ) {
-        return res.status(400).json({ message: 'All required fields must be filled.' });
+    // if (
+    //     !fullName ||
+    //     !dateOfBirth ||
+    //     !gender ||
+    //     !email ||
+    //     !nationalId 
+    // ) {
+    //     return res.status(400).json({ message: 'All required fields must be filled.' });
+    // }
+
+    // Conditional validation for Insurance payment type
+    if (paymentType === "Insurance" && (!insuranceCardNumber || !insuranceProvider || !insuranceSubProvider)) {
+        return res.status(400).json({
+            message: 'Insurance card number, provider, and sub-provider are required for Insurance payment type.',
+        });
     }
 
     try {
-        // Check for duplicate email or national ID in the database
         const duplicateEmail = await prisma.patient.findUnique({
             where: { email },
         });
@@ -42,14 +61,13 @@ const handleNewPatient = async (req, res) => {
         });
 
         if (duplicateEmail) {
-            return res.status(409).json({ message: 'Email already exists.' }); // Conflict
+            return res.status(409).json({ message: 'Email already exists.' });
         }
 
         if (duplicateNationalId) {
-            return res.status(409).json({ message: 'National ID already exists.' }); // Conflict
+            return res.status(409).json({ message: 'National ID already exists.' });
         }
 
-        // Calculate age from date of birth
         const currentDate = new Date();
         const birthDate = new Date(dateOfBirth);
         const age = currentDate.getFullYear() - birthDate.getFullYear() -
@@ -58,7 +76,6 @@ const handleNewPatient = async (req, res) => {
 
         const normalizedGender = gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase();
 
-        // Create the new patient record
         const newPatient = await prisma.patient.create({
             data: {
                 fullName,
@@ -72,13 +89,25 @@ const handleNewPatient = async (req, res) => {
                 nationalId,
                 otherIdType,
                 otherIdValue,
-                contactNumberMobile,
+                contactNumberMobile, 
                 contactNumberWork,
-                customFields: dynamicFields,
+                consultationType,
+                doctorName,
+                appointmentDate: new Date(appointmentDate),
+                speciality,
+                consultationReason,
+                paymentType,
+                insurancePlan,
+                insuranceCardNumber: paymentType === "Insurance" ? insuranceCardNumber : null,
+                insuranceProvider: paymentType === "Insurance" ? insuranceProvider : null,
+                insuranceSubProvider: paymentType === "Insurance" ? insuranceSubProvider : null,
+                policyNumber,
+                policyExpiryDate: policyExpiryDate ? new Date(policyExpiryDate) : null,
+                customFields: dynamicFields, 
             },
         });
 
-        logger.info(`Patient registered: ${email}`); // Log additional details
+        logger.info(`Patient registered: ${email}`);
         res.status(201).json({ success: `New patient ${newPatient.fullName} created!` });
     } catch (err) {
         console.error(err);
@@ -87,7 +116,6 @@ const handleNewPatient = async (req, res) => {
     }
 };
 
-// Get All Patient Details
 const getAllPatients = async (req, res) => {
     try {
         const patients = await prisma.patient.findMany({
@@ -106,13 +134,23 @@ const getAllPatients = async (req, res) => {
                 otherIdValue: true,
                 contactNumberMobile: true,
                 contactNumberWork: true,
+                consultationType: true,
+                doctorName: true,
+                appointmentDate: true,
+                speciality: true,
+                consultationReason: true,
+                paymentType: true,
+                insurancePlan: true,
+                policyNumber: true,
+                policyExpiryDate: true,
+                insuranceCardNumber: true,
+                insuranceProvider: true,
+                insuranceSubProvider: true,
                 customFields: true,
             },
         });
 
-        // Log the action
         logger.info(`Fetched ${patients.length} patients from the database.`);
-
         res.status(200).json(patients);
     } catch (err) {
         console.error(err);
@@ -121,7 +159,6 @@ const getAllPatients = async (req, res) => {
     }
 };
 
-// Get Selected Patient Details
 const getPatientDetails = async (req, res) => {
     const { patientId } = req.params;
 
@@ -147,6 +184,18 @@ const getPatientDetails = async (req, res) => {
                 otherIdValue: true,
                 contactNumberMobile: true,
                 contactNumberWork: true,
+                consultationType: true,
+                doctorName: true,
+                appointmentDate: true,
+                speciality: true,
+                consultationReason: true,
+                paymentType: true,
+                insurancePlan: true,
+                policyNumber: true,
+                policyExpiryDate: true,
+                insuranceCardNumber: true,
+                insuranceProvider: true,
+                insuranceSubProvider: true,
                 customFields: true,
             },
         });
@@ -159,7 +208,7 @@ const getPatientDetails = async (req, res) => {
         const formattedCustomFields = [];
         if (patient.customFields) {
             for (const [key, value] of Object.entries(patient.customFields)) {
-                const cleanedKey = key.replace(/_\d+$/, ''); // Remove trailing numerals
+                const cleanedKey = key.replace(/_\d+$/, '');
                 formattedCustomFields.push({ key: cleanedKey, value });
             }
         }
@@ -179,7 +228,19 @@ const getPatientDetails = async (req, res) => {
             otherIdValue: patient.otherIdValue,
             contactNumberMobile: patient.contactNumberMobile,
             contactNumberWork: patient.contactNumberWork,
-            customFields: formattedCustomFields, 
+            consultationType: patient.consultationType,
+            doctorName: patient.doctorName,
+            appointmentDate: patient.appointmentDate,
+            speciality: patient.speciality,
+            consultationReason: patient.consultationReason,
+            paymentType: patient.paymentType,
+            insurancePlan: patient.insurancePlan,
+            policyNumber: patient.policyNumber,
+            policyExpiryDate: patient.policyExpiryDate,
+            insuranceCardNumber: patient.insuranceCardNumber,
+            insuranceProvider: patient.insuranceProvider,
+            insuranceSubProvider: patient.insuranceSubProvider,
+            customFields: formattedCustomFields,
         };
 
         logger.info(`Fetched details for patient ID: ${patientId}`);
