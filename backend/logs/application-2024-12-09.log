@@ -1,0 +1,19 @@
+{"level":"info","message":{"action":"findFirst","duration":"407ms","model":"User"},"timestamp":"2024-12-09T11:53:30.167Z"}
+{"level":"info","message":{"action":"findFirst","duration":"94ms","model":"User"},"timestamp":"2024-12-09T11:54:09.827Z"}
+{"level":"info","message":{"action":"update","duration":"226ms","model":"User"},"timestamp":"2024-12-09T11:54:10.117Z"}
+{"level":"info","message":{"action":"create","duration":"110ms","model":"NetworkLog"},"timestamp":"2024-12-09T11:54:11.094Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-12-09T11:54:11.108Z"}
+{"level":"info","message":{"action":"findMany","duration":"7ms","model":"Patient"},"timestamp":"2024-12-09T11:54:11.192Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-09T11:54:11.193Z"}
+{"level":"info","message":{"action":"findMany","duration":"39ms","model":"masterUser"},"timestamp":"2024-12-09T11:54:11.222Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"User"},"timestamp":"2024-12-09T11:54:31.794Z"}
+{"level":"info","message":{"action":"update","duration":"4ms","model":"User"},"timestamp":"2024-12-09T11:54:31.799Z"}
+{"level":"info","message":{"action":"findFirst","duration":"1ms","model":"User"},"timestamp":"2024-12-09T11:54:34.377Z"}
+{"level":"info","message":{"action":"update","duration":"3ms","model":"User"},"timestamp":"2024-12-09T11:54:34.443Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"NetworkLog"},"timestamp":"2024-12-09T11:54:34.897Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"},"timestamp":"2024-12-09T11:54:34.908Z"}
+{"level":"info","message":{"action":"findMany","duration":"13ms","model":"Patient"},"timestamp":"2024-12-09T11:54:34.975Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-09T11:54:34.975Z"}
+{"level":"info","message":{"action":"findMany","duration":"4ms","model":"masterUser"},"timestamp":"2024-12-09T11:54:34.978Z"}
+{"level":"info","message":{"action":"update","duration":"5ms","model":"masterUser"},"timestamp":"2024-12-09T11:55:37.549Z"}
+{"level":"info","message":{"action":"update","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-09T11:55:42.427Z"}

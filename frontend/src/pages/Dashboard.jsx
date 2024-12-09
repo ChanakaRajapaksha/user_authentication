@@ -5,6 +5,7 @@ import UserTable from "../components/UserTable";
 import AddUserModal from "../components/AddUserModal";
 
 const Dashboard = () => {
+    const [userList, setUserList] = useState([]);
     const [patients, setPatients] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [currentView, setCurrentView] = useState("userDetails"); 
@@ -35,10 +36,6 @@ const Dashboard = () => {
         } catch (error) {
             console.error(error.message);
         }
-    };
-
-    const handleSaveUser = (newUser) => {
-        console.log("New User Added:", newUser);
     };
 
     return (
@@ -103,20 +100,28 @@ const Dashboard = () => {
                            
                             <button
                                 onClick={() => setIsModalOpen(true)}
-                                className="flex items-center bg-black text-white font-medium px-4 py-2 rounded-md shadow-md hover:bg-purple-800"
+                                className="flex items-center bg-black text-white py-2 px-4 rounded-md text-sm font-medium shadow-md"
                             >
-                                <span className="mr-2">Create</span>
+                                <span className="mr-2">Add</span>
                                 <IoMdPersonAdd />
                             </button>
                         </div>
-                        <UserTable />
+                        <UserTable userList={userList} />
                     </div>
                 )}
 
                 <AddUserModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    onSave={handleSaveUser}
+                    setUserList={setUserList}
+                    onUserAdded={(newUser) => setUserList((prevList) => [...prevList, newUser])}
+                    onUserUpdated={(updatedUser) =>
+                        setUserList((prevList) =>
+                            prevList.map((user) =>
+                                user.empId === updatedUser.empId ? updatedUser : user
+                            )
+                        )
+                    }
                 />
 
                 {currentView === "manageUsers" && (

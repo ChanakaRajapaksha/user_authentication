@@ -22,6 +22,20 @@ model User {
   networkLogs      NetworkLog[]
 }
 
+model masterUser {
+  id        Int      @id @default(autoincrement())
+  empId     String   @unique @db.VarChar(20)
+  role      String   @db.VarChar(50)
+  name      String   @db.VarChar(100)
+  email     String   @unique @db.VarChar(50)
+  password  String
+  mobile    String   @db.VarChar(15)
+  branch    String   @db.VarChar(50)
+  status    String   @default("Active") @db.VarChar(10)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model NetworkLog {
   id         Int      @id @default(autoincrement())
   userId     Int

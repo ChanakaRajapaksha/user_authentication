@@ -7,13 +7,11 @@ const AuthPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
+    const [passwordStrength, setPasswordStrength] = useState(0);
+    const [isEmailValid, setIsEmailValid] = useState(true);
     const { setAuth } = useAuth();
     const navigate = useNavigate();
-
-    const handleMicrosoftLogin = () => {
-        window.location.href = "http://localhost:5000/auth/microsoft"; 
-    };
-
+    
     useEffect(() => {
         const savedEmail = sessionStorage.getItem("rememberedEmail");
         if (savedEmail) {
@@ -22,8 +20,48 @@ const AuthPage = () => {
         }
     }, []);
 
+    useEffect(() => {
+        calculatePasswordStrength(password);
+    }, [password]);
+
+    const handleEmailChange = (e) => {
+        const value = e.target.value;
+        setEmail(value);
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setIsEmailValid(emailRegex.test(value));
+    };
+
+    const calculatePasswordStrength = (password) => {
+        let strength = 0;
+
+        // Check for length
+        if (password.length >= 8) strength++;
+
+        // Check for uppercase letters
+        if (/[A-Z]/.test(password)) strength++;
+
+        // Check for numbers
+        if (/[0-9]/.test(password)) strength++;
+
+        // Check for special characters
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+        setPasswordStrength(strength);
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
+        if (!isEmailValid) {
+            toast.error("Invalid email format.", { position: "top-right" });
+            return;
+        }
+
+        if (passwordStrength < 2) {
+            toast.error("Password is too weak. Please use a stronger password.", { position: "top-right" });
+            return;
+        }
+
         try {
             const response = await fetch("http://localhost:5000/auth/login", {
                 method: "POST",
@@ -34,12 +72,9 @@ const AuthPage = () => {
 
             const data = await response.json();
 
-            console.log("Login response data:", data);
-
             if (response.ok) {
                 if (data.otpRequired) {
                     toast.info("OTP sent to your email address.", { position: "top-right" });
-                    setShowOtpPopup(true);
                 } else {
                     handleRoleBasedRedirection(data);
                 }
@@ -100,14 +135,16 @@ const AuthPage = () => {
                             <label className="block text-gray-700 text-[14px] font-normal">Email address</label>
                             <input
                                 type="email"
-                                className="w-full h-[48px] p-2 border rounded-lg focus:outline-none"
+                                className={`w-full h-[48px] p-2 border rounded-lg focus:outline-none ${isEmailValid ? "" : "border-red-500"
+                                    }`}
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={handleEmailChange}
                                 required
                             />
+                            {!isEmailValid && <span className="text-red-500 text-sm">Invalid email format</span>}
                         </div>
 
-                        <div className="flex flex-col gap-[4px] mb-10">
+                        <div className="flex flex-col gap-[4px] mb-4">
                             <label className="block text-gray-700 text-[14px] font-normal">Your password</label>
                             <input
                                 type="password"
@@ -117,25 +154,32 @@ const AuthPage = () => {
                                 required
                             />
                         </div>
+                        <div className="mb-8">
+                            <div className="w-full bg-gray-200 h-2 rounded-lg">
+                                <div
+                                    className={`h-full rounded-lg ${passwordStrength === 1
+                                            ? "bg-red-500"
+                                            : passwordStrength === 2
+                                                ? "bg-orange-500"
+                                                : passwordStrength === 3
+                                                    ? "bg-yellow-500"
+                                                    : passwordStrength === 4
+                                                        ? "bg-green-500"
+                                                        : "bg-gray-500"
+                                        }`}
+                                    style={{ width: `${passwordStrength * 25}%` }}
+                                ></div>
+                            </div>
+                            <span className="text-gray-600 text-sm">
+                                {["Too Weak", "Weak", "Fair", "Strong", "Very Strong"][passwordStrength]}
+                            </span>
+                        </div>
 
                         <button
                             type="submit"
-                            className="w-full h-[48px] bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 mb-4"
+                            className="w-full h-[48px] bg-black text-white p-2 rounded-lg mb-4"
                         >
                             Log in
-                        </button>
-
-                        <button
-                            type="button"
-                            className="w-full h-[48px] bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 flex items-center justify-center mb-4"
-                            onClick={handleMicrosoftLogin}
-                        >
-                            <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
-                                alt="Microsoft Icon"
-                                className="h-6 w-6 mr-2"
-                            />
-                            Sign in with Microsoft
                         </button>
 
                         <div className="flex justify-between items-center mb-6">
@@ -148,7 +192,7 @@ const AuthPage = () => {
                                 />
                                 Remember me
                             </label>
-                            <a href="/forgot-password" className="text-blue-500 text-[16px] font-medium">
+                            <a href="/forgot-password" className="text-black text-[16px] font-medium">
                                 Forgot password?
                             </a>
                         </div>
