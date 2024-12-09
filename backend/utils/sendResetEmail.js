@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
-const sendResetEmail = async (email, resetToken) => {
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+const sendResetEmail = async (to, resetToken) => {
+    const resetUrl = resetToken ?  `http://localhost:5173/reset-password/${resetToken}` : null;
 
     const htmlContent = `
         <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
@@ -28,7 +28,7 @@ const sendResetEmail = async (email, resetToken) => {
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: email,
+        to,
         subject: 'Password Reset',
         html: htmlContent,
     };

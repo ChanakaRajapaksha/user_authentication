@@ -31,24 +31,40 @@ const ForgotPasswordPage = () => {
     };
 
     return (
-        <div className="flex h-[100vh] items-center justify-center">
-            <form onSubmit={handleForgotPassword} className="w-full max-w-md p-10 border rounded-lg">
-                <h2 className="text-xl font-bold mb-4">Forgot Password</h2>
-                <label className="block mb-2 text-gray-700 text-[14px] font-normal">Enter your email</label>
-                <input
-                    type="email"
-                    className="w-full h-[48px] p-2 border rounded-lg focus:outline-none mb-4"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <button
-                    type="submit"
-                    className="w-full h-[48px] bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 focus:outline-none mb-6"
-                >
-                    Send Reset Link
-                </button>
-            </form>
+        <div
+            className="flex h-[100vh] items-center justify-center bg-slate-100"
+        >
+            <div className="bg-white shadow-lg rounded-lg p-10 max-w-md w-full">
+                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Forgot Password</h2>
+                <p className="text-gray-600 text-center mb-8">
+                    Enter your email address to receive a password reset link.
+                </p>
+                <form onSubmit={handleForgotPassword}>
+                    <label className="block text-gray-700 text-sm font-medium mb-2">Email Address</label>
+                    <input
+                        type="email"
+                        className="w-full h-[48px] p-2 border border-gray-300 rounded-lg focus:outline-none mb-6"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="e.g., chanaka@example.com"
+                        required
+                    />
+                    <button
+                        type="submit"
+                        className="w-full h-[48px] bg-black text-white font-medium rounded-lg shadow-lg"
+                    >
+                        Send Reset Link
+                    </button>
+                </form>
+                <div className="text-center mt-6">
+                    <a
+                        href="/login"
+                        className="text-balck font-medium text-sm"
+                    >
+                        Back to Login
+                    </a>
+                </div>
+            </div>
         </div>
     );
 };

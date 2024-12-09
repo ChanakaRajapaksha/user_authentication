@@ -11,7 +11,7 @@ const AuthPage = () => {
     const [isEmailValid, setIsEmailValid] = useState(true);
     const { setAuth } = useAuth();
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         const savedEmail = sessionStorage.getItem("rememberedEmail");
         if (savedEmail) {
@@ -119,8 +119,8 @@ const AuthPage = () => {
             }
         } catch (error) {
             toast.error(error.message || "Redirection failed.", { position: "top-right" });
-        }
-    };
+        } 
+    }; 
 
     return (
         <div className="flex h-[100vh]">
