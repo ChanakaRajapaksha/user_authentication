@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAuth from "../../hooks/useAuth";
 
+import { ClipLoader } from "react-spinners";
+
 const AuthPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [passwordStrength, setPasswordStrength] = useState(0);
     const [isEmailValid, setIsEmailValid] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const { setAuth } = useAuth();
     const navigate = useNavigate();
 
@@ -62,6 +65,8 @@ const AuthPage = () => {
             return;
         }
 
+        setIsLoading(true);
+
         try {
             const response = await fetch("http://localhost:5000/auth/login", {
                 method: "POST",
@@ -89,6 +94,7 @@ const AuthPage = () => {
             }
         } catch (error) {
             toast.error("An error occurred. Please try again.", { position: "top-right" });
+            setIsLoading(false);
         }
     };
 
@@ -97,6 +103,7 @@ const AuthPage = () => {
 
         if (!roles.length) {
             toast.error("User has no roles assigned!", { position: "top-right" });
+            setIsLoading(false);
             return;
         }
 
@@ -119,6 +126,7 @@ const AuthPage = () => {
             }
         } catch (error) {
             toast.error(error.message || "Redirection failed.", { position: "top-right" });
+            setIsLoading(false); 
         } 
     }; 
 
@@ -177,7 +185,7 @@ const AuthPage = () => {
 
                         <button
                             type="submit"
-                            className="w-full h-[48px] bg-black text-white p-2 rounded-lg mb-4"
+                            className="w-full h-[48px] bg-black text-white font-medium p-2 rounded-lg mb-4"
                         >
                             Log in
                         </button>
@@ -199,6 +207,13 @@ const AuthPage = () => {
                     </form>
                 </div>
             </div>
+
+            {/* Preloader */}
+            {isLoading && (
+                <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+                    <ClipLoader size={50} color={"#ffffff"} />
+                </div>
+            )}
         </div>
     );
 };
