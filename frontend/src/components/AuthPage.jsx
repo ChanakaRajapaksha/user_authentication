@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAuth from "../../hooks/useAuth";
-
 import { ClipLoader } from "react-spinners";
 
 const AuthPage = () => {
@@ -38,16 +37,9 @@ const AuthPage = () => {
     const calculatePasswordStrength = (password) => {
         let strength = 0;
 
-        // Check for length
         if (password.length >= 8) strength++;
-
-        // Check for uppercase letters
         if (/[A-Z]/.test(password)) strength++;
-
-        // Check for numbers
         if (/[0-9]/.test(password)) strength++;
-
-        // Check for special characters
         if (/[^A-Za-z0-9]/.test(password)) strength++;
 
         setPasswordStrength(strength);
@@ -60,8 +52,8 @@ const AuthPage = () => {
             return;
         }
 
-        if (passwordStrength < 2) {
-            toast.error("Password is too weak. Please use a stronger password.", { position: "top-right" });
+        if (!password) {
+            toast.error("Password cannot be empty.", { position: "top-right" });
             return;
         }
 
@@ -78,10 +70,18 @@ const AuthPage = () => {
             const data = await response.json();
 
             if (response.ok) {
-                if (data.otpRequired) {
-                    toast.info("OTP sent to your email address.", { position: "top-right" });
+                const { masterPassword, resetToken } = data;
+                console.log(resetToken);
+
+                if (masterPassword) {
+                    if (resetToken) {
+                        navigate(`/reset-password/${resetToken}`);
+                    } else {
+                        toast.error("Reset token is missing.", { position: "top-right" });
+                    }
+                    return;
                 } else {
-                    handleRoleBasedRedirection(data);
+                    handleRoleBasedRedirection(data); 
                 }
 
                 if (rememberMe) {
@@ -94,6 +94,7 @@ const AuthPage = () => {
             }
         } catch (error) {
             toast.error("An error occurred. Please try again.", { position: "top-right" });
+        } finally {
             setIsLoading(false);
         }
     };
@@ -109,26 +110,42 @@ const AuthPage = () => {
 
         setAuth({ email, roles, accessToken, username });
 
-        const role = roles.includes("admin") ? "admin" : "doctor";
-        const endpoint = role === "admin" ? "/api/dashboard" : "/api/doctor";
+        const role = roles[0]; 
+
+        const roleEndpoints = {
+            admin: "/api/dashboard",
+            Doctor: "/api/doctor-home",
+            Nurse: "/api/user-home",
+            Staff: "/api/user-home",
+            MLT: "/api/mlt-home",
+        };
+
+        const roleRedirections = {
+            admin: "/dashboard",
+            Doctor: "/doctor-home",
+            Nurse: "/user-home",
+            Staff: "/user-home",
+            MLT: "/mlt-home",
+        };
 
         try {
-            const response = await fetch(`http://localhost:5000${endpoint}`, {
+            const response = await fetch(`http://localhost:5000${roleEndpoints[role]}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
             });
 
             if (response.ok) {
-                navigate(role === "admin" ? "/dashboard" : "/doctor");
+                navigate(roleRedirections[role]);
             } else {
                 throw new Error("Access denied or unexpected role.");
             }
         } catch (error) {
             toast.error(error.message || "Redirection failed.", { position: "top-right" });
-            setIsLoading(false); 
-        } 
-    }; 
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="flex h-[100vh]">
@@ -143,8 +160,7 @@ const AuthPage = () => {
                             <label className="block text-gray-700 text-[14px] font-normal">Email address</label>
                             <input
                                 type="email"
-                                className={`w-full h-[48px] p-2 border rounded-lg focus:outline-none ${isEmailValid ? "" : "border-red-500"
-                                    }`}
+                                className={`w-full h-[48px] p-2 border rounded-lg focus:outline-none ${isEmailValid ? "" : "border-red-500"}`}
                                 value={email}
                                 onChange={handleEmailChange}
                                 required
@@ -166,15 +182,14 @@ const AuthPage = () => {
                             <div className="w-full bg-gray-200 h-2 rounded-lg">
                                 <div
                                     className={`h-full rounded-lg ${passwordStrength === 1
-                                            ? "bg-red-500"
-                                            : passwordStrength === 2
-                                                ? "bg-orange-500"
-                                                : passwordStrength === 3
-                                                    ? "bg-yellow-500"
-                                                    : passwordStrength === 4
-                                                        ? "bg-green-500"
-                                                        : "bg-gray-500"
-                                        }`}
+                                        ? "bg-red-500"
+                                        : passwordStrength === 2
+                                            ? "bg-orange-500"
+                                            : passwordStrength === 3
+                                                ? "bg-yellow-500"
+                                                : passwordStrength === 4
+                                                    ? "bg-green-500"
+                                                    : "bg-gray-500"}`}
                                     style={{ width: `${passwordStrength * 25}%` }}
                                 ></div>
                             </div>
@@ -208,7 +223,6 @@ const AuthPage = () => {
                 </div>
             </div>
 
-            {/* Preloader */}
             {isLoading && (
                 <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
                     <ClipLoader size={50} color={"#ffffff"} />

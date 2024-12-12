@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -8,6 +8,14 @@ const ResetPasswordPage = () => {
     const [passwordMatch, setPasswordMatch] = useState(true);
     const { resetToken } = useParams();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!resetToken) {
+            toast.error("Reset token is missing or invalid. Redirecting to login...");
+            setTimeout(() => navigate("/login"), 3000); 
+        }
+    }, [resetToken, navigate]);
+
 
     const handleResetPassword = async (e) => {
         e.preventDefault();

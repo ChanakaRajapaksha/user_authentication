@@ -1,40 +1,66 @@
 const jwt = require('jsonwebtoken');
-const prisma = require('../database/prismaClient'); // Import Prisma client
+const prisma = require('../database/prismaClient');
 
 require('dotenv').config();
 
 const verifyJWT = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
 
-    if (!authHeader) return res.status(401).json({ message: 'Unauthorized: No token provided.' }); // Unauthorized if no token
+    if (!authHeader) {
+        console.log('Authorization header missing.');
+        return res.status(401).json({ message: 'Unauthorized: No token provided.' });
+    }
 
-    const token = authHeader.split(' ')[1]; // Extract token from the header
+    const token = authHeader.split(' ')[1];
 
     try {
-        // Verify the token
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        console.log('Decoded Token:', decoded);
 
-        // Check if the user exists in the database
+        // Check both User and masterUser tables
         const user = await prisma.user.findUnique({
-            where: { email: decoded.email }, // Assuming email is encoded in the token
+            where: { email: decoded.email },
         });
 
-        if (!user) {
-            return res.status(403).json({ message: 'Forbidden: User not found.' }); // Forbidden if user not found
+        const masterUser = await prisma.masterUser.findUnique({
+            where: { email: decoded.email },
+        });
+
+        console.log('User from User table:', user);
+        console.log('User from masterUser table:', masterUser);
+
+        // If neither a regular user nor a master user is found
+        if (!user && !masterUser) {
+            console.log('User not found for email:', decoded.email);
+            return res.status(403).json({ message: 'Forbidden: User not found.' });
         }
 
-        // Attach user information to the request for downstream handlers
-        req.user = {
-            id: user.id,
-            email: user.email,
-            username: user.username,
-            role: user.role, // Add role for role-based authorization
-        };
+        // Determine which user type and set role and permissions
+        if (user) {
+            req.user = {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+                role: user.role,
+                branch: user.branch,
+                type: 'user',
+            };
+        } else if (masterUser) {
+            req.user = {
+                id: masterUser.id,
+                email: masterUser.email,
+                empId: masterUser.empId,
+                role: masterUser.role,
+                branch: masterUser.branch,
+                status: masterUser.status,
+                type: 'masterUser',
+            };
+        }
 
         next(); // Pass control to the next middleware
     } catch (err) {
         console.error('Error verifying JWT:', err.message);
-        return res.status(403).json({ message: 'Forbidden: Invalid or expired token.' }); // Forbidden for invalid or expired token
+        return res.status(403).json({ message: 'Forbidden: Invalid or expired token.' });
     }
 };
 

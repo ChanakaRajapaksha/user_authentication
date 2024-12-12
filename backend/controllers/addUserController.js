@@ -1,5 +1,36 @@
 const prisma = require('../database/prismaClient');
 const logger = require('../logger');
+const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+const generateRandomPassword = () => {
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+    const length = 12; // Set desired password length
+    return Array.from({ length }, () =>
+        charset.charAt(Math.floor(Math.random() * charset.length))
+    ).join("");
+};
+
+const sendEmail = async (to, subject, body) => {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.APP_PASSWORD,
+        },
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        text: body,
+    };
+
+    await transporter.sendMail(mailOptions);
+};
 
 const handleNewUser = async (req, res) => {
     const { role, name, email, mobile, branch } = req.body;
@@ -20,6 +51,14 @@ const handleNewUser = async (req, res) => {
         const userCount = await prisma.masterUser.count();
         const empId = `EMP${(userCount + 1).toString().padStart(5, "0")}`;
 
+        // Generate a random password and hash it
+        const plainPassword = generateRandomPassword();
+        console.log('Generated Plain Password:', plainPassword);
+        
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
+        console.log('Generated Hashed Password:', hashedPassword);
+
         // Create new user
         const newUser = await prisma.masterUser.create({
             data: {
@@ -29,9 +68,30 @@ const handleNewUser = async (req, res) => {
                 email,
                 mobile,
                 branch,
+                masterPassword: hashedPassword,
                 status: "Active",
             },
         });
+
+        // Send email with login credentials
+        const loginURL = "http://localhost:5173/login"; 
+        const emailBody = `
+            Dear ${name},
+
+            Your account has been successfully created. Here are your login details:
+
+            Email: ${email}
+            Password: ${plainPassword}
+
+            Login URL: ${loginURL}
+
+            Please log in and change your password as soon as possible.
+
+            Best regards,
+            Admin Team
+        `;
+
+        await sendEmail(email, "Your Login Credentials", emailBody);
 
         logger.info(`User added successfully: ${newUser.empId}`);
         res.status(201).json({ success: `User ${newUser.name} created with ID ${newUser.empId}`, ...newUser });

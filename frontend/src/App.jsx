@@ -9,12 +9,14 @@ import ForgotPasswordPage from "./components/ForgotPasswordPage";
 import ResetPasswordPage from "./components/ResetPasswordPage";
 
 import Dashboard from "./pages/Dashboard";
-import DoctorHome from "./pages/DoctorHome";
 
 import Unauthorized from "./components/Unauthorized";
 import Layout from "./components/Layout";
 import PrivateRoute from "./utility/PrivateRoute";
 import PatientRegisterPage from "./components/PatientRegisterPage";
+
+import DoctorHome from "./pages/DoctorHome";
+import MLTHome from "./pages/MLTHome";
 
 export default function App() {
   return (
@@ -32,8 +34,12 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
 
-          <Route element={<PrivateRoute allowedRoles={['admin', 'doctor']} />}>
-            <Route path="/doctor" element={<DoctorHome />} />
+          <Route element={<PrivateRoute allowedRoles={['Doctor']} />}>
+            <Route path="/doctor-home" element={<DoctorHome />} />
+          </Route>
+
+          <Route element={<PrivateRoute allowedRoles={['MLT']} />}>
+            <Route path="/mlt-home" element={<MLTHome />} />
           </Route>
 
           {/* Catch unauthorized access */}
