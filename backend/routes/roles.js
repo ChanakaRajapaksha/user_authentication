@@ -23,5 +23,12 @@ router.get('/mlt-home', verifyJWT, (req, res) => {
     });
 });
 
+router.get('/nurse-home', verifyJWT, (req, res) => {
+    res.json({
+        message: `Welcome ${req.user.role === 'nurse'}!`,
+        role: req.user.role,
+    });
+});
+
 
 module.exports = router;

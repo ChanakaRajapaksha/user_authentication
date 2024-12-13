@@ -115,7 +115,7 @@ const AuthPage = () => {
         const roleEndpoints = {
             admin: "/api/dashboard",
             Doctor: "/api/doctor-home",
-            Nurse: "/api/user-home",
+            Nurse: "/api/nurse-home",
             Staff: "/api/user-home",
             MLT: "/api/mlt-home",
         };
@@ -123,7 +123,7 @@ const AuthPage = () => {
         const roleRedirections = {
             admin: "/dashboard",
             Doctor: "/doctor-home",
-            Nurse: "/user-home",
+            Nurse: "/nurse-home",
             Staff: "/user-home",
             MLT: "/mlt-home",
         };

@@ -17,6 +17,7 @@ import PatientRegisterPage from "./components/PatientRegisterPage";
 
 import DoctorHome from "./pages/DoctorHome";
 import MLTHome from "./pages/MLTHome";
+import NurseHome from "./pages/NurseHome";
 
 export default function App() {
   return (
@@ -40,6 +41,10 @@ export default function App() {
 
           <Route element={<PrivateRoute allowedRoles={['MLT']} />}>
             <Route path="/mlt-home" element={<MLTHome />} />
+          </Route>
+
+          <Route element={<PrivateRoute allowedRoles={['Nurse']} />}>
+            <Route path="/nurse-home" element={<NurseHome />} />
           </Route>
 
           {/* Catch unauthorized access */}

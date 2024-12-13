@@ -1,0 +1,54 @@
+{"level":"info","message":{"action":"findFirst","duration":"513ms","model":"User"},"timestamp":"2024-12-13T06:22:00.363Z"}
+{"level":"info","message":{"action":"findFirst","duration":"13ms","model":"masterUser"},"timestamp":"2024-12-13T06:22:00.382Z"}
+{"level":"info","message":{"action":"findFirst","duration":"8ms","model":"User"},"timestamp":"2024-12-13T06:22:55.091Z"}
+{"level":"info","message":{"action":"findFirst","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-13T06:22:55.096Z"}
+{"level":"info","message":{"action":"update","duration":"363ms","model":"User"},"timestamp":"2024-12-13T06:22:55.701Z"}
+{"level":"info","message":{"action":"create","duration":"28ms","model":"NetworkLog"},"timestamp":"2024-12-13T06:22:57.252Z"}
+{"level":"info","message":{"action":"findUnique","duration":"4ms","model":"User"},"timestamp":"2024-12-13T06:22:57.291Z"}
+{"level":"info","message":{"action":"findUnique","duration":"4ms","model":"masterUser"},"timestamp":"2024-12-13T06:22:57.296Z"}
+{"level":"info","message":{"action":"findMany","duration":"7ms","model":"masterUser"},"timestamp":"2024-12-13T06:22:57.379Z"}
+{"level":"info","message":{"action":"findMany","duration":"8ms","model":"Patient"},"timestamp":"2024-12-13T06:22:57.383Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-13T06:22:57.383Z"}
+{"level":"info","message":{"action":"findMany","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-13T06:23:30.725Z"}
+{"level":"info","message":{"action":"findMany","duration":"8ms","model":"Patient"},"timestamp":"2024-12-13T06:23:30.731Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-13T06:23:30.731Z"}
+{"level":"info","message":{"action":"findMany","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-13T06:23:33.393Z"}
+{"level":"info","message":{"action":"findMany","duration":"3ms","model":"Patient"},"timestamp":"2024-12-13T06:23:33.395Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-13T06:23:33.395Z"}
+{"level":"info","message":{"action":"update","duration":"9ms","model":"masterUser"},"timestamp":"2024-12-13T06:23:37.595Z"}
+{"level":"info","message":{"action":"update","duration":"7ms","model":"masterUser"},"timestamp":"2024-12-13T06:23:46.336Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-13T06:24:21.541Z"}
+{"level":"info","message":{"action":"count","duration":"1340ms","model":"masterUser"},"timestamp":"2024-12-13T06:24:22.881Z"}
+{"level":"info","message":{"action":"create","duration":"7ms","model":"masterUser"},"timestamp":"2024-12-13T06:24:22.987Z"}
+{"level":"info","message":"User added successfully: EMP00016","timestamp":"2024-12-13T06:24:26.071Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"User"},"timestamp":"2024-12-13T06:24:35.318Z"}
+{"level":"info","message":{"action":"update","duration":"4ms","model":"User"},"timestamp":"2024-12-13T06:24:35.323Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"User"},"timestamp":"2024-12-13T06:26:10.644Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-13T06:26:10.646Z"}
+{"level":"info","message":{"action":"update","duration":"8ms","model":"masterUser"},"timestamp":"2024-12-13T06:26:10.733Z"}
+{"level":"info","message":{"action":"update","duration":"39ms","model":"masterUser"},"timestamp":"2024-12-13T06:26:10.772Z"}
+{"level":"info","message":{"action":"findFirst","duration":"310ms","model":"User"},"timestamp":"2024-12-13T06:26:32.046Z"}
+{"level":"info","message":{"action":"findFirst","duration":"4ms","model":"masterUser"},"timestamp":"2024-12-13T06:26:32.050Z"}
+{"level":"info","message":{"action":"update","duration":"6ms","model":"masterUser"},"timestamp":"2024-12-13T06:26:32.137Z"}
+{"level":"info","message":{"action":"findFirst","duration":"1ms","model":"User"},"timestamp":"2024-12-13T06:26:57.424Z"}
+{"level":"info","message":{"action":"findFirst","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-13T06:26:57.426Z"}
+{"level":"info","message":{"action":"update","duration":"5ms","model":"masterUser"},"timestamp":"2024-12-13T06:26:57.518Z"}
+{"level":"info","message":{"action":"create","duration":"5ms","model":"NetworkLog"},"timestamp":"2024-12-13T06:26:58.355Z"}
+{"level":"info","message":{"action":"findFirst","duration":"30ms","model":"User"},"timestamp":"2024-12-13T06:31:45.957Z"}
+{"level":"info","message":{"action":"findFirst","duration":"4ms","model":"masterUser"},"timestamp":"2024-12-13T06:31:45.967Z"}
+{"level":"info","message":{"action":"update","duration":"9ms","model":"masterUser"},"timestamp":"2024-12-13T06:31:46.198Z"}
+{"level":"info","message":{"action":"create","duration":"9ms","model":"NetworkLog"},"timestamp":"2024-12-13T06:31:47.258Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"User"},"timestamp":"2024-12-13T06:32:12.564Z"}
+{"level":"info","message":{"action":"findFirst","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-13T06:32:12.567Z"}
+{"level":"info","message":{"action":"update","duration":"7ms","model":"masterUser"},"timestamp":"2024-12-13T06:32:12.654Z"}
+{"level":"info","message":{"action":"create","duration":"9ms","model":"NetworkLog"},"timestamp":"2024-12-13T06:32:13.445Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"User"},"timestamp":"2024-12-13T06:33:30.118Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-13T06:33:30.121Z"}
+{"level":"info","message":{"action":"update","duration":"6ms","model":"masterUser"},"timestamp":"2024-12-13T06:33:30.208Z"}
+{"level":"info","message":{"action":"create","duration":"5ms","model":"NetworkLog"},"timestamp":"2024-12-13T06:33:30.861Z"}
+{"level":"info","message":{"action":"findFirst","duration":"3ms","model":"User"},"timestamp":"2024-12-13T06:34:21.502Z"}
+{"level":"info","message":{"action":"findFirst","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-13T06:34:21.503Z"}
+{"level":"info","message":{"action":"update","duration":"6ms","model":"masterUser"},"timestamp":"2024-12-13T06:34:21.625Z"}
+{"level":"info","message":{"action":"create","duration":"6ms","model":"NetworkLog"},"timestamp":"2024-12-13T06:34:22.206Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-12-13T06:34:22.227Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-13T06:34:22.229Z"}
