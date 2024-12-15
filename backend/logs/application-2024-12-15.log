@@ -71,3 +71,110 @@
 {"level":"info","message":{"action":"create","duration":"5ms","model":"NetworkLog"},"timestamp":"2024-12-15T14:35:40.433Z"}
 {"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"},"timestamp":"2024-12-15T14:35:40.445Z"}
 {"level":"info","message":{"action":"findUnique","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-15T14:35:40.446Z"}
+{"level":"info","message":{"action":"findFirst","duration":"1ms","model":"User"},"timestamp":"2024-12-15T14:37:08.337Z"}
+{"level":"info","message":{"action":"findFirst","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-15T14:37:08.339Z"}
+{"level":"info","message":{"action":"update","duration":"4ms","model":"User"},"timestamp":"2024-12-15T14:37:08.416Z"}
+{"level":"info","message":{"action":"create","duration":"3ms","model":"NetworkLog"},"timestamp":"2024-12-15T14:37:08.752Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-12-15T14:37:08.766Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-15T14:37:08.767Z"}
+{"level":"info","message":{"action":"findMany","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-15T14:37:08.800Z"}
+{"level":"info","message":{"action":"findMany","duration":"18ms","model":"Patient"},"timestamp":"2024-12-15T14:37:08.816Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T14:37:08.816Z"}
+{"level":"info","message":{"action":"findFirst","duration":"5ms","model":"User"},"timestamp":"2024-12-15T14:51:51.318Z"}
+{"level":"info","message":{"action":"update","duration":"3ms","model":"User"},"timestamp":"2024-12-15T14:51:51.321Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"User"},"timestamp":"2024-12-15T14:54:31.133Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-15T14:54:31.135Z"}
+{"level":"info","message":{"action":"update","duration":"6ms","model":"User"},"timestamp":"2024-12-15T14:54:31.212Z"}
+{"level":"info","message":{"action":"create","duration":"3ms","model":"NetworkLog"},"timestamp":"2024-12-15T14:54:31.637Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-12-15T14:54:31.650Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-15T14:54:31.651Z"}
+{"level":"info","message":{"action":"findMany","duration":"2ms","model":"Patient"},"timestamp":"2024-12-15T14:54:31.713Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T14:54:31.713Z"}
+{"level":"info","message":{"action":"findMany","duration":"6ms","model":"masterUser"},"timestamp":"2024-12-15T14:54:31.719Z"}
+{"level":"info","message":{"action":"findUnique","duration":"23ms","model":"masterUser"},"timestamp":"2024-12-15T16:00:31.977Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-15T16:00:42.816Z"}
+{"level":"info","message":{"action":"count","duration":"169ms","model":"masterUser"},"timestamp":"2024-12-15T16:00:43.040Z"}
+{"level":"info","message":{"action":"create","duration":"52ms","model":"masterUser"},"timestamp":"2024-12-15T16:00:43.209Z"}
+{"level":"info","message":"User added successfully: EMP00017","timestamp":"2024-12-15T16:00:47.312Z"}
+{"level":"info","message":{"action":"findMany","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-15T16:00:53.062Z"}
+{"level":"info","message":{"action":"findMany","duration":"9ms","model":"Patient"},"timestamp":"2024-12-15T16:00:53.069Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:00:53.069Z"}
+{"level":"info","message":{"action":"update","duration":"5ms","model":"masterUser"},"timestamp":"2024-12-15T16:01:05.633Z"}
+{"level":"info","message":{"action":"update","duration":"4ms","model":"masterUser"},"timestamp":"2024-12-15T16:01:07.823Z"}
+{"level":"info","message":{"action":"findMany","duration":"34ms","model":"masterUser"},"timestamp":"2024-12-15T16:05:26.369Z"}
+{"level":"info","message":{"action":"findMany","duration":"4ms","model":"Patient"},"timestamp":"2024-12-15T16:05:39.864Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:05:39.865Z"}
+{"level":"info","message":{"action":"findMany","duration":"69ms","model":"masterUser"},"timestamp":"2024-12-15T16:05:39.927Z"}
+{"level":"info","message":{"action":"findFirst","duration":"5ms","model":"User"},"timestamp":"2024-12-15T16:12:55.063Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-15T16:12:55.065Z"}
+{"level":"info","message":{"action":"update","duration":"6ms","model":"User"},"timestamp":"2024-12-15T16:12:55.144Z"}
+{"level":"info","message":{"action":"create","duration":"6ms","model":"NetworkLog"},"timestamp":"2024-12-15T16:12:55.611Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"},"timestamp":"2024-12-15T16:12:55.622Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-15T16:12:55.624Z"}
+{"level":"info","message":{"action":"findMany","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-15T16:12:55.643Z"}
+{"level":"info","message":{"action":"findMany","duration":"5ms","model":"Patient"},"timestamp":"2024-12-15T16:12:55.646Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:12:55.646Z"}
+{"level":"info","message":{"action":"findMany","duration":"2ms","model":"Patient"},"timestamp":"2024-12-15T16:12:57.471Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:12:57.471Z"}
+{"level":"info","message":{"action":"findMany","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-15T16:12:57.472Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-15T16:13:34.130Z"}
+{"level":"info","message":{"action":"count","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-15T16:13:34.131Z"}
+{"level":"info","message":{"action":"create","duration":"6ms","model":"masterUser"},"timestamp":"2024-12-15T16:13:34.198Z"}
+{"level":"info","message":"User added successfully: EMP00018","timestamp":"2024-12-15T16:13:37.297Z"}
+{"level":"info","message":{"action":"findMany","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-15T16:13:46.338Z"}
+{"level":"info","message":{"action":"findMany","duration":"2ms","model":"Patient"},"timestamp":"2024-12-15T16:13:46.339Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:13:46.339Z"}
+{"level":"info","message":{"action":"findMany","duration":"8ms","model":"Patient"},"timestamp":"2024-12-15T16:15:18.650Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:15:18.653Z"}
+{"level":"info","message":{"action":"findMany","duration":"21ms","model":"masterUser"},"timestamp":"2024-12-15T16:15:18.659Z"}
+{"level":"info","message":{"action":"findUnique","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-15T16:15:39.988Z"}
+{"level":"info","message":{"action":"count","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-15T16:15:39.990Z"}
+{"level":"info","message":{"action":"create","duration":"6ms","model":"masterUser"},"timestamp":"2024-12-15T16:15:40.063Z"}
+{"level":"info","message":"User added successfully: EMP00018","timestamp":"2024-12-15T16:15:42.870Z"}
+{"level":"info","message":{"action":"findMany","duration":"4ms","model":"masterUser"},"timestamp":"2024-12-15T16:15:55.533Z"}
+{"level":"info","message":{"action":"findMany","duration":"7ms","model":"Patient"},"timestamp":"2024-12-15T16:15:55.538Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:15:55.538Z"}
+{"level":"info","message":{"action":"findMany","duration":"5ms","model":"Patient"},"timestamp":"2024-12-15T16:34:44.341Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:34:44.342Z"}
+{"level":"info","message":{"action":"findMany","duration":"8ms","model":"masterUser"},"timestamp":"2024-12-15T16:34:44.343Z"}
+{"level":"info","message":{"action":"findMany","duration":"15ms","model":"Patient"},"timestamp":"2024-12-15T16:36:41.387Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:36:41.389Z"}
+{"level":"info","message":{"action":"findMany","duration":"19ms","model":"masterUser"},"timestamp":"2024-12-15T16:36:41.394Z"}
+{"level":"info","message":{"action":"findFirst","duration":"3ms","model":"User"},"timestamp":"2024-12-15T16:37:12.809Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-15T16:37:12.811Z"}
+{"level":"info","message":{"action":"update","duration":"6ms","model":"User"},"timestamp":"2024-12-15T16:37:12.894Z"}
+{"level":"info","message":{"action":"create","duration":"5ms","model":"NetworkLog"},"timestamp":"2024-12-15T16:37:13.568Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-12-15T16:37:13.585Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-15T16:37:13.588Z"}
+{"level":"info","message":{"action":"findMany","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-15T16:37:13.659Z"}
+{"level":"info","message":{"action":"findMany","duration":"4ms","model":"Patient"},"timestamp":"2024-12-15T16:37:13.661Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:37:13.661Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-15T16:38:03.357Z"}
+{"level":"info","message":{"action":"count","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-15T16:38:03.359Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"masterUser"},"timestamp":"2024-12-15T16:38:03.427Z"}
+{"level":"info","message":"User added successfully: EMP00018","timestamp":"2024-12-15T16:38:06.016Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-15T16:38:29.315Z"}
+{"level":"info","message":{"action":"findMany","duration":"2ms","model":"Patient"},"timestamp":"2024-12-15T16:38:56.810Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:38:56.811Z"}
+{"level":"info","message":{"action":"findMany","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-15T16:38:56.812Z"}
+{"level":"info","message":{"action":"findMany","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-15T16:39:00.592Z"}
+{"level":"info","message":{"action":"findMany","duration":"4ms","model":"Patient"},"timestamp":"2024-12-15T16:39:00.595Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:39:00.595Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-15T16:39:27.960Z"}
+{"level":"info","message":{"action":"count","duration":"1ms","model":"masterUser"},"timestamp":"2024-12-15T16:39:27.961Z"}
+{"level":"info","message":{"action":"create","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-15T16:39:28.028Z"}
+{"level":"info","message":"User added successfully: EMP00019","timestamp":"2024-12-15T16:39:30.463Z"}
+{"level":"info","message":{"action":"findMany","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-15T16:39:38.203Z"}
+{"level":"info","message":{"action":"findMany","duration":"3ms","model":"Patient"},"timestamp":"2024-12-15T16:39:38.204Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:39:38.204Z"}
+{"level":"info","message":{"action":"findMany","duration":"4ms","model":"masterUser"},"timestamp":"2024-12-15T16:40:00.355Z"}
+{"level":"info","message":{"action":"findMany","duration":"12ms","model":"Patient"},"timestamp":"2024-12-15T16:42:06.654Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:42:06.656Z"}
+{"level":"info","message":{"action":"findMany","duration":"27ms","model":"masterUser"},"timestamp":"2024-12-15T16:42:06.663Z"}
+{"level":"info","message":{"action":"findUnique","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-15T16:42:34.848Z"}
+{"level":"info","message":{"action":"count","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-15T16:42:34.850Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"masterUser"},"timestamp":"2024-12-15T16:42:34.921Z"}
+{"level":"info","message":"User added successfully: EMP00018","timestamp":"2024-12-15T16:42:38.149Z"}
+{"level":"info","message":{"action":"findMany","duration":"4ms","model":"Patient"},"timestamp":"2024-12-15T16:42:51.204Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-15T16:42:51.205Z"}
+{"level":"info","message":{"action":"findMany","duration":"4ms","model":"masterUser"},"timestamp":"2024-12-15T16:42:51.207Z"}

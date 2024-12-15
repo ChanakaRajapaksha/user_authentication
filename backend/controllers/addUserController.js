@@ -94,7 +94,10 @@ const handleNewUser = async (req, res) => {
         await sendEmail(email, "Your Login Credentials", emailBody);
 
         logger.info(`User added successfully: ${newUser.empId}`);
-        res.status(201).json({ success: `User ${newUser.name} created with ID ${newUser.empId}`, ...newUser });
+        res.status(201).json({
+            success: `User ${newUser.name} created with ID ${newUser.empId}`,
+            user: newUser,
+        });
     } catch (err) {
         console.error(err);
         logger.error(`Error adding user: ${err.message}`);

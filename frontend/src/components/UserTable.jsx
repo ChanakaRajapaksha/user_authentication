@@ -92,27 +92,16 @@ const UserTable = () => {
         setIsModalOpen(true); // Open modal
     };
 
-    const onUserUpdated = (updatedUser) => {
-        if (!updatedUser) {
-            console.error("No user data provided.");
-            return;
+    const handleUserUpdated = (updatedUser) => {
+        if (isEditMode) {
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user.empId === updatedUser.empId ? updatedUser : user
+                )
+            );
+        } else {
+            setUsers((prevUsers) => [...prevUsers, updatedUser]);
         }
-
-        setUserList((prevList) => {
-            if (isEditMode) {
-                // Update existing user
-                return prevList.map((user) =>
-                    user.empId === updatedUser.empId ? { ...user, ...updatedUser } : user
-                );
-            } else {
-                // Add new user
-                return [...prevList, updatedUser];
-            }
-        });
-
-        setIsModalOpen(false);
-        setIsEditMode(false);
-        setEditingUser(null);
     };
 
     return (
@@ -199,7 +188,7 @@ const UserTable = () => {
                     setIsEditMode(false);
                     setEditingUser(null);
                 }}
-                onUserUpdated={onUserUpdated} // Refresh user list after save
+                onUserUpdated={handleUserUpdated}// Refresh user list after save
             />
 
             {/* Confirmation Modal */}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
 
-const AddUserModal = ({ setUserList, isOpen, isEditMode, user, onClose, onUserUpdated }) => {
+const AddUserModal = ({ isOpen, isEditMode, user, onClose, onUserUpdated }) => {
     const [role, setRole] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -54,24 +54,23 @@ const AddUserModal = ({ setUserList, isOpen, isEditMode, user, onClose, onUserUp
                 body: JSON.stringify(userData),
             });
 
-            if (response.ok) {
-                const result = await response.json();
-                const message = result.success || result.message;
-                alert(message);
-
-                if (!isEditMode) {
-                    // Add the new user directly to the user list
-                    setUserList((prevList) => [...prevList, result]);
-                } else {
-                    // Update only the modified user
-                    onUserUpdated(result);
-                }
-
-                onClose();
-            } else {
+            if (!response.ok) {
                 const error = await response.json();
-                alert(error.message || "Something went wrong.");
+                console.error("Error Response:", error);
+                throw new Error(error.message || "Failed to save user.");
             }
+
+            const result = await response.json();
+
+            console.log("User Save Response:", result);
+
+            alert(result.success || "User saved successfully.");
+
+            if (onUserUpdated) {
+                onUserUpdated(result.user); 
+            }
+
+            onClose(); 
         } catch (err) {
             console.log("Error saving user:", err);
             alert("Error saving user. Please try again.");
