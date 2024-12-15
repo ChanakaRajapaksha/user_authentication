@@ -81,7 +81,6 @@ const UserTable = () => {
         }
     };
 
-
     const handleEditUser = (user) => {
         if (user.status === "Inactive") {
             alert("Cannot edit details of an inactive user.");
@@ -162,7 +161,6 @@ const UserTable = () => {
                                     }}
                                 />
                             </td>
-
                         </tr>
                     ))}
                 </tbody>

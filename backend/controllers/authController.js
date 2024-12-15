@@ -20,6 +20,10 @@ const handleLogin = async (req, res) => {
             return res.status(401).json({ message: "Unauthorized: Invalid email or password." });
         }
 
+        if (foundMasterUser && foundMasterUser.status === "Inactive") {
+            return res.status(403).json({ message: "Your account is inactive. Please contact the admin." });
+        }
+
         let user, isMasterUser, match;
         if (foundMasterUser) {
             console.log("Master user login attempt detected.");

@@ -71,8 +71,7 @@ const AuthPage = () => {
 
             if (response.ok) {
                 const { masterPassword, resetToken } = data;
-                console.log(resetToken);
-
+              
                 if (masterPassword) {
                     if (resetToken) {
                         navigate(`/reset-password/${resetToken}`);
@@ -84,6 +83,11 @@ const AuthPage = () => {
                     handleRoleBasedRedirection(data); 
                 }
 
+                if (response.status === 403) {
+                    toast.error("Your account is inactive. Please contact the admin.", { position: "top-right" });
+                    return;
+                }
+           
                 if (rememberMe) {
                     sessionStorage.setItem("rememberedEmail", email);
                 } else {
@@ -116,7 +120,7 @@ const AuthPage = () => {
             admin: "/api/dashboard",
             Doctor: "/api/doctor-home",
             Nurse: "/api/nurse-home",
-            Staff: "/api/user-home",
+            Staff: "/api/staff-home",
             MLT: "/api/mlt-home",
         };
 
@@ -124,7 +128,7 @@ const AuthPage = () => {
             admin: "/dashboard",
             Doctor: "/doctor-home",
             Nurse: "/nurse-home",
-            Staff: "/user-home",
+            Staff: "/staff-home",
             MLT: "/mlt-home",
         };
 
