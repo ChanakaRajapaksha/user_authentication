@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
+
 import useAuth from "../../hooks/useAuth";
 import { ClipLoader } from "react-spinners";
 
@@ -8,6 +11,7 @@ const AuthPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [passwordStrength, setPasswordStrength] = useState(0);
     const [isEmailValid, setIsEmailValid] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
@@ -174,13 +178,21 @@ const AuthPage = () => {
 
                         <div className="flex flex-col gap-[4px] mb-4">
                             <label className="block text-gray-700 text-[14px] font-normal">Your password</label>
-                            <input
-                                type="password"
-                                className="w-full h-[48px] p-2 border rounded-lg focus:outline-none"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    className="w-full h-[48px] p-2 border rounded-lg focus:outline-none"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                                <span
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </span>
+                            </div>
                         </div>
                         <div className="mb-8">
                             <div className="w-full bg-gray-200 h-2 rounded-lg">

@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 const ResetPasswordPage = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordMatch, setPasswordMatch] = useState(true);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const { resetToken } = useParams();
     const navigate = useNavigate();
 
@@ -57,28 +62,45 @@ const ResetPasswordPage = () => {
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Reset Password</h2>
                 <div className="mb-4">
                     <label className="block text-gray-600 text-sm font-medium mb-2">New Password</label>
-                    <input
-                        type="password"
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
-                        placeholder="Enter new password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        required
-                    />
+                    <div className="relative">
+                        <input
+                            type={showNewPassword ? "text" : "password"}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
+                            placeholder="Enter new password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            required
+                        />
+                        <span
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                            onClick={() => setShowNewPassword(!showNewPassword)}
+                        >
+                            {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                        </span>
+                    </div>
                 </div>
                 <div className="mb-4">
                     <label className="block text-gray-600 text-sm font-medium mb-2">Confirm Password</label>
-                    <input
-                        type="password"
-                        className={`w-full p-3 border ${passwordMatch ? 'border-gray-300' : 'border-red-500'} rounded-lg focus:outline-none`}
-                        placeholder="Confirm your password"
-                        value={confirmPassword}
-                        onChange={(e) => {
-                            setConfirmPassword(e.target.value);
-                            setPasswordMatch(true);
-                        }}
-                        required
-                    />
+                    <div className="relative">
+                        <input
+                            type={showConfirmPassword ? "text" : "password"}
+                            className={`w-full p-3 border ${passwordMatch ? "border-gray-300" : "border-red-500"
+                                } rounded-lg focus:outline-none`}
+                            placeholder="Confirm your password"
+                            value={confirmPassword}
+                            onChange={(e) => {
+                                setConfirmPassword(e.target.value);
+                                setPasswordMatch(true);
+                            }}
+                            required
+                        />
+                        <span
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                        </span>
+                    </div>
                     {!passwordMatch && (
                         <p className="text-red-500 text-xs mt-1">Passwords do not match.</p>
                     )}
