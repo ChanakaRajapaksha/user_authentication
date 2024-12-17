@@ -92,16 +92,25 @@ const UserTable = () => {
         setIsModalOpen(true); // Open modal
     };
 
-    const handleUserUpdated = (updatedUser) => {
-        if (isEditMode) {
-            setUsers((prevUsers) =>
-                prevUsers.map((user) =>
-                    user.empId === updatedUser.empId ? updatedUser : user
-                )
-            );
-        } else {
-            setUsers((prevUsers) => [...prevUsers, updatedUser]);
+    const onUserUpdated = (updatedUser) => {
+        const { empId } = updatedUser;
+
+        if (!empId) {
+            console.error("Invalid user object:", updatedUser);
+            return;
         }
+
+        setUserList((prevUsers) => {
+            const exists = prevUsers.some((result) => result.empId === empId);
+
+            if (exists) {
+                return prevUsers.map((result) =>
+                    result.empId === empId ? updatedUser : result
+                );
+            } else {
+                return [updatedUser, ...prevUsers];
+            }
+        });
     };
 
     return (
@@ -118,41 +127,77 @@ const UserTable = () => {
                 </thead>
                 <tbody>
                     {currentRows.map((user, index) => (
-                        <tr key={user.empId} className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}>
+                        <tr
+                            key={user.empId}
+                            className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                                } hover:bg-gray-100`}
+                        >
+                            {/* Employee ID */}
                             <td className="py-3 px-4 text-sm">{user.empId}</td>
+
+                            {/* User Details */}
                             <td className="py-3 px-4 text-sm">{user.name}</td>
                             <td className="py-3 px-4 text-sm">{user.email}</td>
                             <td className="py-3 px-4 text-sm">{user.mobile}</td>
                             <td className="py-3 px-4 text-sm">{user.branch}</td>
                             <td className="py-3 px-4 text-sm">{user.role}</td>
+
+                            {/* Status */}
                             <td
-                                className={`py-3 px-4 text-sm font-semibold ${user.status === "Active" ? "text-green-700" : "text-red-700"}`}
+                                className={`py-3 px-4 text-sm font-semibold ${user.status === "Active" ? "text-green-700" : "text-red-700"
+                                    }`}
                             >
                                 {user.status}
                             </td>
+
+                            {/* Actions */}
                             <td className="py-3 px-4 text-sm flex items-center space-x-4">
+                                {/* Toggle Status Button */}
                                 <button
                                     onClick={() => handleToggleClick(user)}
                                     className="flex items-center justify-center"
+                                    aria-label={`Toggle status for ${user.name}`}
                                 >
                                     {user.status === "Active" ? (
-                                        <FaToggleOn className="text-green-500 w-6 h-6" />
+                                        <FaToggleOn
+                                            className="text-green-500 w-6 h-6"
+                                            aria-hidden="true"
+                                        />
                                     ) : (
-                                        <FaToggleOff className="text-red-500 w-6 h-6" />
+                                        <FaToggleOff
+                                            className="text-red-500 w-6 h-6"
+                                            aria-hidden="true"
+                                        />
                                     )}
                                 </button>
-                                <FaEdit
-                                    className={`cursor-pointer ${user.status === "Inactive" ? "text-gray-400 cursor-not-allowed" : "text-yellow-500 hover:text-yellow-600"
-                                        }`}
-                                    size={18}
+
+                                {/* Edit User Button */}
+                                <button
                                     onClick={() => {
-                                        if (user.status === "Active") handleEditUser(user);
+                                        if (user.status === "Active") {
+                                            handleEditUser(user);
+                                        }
                                     }}
-                                />
+                                    className={`flex items-center justify-center ${user.status === "Inactive"
+                                            ? "cursor-not-allowed"
+                                            : "hover:text-yellow-600"
+                                        }`}
+                                    aria-label={`Edit user ${user.name}`}
+                                    disabled={user.status === "Inactive"}
+                                >
+                                    <FaEdit
+                                        className={`${user.status === "Inactive"
+                                                ? "text-gray-400"
+                                                : "text-yellow-500"
+                                            }`}
+                                        size={18}
+                                    />
+                                </button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
+
             </table>
 
             {/* Pagination Controls */}
@@ -188,7 +233,7 @@ const UserTable = () => {
                     setIsEditMode(false);
                     setEditingUser(null);
                 }}
-                onUserUpdated={handleUserUpdated}// Refresh user list after save
+                onUserUpdated={onUserUpdated}// Refresh user list after save
             />
 
             {/* Confirmation Modal */}

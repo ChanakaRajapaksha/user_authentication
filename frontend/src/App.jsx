@@ -18,6 +18,7 @@ import PatientRegisterPage from "./components/PatientRegisterPage";
 import DoctorHome from "./pages/DoctorHome";
 import MLTHome from "./pages/MLTHome";
 import NurseHome from "./pages/NurseHome";
+import StaffDetailsPage from "./pages/StaffDetailsPage";
 
 export default function App() {
   return (
@@ -51,6 +52,7 @@ export default function App() {
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           <Route path="/patient-register" element={<PatientRegisterPage />} />
+          <Route path="/staff" element={<StaffDetailsPage />} />
         </Route>
       </Routes>
 

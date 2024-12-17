@@ -95,8 +95,8 @@ const handleNewUser = async (req, res) => {
 
         logger.info(`User added successfully: ${newUser.empId}`);
         res.status(201).json({
-            success: `User ${newUser.name} created with ID ${newUser.empId}`,
-            user: newUser,
+            ...newUser,
+            message: "Master user details added successfully."
         });
     } catch (err) {
         console.error(err);
@@ -109,18 +109,17 @@ const getAllUsers = async (req, res) => {
     try {
         const users = await prisma.masterUser.findMany({
             orderBy: {
-                createdAt: "desc", 
+                createdAt: "desc",
             },
         });
 
-        if (users.length === 0) {
+        if (!users || users.length === 0) {
             return res.status(404).json({ message: "No users found." });
         }
 
         res.status(200).json(users);
     } catch (err) {
         console.error(err);
-        logger.error(`Error fetching users: ${err.message}`);
         res.status(500).json({ message: "Internal Server Error." });
     }
 };
@@ -137,7 +136,7 @@ const editUser = async (req, res) => {
 
         res.json({
             ...updatedUser,
-            message: "User details updated successfully."
+            message: "Master user details updated successfully."
         });
     } catch (error) {
         console.error("Error updating user details:", error);

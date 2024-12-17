@@ -11,11 +11,11 @@ const AddUserModal = ({ isOpen, isEditMode, user, onClose, onUserUpdated }) => {
 
     useEffect(() => {
         if (isEditMode && user) {
-            setRole(user.role);
-            setName(user.name);
-            setEmail(user.email);
-            setMobile(user.mobile);
-            setBranch(user.branch);
+            setRole(user.role || "");
+            setName(user.name || "");
+            setEmail(user.email || "");
+            setMobile(user.mobile || "");
+            setBranch(user.branch || "");
         } else {
             setRole("");
             setName("");
@@ -25,7 +25,6 @@ const AddUserModal = ({ isOpen, isEditMode, user, onClose, onUserUpdated }) => {
         }
     }, [isEditMode, user]);
 
-    
     const handleRoleChange = (selectedRole) => {
         setRole(selectedRole);
         setName(`${selectedRole}`); 
@@ -54,25 +53,20 @@ const AddUserModal = ({ isOpen, isEditMode, user, onClose, onUserUpdated }) => {
                 body: JSON.stringify(userData),
             });
 
-            if (!response.ok) {
-                const error = await response.json();
-                console.error("Error Response:", error);
-                throw new Error(error.message || "Failed to save user.");
-            }
+            if (!response.ok) throw new Error("Failed to save user.");
 
             const result = await response.json();
+            console.log("API Response:", result); 
 
-            console.log("User Save Response:", result);
-
-            alert(result.success || "User saved successfully.");
-
-            if (onUserUpdated) {
-                onUserUpdated(result.user); 
+            if (result) {
+                onUserUpdated(result);
+            } else {
+                console.error("User data missing from API response:", result);
             }
 
-            onClose(); 
-        } catch (err) {
-            console.log("Error saving user:", err);
+            onClose();
+        } catch (error) {
+            console.error("Error saving user:", error);
             alert("Error saving user. Please try again.");
         } finally {
             setLoading(false);

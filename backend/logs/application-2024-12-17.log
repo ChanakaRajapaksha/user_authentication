@@ -1,0 +1,22 @@
+{"level":"info","message":{"action":"findFirst","duration":"402ms","model":"User"},"timestamp":"2024-12-17T04:07:32.814Z"}
+{"level":"info","message":{"action":"findFirst","duration":"9ms","model":"masterUser"},"timestamp":"2024-12-17T04:07:32.827Z"}
+{"level":"info","message":{"action":"update","duration":"66ms","model":"User"},"timestamp":"2024-12-17T04:07:33.156Z"}
+{"level":"info","message":{"action":"create","duration":"11ms","model":"NetworkLog"},"timestamp":"2024-12-17T04:07:34.546Z"}
+{"level":"info","message":{"action":"findUnique","duration":"3ms","model":"User"},"timestamp":"2024-12-17T04:07:34.585Z"}
+{"level":"info","message":{"action":"findUnique","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-17T04:07:34.590Z"}
+{"level":"info","message":{"action":"findMany","duration":"9ms","model":"masterUser"},"timestamp":"2024-12-17T04:07:34.654Z"}
+{"level":"info","message":{"action":"findMany","duration":"13ms","model":"Patient"},"timestamp":"2024-12-17T04:07:34.662Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-17T04:07:34.663Z"}
+{"level":"info","message":{"action":"findFirst","duration":"294ms","model":"User"},"timestamp":"2024-12-17T04:37:57.859Z"}
+{"level":"info","message":{"action":"findFirst","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-17T04:37:57.863Z"}
+{"level":"info","message":{"action":"update","duration":"10ms","model":"User"},"timestamp":"2024-12-17T04:37:58.066Z"}
+{"level":"info","message":{"action":"create","duration":"8ms","model":"NetworkLog"},"timestamp":"2024-12-17T04:37:59.019Z"}
+{"level":"info","message":{"action":"findUnique","duration":"3ms","model":"User"},"timestamp":"2024-12-17T04:37:59.046Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-17T04:37:59.049Z"}
+{"level":"info","message":{"action":"findMany","duration":"5ms","model":"masterUser"},"timestamp":"2024-12-17T04:37:59.098Z"}
+{"level":"info","message":{"action":"findMany","duration":"10ms","model":"Patient"},"timestamp":"2024-12-17T04:37:59.105Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-17T04:37:59.105Z"}
+{"level":"info","message":{"action":"findUnique","duration":"5ms","model":"Patient"},"timestamp":"2024-12-17T04:38:03.004Z"}
+{"level":"info","message":"Fetched details for patient ID: cm4ay1xaf00005eg5c1u4o3pe","timestamp":"2024-12-17T04:38:03.005Z"}
+{"level":"info","message":{"action":"findUnique","duration":"37ms","model":"Patient"},"timestamp":"2024-12-17T04:38:19.699Z"}
+{"level":"info","message":"Fetched details for patient ID: cm4cifw0o0000sof0dm3rh4jg","timestamp":"2024-12-17T04:38:19.700Z"}
