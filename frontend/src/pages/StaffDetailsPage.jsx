@@ -1412,6 +1412,7 @@ const StaffDetailsPage = () => {
                                             maxLength={20}
                                             required
                                         />
+
                                         <TextInput
                                             label="Extra Card Number"
                                             name="extraCardNumber"
@@ -1419,9 +1420,7 @@ const StaffDetailsPage = () => {
                                             onChange={handleInputChange}
                                             maxLength={20}
                                         />
-                                    </div>
 
-                                    <div className="flex flex-row w-full gap-5">
                                         <DateInput
                                             label="Insurance Effective Date"
                                             name="insuranceEffectiveDate"
@@ -1429,6 +1428,7 @@ const StaffDetailsPage = () => {
                                             onChange={handleInputChange}
                                             required
                                         />
+
                                         <DateInput
                                             label="Insurance Expiry Date *"
                                             name="insuranceExpiryDate"
@@ -1439,31 +1439,37 @@ const StaffDetailsPage = () => {
                                     </div>
 
                                     <div className="flex flex-row w-full gap-5">
-                                        <TextInput
-                                            label="Certificate No"
-                                            name="certificateNo"
-                                            value={patientData.certificateNo}
-                                            onChange={handleInputChange}
-                                            maxLength={20}
-                                        />
-                                        <TextInput
-                                            label="Dependents No"
-                                            name="dependentsNo"
-                                            value={patientData.dependentsNo}
-                                            onChange={handleInputChange}
-                                            maxLength={2}
-                                        />
-                                    </div>
-
-                                    <div className="flex flex-row w-full gap-5">
-                                        <TextInput
-                                            label="Insurance Claim No"
-                                            name="insuranceClaimNo"
-                                            value={patientData.insuranceClaimNo}
-                                            onChange={handleInputChange}
-                                            maxLength={20}
-                                        />
-                                        <div className="flex flex-col">
+                                        <div className="w-[30%]">
+                                            <TextInput
+                                                label="Certificate No"
+                                                name="certificateNo"
+                                                value={patientData.certificateNo}
+                                                onChange={handleInputChange}
+                                                maxLength={20}
+                                            />
+                                        </div>
+                                        
+                                        <div className="w-[10%]">
+                                            <TextInput
+                                                label="Dependents No"
+                                                name="dependentsNo"
+                                                value={patientData.dependentsNo}
+                                                onChange={handleInputChange}
+                                                maxLength={2}
+                                            />
+                                        </div>
+                                       
+                                        <div className="w-[30%]">
+                                            <TextInput
+                                                label="Insurance Claim No"
+                                                name="insuranceClaimNo"
+                                                value={patientData.insuranceClaimNo}
+                                                onChange={handleInputChange}
+                                                maxLength={20}
+                                            />
+                                        </div>
+                                        
+                                        <div className="w-[30%] flex flex-row items-center justify-center gap-2">
                                             <TextInput
                                                 label="Max. Insurance Liability"
                                                 name="maxInsuranceLiability"
@@ -1472,12 +1478,12 @@ const StaffDetailsPage = () => {
                                                 maxLength={20}
                                                 type="number"
                                             />
-                                            <span className="text-gray-500 text-sm mt-1">AED</span>
+                                            <span className="text-gray-500 text-sm mt-5">AED</span>
                                         </div>
                                     </div>
 
                                     <div className="flex flex-row w-full gap-5">
-                                        <div className="flex flex-col">
+                                        <div className="w-[40%] flex flex-row items-center justify-center gap-2">
                                             <TextInput
                                                 label="Insurance Approval Limit"
                                                 name="insuranceApprovalLimit"
@@ -1486,9 +1492,10 @@ const StaffDetailsPage = () => {
                                                 maxLength={20}
                                                 type="number"
                                             />
-                                            <span className="text-gray-500 text-sm mt-1">AED</span>
+                                            <span className="text-gray-500 text-sm mt-5">AED</span>
                                         </div>
-                                        <div className="flex flex-col">
+
+                                        <div className="w-[30%] flex flex-row items-center justify-center gap-2">
                                             <TextInput
                                                 label="Max. Insurance Co-Pay"
                                                 name="maxInsuranceCoPay"
@@ -1497,12 +1504,10 @@ const StaffDetailsPage = () => {
                                                 maxLength={20}
                                                 type="number"
                                             />
-                                            <span className="text-gray-500 text-sm mt-1">AED</span>
+                                            <span className="text-gray-500 text-sm mt-5">AED</span>
                                         </div>
-                                    </div>
 
-                                    <div className="flex flex-row w-full gap-5">
-                                        <div className="flex flex-col">
+                                        <div className="w-[30%] flex flex-row items-center justify-center gap-2">
                                             <TextInput
                                                 label="Co-Pay Patient"
                                                 name="coPayPatient"
@@ -1511,7 +1516,7 @@ const StaffDetailsPage = () => {
                                                 maxLength={20}
                                                 type="number"
                                             />
-                                            <span className="text-gray-500 text-sm mt-1">%</span>
+                                            <span className="text-gray-500 text-sm mt-5">%</span>
                                         </div>
                                     </div>
                                 </div>
