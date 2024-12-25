@@ -11,6 +11,7 @@ const CustomField = ({ onAddField }) => {
     const [radioCount, setRadioCount] = useState("");
     const [radioOptions, setRadioOptions] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState("patientDetails");
 
     const handleAddCustomField = async () => {
         if (!label) {
@@ -32,6 +33,7 @@ const CustomField = ({ onAddField }) => {
                     type === "radio" && radioOptions.length
                         ? radioOptions.map((option) => option.trim())
                         : null,
+                category: selectedCategory, 
             };
 
             const response = await fetch(
@@ -89,6 +91,17 @@ const CustomField = ({ onAddField }) => {
             <h2 className="text-xl text-black font-semibold mb-4">Add Custom Field</h2>
             <div className="flex justify-start gap-4">
                 <div className="flex flex-row w-full gap-5">
+                    <SelectInput
+                        label="Category"
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        options={[
+                            { value: "patientDetails", label: "Patient Details" },
+                            { value: "consultationDetails", label: "Consultation Details" },
+                            { value: "paymentDetails", label: "Payment Details" },
+                        ]}
+                    />
+
                     <TextInput
                         label="Label Name"
                         value={label}

@@ -365,6 +365,11 @@ const StaffDetailsPage = () => {
         }
     };
 
+    // Filter custom fields by category
+    const patientDetailFields = customFields.filter(field => field.category === "patientDetails");
+    const consultationFields = customFields.filter(field => field.category === "consultationDetails");
+    const paymentFields = customFields.filter(field => field.category === "paymentDetails");
+
     return (
         <div className="bg-gray-50">
             <div className="flex flex-col m-5">
@@ -921,6 +926,174 @@ const StaffDetailsPage = () => {
                                     />
                                 </div>
                             </div>
+
+                            {/* Render Patient Detail Custom Fields */}
+                            {patientDetailFields.length > 0 && (
+                                <div className="mb-10 flex flex-wrap gap-5">
+                                    {patientDetailFields.map((field, index) => (
+                                        <div
+                                            key={field.id}
+                                            className={`w-3/12 md:w-${field.width} flex flex-col relative`}
+                                        >
+                                            {/* Render input based on the type */}
+                                            {field.field_type === "text" && (
+                                                <TextInput
+                                                    label={field.field_name}
+                                                    type="text"
+                                                    name={field.field_name}
+
+                                                />
+                                            )}
+                                            {field.field_type === "number" && (
+                                                <TextInput
+                                                    label={field.field_name}
+                                                    type="number"
+                                                    name={field.field_name}
+                                                />
+                                            )}
+                                            {field.field_type === "email" && (
+                                                <TextInput
+                                                    label={field.field_name}
+                                                    type="email"
+                                                    name={field.field_name}
+                                                />
+                                            )}
+                                            {field.field_type === "password" && (
+                                                <TextInput
+                                                    label={field.field_name}
+                                                    type="password"
+                                                    name={field.field_name}
+                                                />
+                                            )}
+                                            {field.field_type === "date" && (
+                                                <DateInput
+                                                    label={field.field_name}
+                                                    type="date"
+                                                    name={field.field_name}
+                                                />
+                                            )}
+                                            {field.field_type === "textarea" && (
+                                                <TextareaInput
+                                                    label={field.field_name}
+                                                    type="textarea"
+                                                    name={field.field_name}
+                                                    placeholder="Note"
+                                                />
+                                            )}
+                                            {field.field_type === "checkbox" && (
+                                                <Checkbox
+                                                    label={field.field_name}
+                                                    type="checkbox"
+                                                    name={field.field_name}
+                                                />
+                                            )}
+
+                                            {field.field_type === "select" && (
+                                                <div className="flex flex-col w-full">
+                                                    <label className="mb-1 font-normal text-sm text-gray-500">{field.field_name}</label>
+                                                    <select
+                                                        name={field.field_name}
+                                                        className="border rounded-md h-8 px-2 bg-white font-normal text-black focus:outline-none"
+                                                    >
+                                                        <option value="" disabled selected>
+                                                            Select an option
+                                                        </option>
+                                                        {field.dropdown_options &&
+                                                            field.dropdown_options.map(
+                                                                (option, optionIndex) => (
+                                                                    <option
+                                                                        key={optionIndex}
+                                                                        value={option.trim()}
+                                                                    >
+                                                                        {option.trim()}
+                                                                    </option>
+                                                                )
+                                                            )}
+                                                    </select>
+                                                </div>
+                                            )}
+                                            {field.field_type === "radio" && (
+                                                <div className="h-fit">
+                                                    <div className="w-full border py-2 px-6 rounded-lg flex flex-col">
+                                                        {/* Field Label */}
+                                                        <label className="mb-3 font-normal text-gray-500">
+                                                            {field.field_name}
+                                                        </label>
+                                                        {/* Render Radio Buttons Dynamically */}
+                                                        {field.radio_buttons && field.radio_buttons.map((option, optionIndex) => (
+                                                            <div key={optionIndex} className="flex flex-row gap-2">
+                                                                <input
+                                                                    type="radio"
+                                                                    name={field.field_name}
+                                                                    value={option.trim()}
+                                                                    id={`radio_${field.id}_${optionIndex}`}
+                                                                    className="h-4 w-4 text-blue-500 focus:ring focus:ring-blue-300 cursor-pointer"
+                                                                />
+                                                                <label
+                                                                    htmlFor={`radio_${field.id}_${optionIndex}`}
+                                                                    className="ml-2 flex items-center gap-2 text-sm text-gray-500"
+                                                                >
+                                                                    {option.trim()}
+                                                                </label>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                </div>
+                                            )}
+                                            {field.field_type === "image" && (
+                                                <div className="relative">
+                                                    <input
+                                                        type="file"
+                                                        id="imageUpload"
+                                                        name={field.field_name}
+                                                        className="mt-2 p-2 border rounded w-full opacity-0 absolute inset-0 cursor-pointer"
+                                                    />
+                                                    <div
+                                                        className="border-2 border-gray-200 rounded-md flex gap-2 items-center justify-center py-5 cursor-pointer"
+                                                        onClick={() =>
+                                                            document.getElementById("imageUpload").click()
+                                                        }
+                                                    >
+                                                        <AiOutlineCloudUpload className="w-8 h-8 text-gray-500" />
+                                                        <p className="text-gray-600 text-sm mt-2">
+                                                            Drop a file here or click
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {field.field_type === "file" && (
+                                                <div className="relative">
+                                                    <input
+                                                        type="file"
+                                                        id="fileUpload"
+                                                        name={field.field_name}
+                                                        className="mt-2 p-2 border rounded w-full opacity-0 absolute inset-0 cursor-pointer"
+                                                    />
+                                                    <div
+                                                        className="border-2 border-gray-200 rounded-md flex gap-2 items-center justify-center py-5 cursor-pointer"
+                                                        onClick={() =>
+                                                            document.getElementById("fileUpload").click()
+                                                        }
+                                                    >
+                                                        <AiOutlineCloudUpload className="w-8 h-8 text-gray-500" />
+                                                        <p className="text-gray-600 text-sm mt-2">
+                                                            Drop a file here or click
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveField(field.id)}
+                                                className="absolute ml-[350px] mt-[12px] text-red-500 hover:text-red-700"
+                                            >
+                                                <IoIosRemoveCircle className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         <div className="space-y-4 mt-8 pb-[20px]">
@@ -995,6 +1168,174 @@ const StaffDetailsPage = () => {
                                     ]}
                                 />
                             </div>
+
+                            {/* Render Consultation Detail Custom Fields */}
+                            {consultationFields.length > 0 && (
+                                <div className="mb-10 flex flex-wrap gap-5">
+                                    {consultationFields.map((field, index) => (
+                                        <div
+                                            key={field.id}
+                                            className={`w-3/12 md:w-${field.width} flex flex-col relative`}
+                                        >
+                                            {/* Render input based on the type */}
+                                            {field.field_type === "text" && (
+                                                <TextInput
+                                                    label={field.field_name}
+                                                    type="text"
+                                                    name={field.field_name}
+
+                                                />
+                                            )}
+                                            {field.field_type === "number" && (
+                                                <TextInput
+                                                    label={field.field_name}
+                                                    type="number"
+                                                    name={field.field_name}
+                                                />
+                                            )}
+                                            {field.field_type === "email" && (
+                                                <TextInput
+                                                    label={field.field_name}
+                                                    type="email"
+                                                    name={field.field_name}
+                                                />
+                                            )}
+                                            {field.field_type === "password" && (
+                                                <TextInput
+                                                    label={field.field_name}
+                                                    type="password"
+                                                    name={field.field_name}
+                                                />
+                                            )}
+                                            {field.field_type === "date" && (
+                                                <DateInput
+                                                    label={field.field_name}
+                                                    type="date"
+                                                    name={field.field_name}
+                                                />
+                                            )}
+                                            {field.field_type === "textarea" && (
+                                                <TextareaInput
+                                                    label={field.field_name}
+                                                    type="textarea"
+                                                    name={field.field_name}
+                                                    placeholder="Note"
+                                                />
+                                            )}
+                                            {field.field_type === "checkbox" && (
+                                                <Checkbox
+                                                    label={field.field_name}
+                                                    type="checkbox"
+                                                    name={field.field_name}
+                                                />
+                                            )}
+
+                                            {field.field_type === "select" && (
+                                                <div className="flex flex-col w-full">
+                                                    <label className="mb-1 font-normal text-sm text-gray-500">{field.field_name}</label>
+                                                    <select
+                                                        name={field.field_name}
+                                                        className="border rounded-md h-8 px-2 bg-white font-normal text-black focus:outline-none"
+                                                    >
+                                                        <option value="" disabled selected>
+                                                            Select an option
+                                                        </option>
+                                                        {field.dropdown_options &&
+                                                            field.dropdown_options.map(
+                                                                (option, optionIndex) => (
+                                                                    <option
+                                                                        key={optionIndex}
+                                                                        value={option.trim()}
+                                                                    >
+                                                                        {option.trim()}
+                                                                    </option>
+                                                                )
+                                                            )}
+                                                    </select>
+                                                </div>
+                                            )}
+                                            {field.field_type === "radio" && (
+                                                <div className="h-fit">
+                                                    <div className="w-full border py-2 px-6 rounded-lg flex flex-col">
+                                                        {/* Field Label */}
+                                                        <label className="mb-3 font-normal text-gray-500">
+                                                            {field.field_name}
+                                                        </label>
+                                                        {/* Render Radio Buttons Dynamically */}
+                                                        {field.radio_buttons && field.radio_buttons.map((option, optionIndex) => (
+                                                            <div key={optionIndex} className="flex flex-row gap-2">
+                                                                <input
+                                                                    type="radio"
+                                                                    name={field.field_name}
+                                                                    value={option.trim()}
+                                                                    id={`radio_${field.id}_${optionIndex}`}
+                                                                    className="h-4 w-4 text-blue-500 focus:ring focus:ring-blue-300 cursor-pointer"
+                                                                />
+                                                                <label
+                                                                    htmlFor={`radio_${field.id}_${optionIndex}`}
+                                                                    className="ml-2 flex items-center gap-2 text-sm text-gray-500"
+                                                                >
+                                                                    {option.trim()}
+                                                                </label>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                </div>
+                                            )}
+                                            {field.field_type === "image" && (
+                                                <div className="relative">
+                                                    <input
+                                                        type="file"
+                                                        id="imageUpload"
+                                                        name={field.field_name}
+                                                        className="mt-2 p-2 border rounded w-full opacity-0 absolute inset-0 cursor-pointer"
+                                                    />
+                                                    <div
+                                                        className="border-2 border-gray-200 rounded-md flex gap-2 items-center justify-center py-5 cursor-pointer"
+                                                        onClick={() =>
+                                                            document.getElementById("imageUpload").click()
+                                                        }
+                                                    >
+                                                        <AiOutlineCloudUpload className="w-8 h-8 text-gray-500" />
+                                                        <p className="text-gray-600 text-sm mt-2">
+                                                            Drop a file here or click
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {field.field_type === "file" && (
+                                                <div className="relative">
+                                                    <input
+                                                        type="file"
+                                                        id="fileUpload"
+                                                        name={field.field_name}
+                                                        className="mt-2 p-2 border rounded w-full opacity-0 absolute inset-0 cursor-pointer"
+                                                    />
+                                                    <div
+                                                        className="border-2 border-gray-200 rounded-md flex gap-2 items-center justify-center py-5 cursor-pointer"
+                                                        onClick={() =>
+                                                            document.getElementById("fileUpload").click()
+                                                        }
+                                                    >
+                                                        <AiOutlineCloudUpload className="w-8 h-8 text-gray-500" />
+                                                        <p className="text-gray-600 text-sm mt-2">
+                                                            Drop a file here or click
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveField(field.id)}
+                                                className="absolute ml-[350px] mt-[12px] text-red-500 hover:text-red-700"
+                                            >
+                                                <IoIosRemoveCircle className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         <div className="space-y-4 mt-8 pb-[40px]">
@@ -1193,13 +1534,11 @@ const StaffDetailsPage = () => {
                                     />
                                 </div>
                             )}
-                        </div>
 
-                        {/* Render Custom Fields */}
-                        <section>
-                            {customFields.length > 0 && (
+                            {/* Render Payment Details Custom Fields */}
+                            {paymentFields.length > 0 && (
                                 <div className="mb-10 flex flex-wrap gap-5">
-                                    {customFields.map((field, index) => (
+                                    {paymentFields.map((field, index) => (
                                         <div
                                             key={field.id}
                                             className={`w-3/12 md:w-${field.width} flex flex-col relative`}
@@ -1282,15 +1621,15 @@ const StaffDetailsPage = () => {
                                                 </div>
                                             )}
                                             {field.field_type === "radio" && (
-                                                <div className="flex flex-row w-full h-fit gap-5">
-                                                    <div className="w-1/4 border py-2 px-6 rounded-lg flex items-center justify-center">
+                                                <div className="h-fit">
+                                                    <div className="w-full border py-2 px-6 rounded-lg flex flex-col">
                                                         {/* Field Label */}
-                                                        <label className="mb-1 font-normal text-gray-500">
+                                                        <label className="mb-3 font-normal text-gray-500">
                                                             {field.field_name}
                                                         </label>
                                                         {/* Render Radio Buttons Dynamically */}
                                                         {field.radio_buttons && field.radio_buttons.map((option, optionIndex) => (
-                                                            <div key={optionIndex} className="flex gap-4">
+                                                            <div key={optionIndex} className="flex flex-row gap-2">
                                                                 <input
                                                                     type="radio"
                                                                     name={field.field_name}
@@ -1362,9 +1701,8 @@ const StaffDetailsPage = () => {
                                         </div>
                                     ))}
                                 </div>
-
                             )}
-                        </section>
+                        </div>
 
                         <div className="flex items-center justify-end">
                             <button

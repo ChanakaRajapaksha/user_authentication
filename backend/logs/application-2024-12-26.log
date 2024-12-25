@@ -1,0 +1,2 @@
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"DynamicField"},"timestamp":"2024-12-25T18:33:17.019Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"DynamicField"},"timestamp":"2024-12-25T18:33:17.060Z"}
