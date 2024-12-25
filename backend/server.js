@@ -10,6 +10,7 @@ const authRoute = require('./routes/auth');
 const rolesRoute = require('./routes/roles');
 const patientRoute = require('./routes/patient');
 const usersRoute = require('./routes/user');
+const staffRoute = require("./routes/staff");
 
 require('dotenv').config();
 
@@ -84,6 +85,7 @@ app.use('/auth', authRoute);
 app.use('/api', rolesRoute);
 app.use('/api', patientRoute);
 app.use('/api', usersRoute);
+app.use('/dynamic', staffRoute);
 
 app.listen(5000, () => {
     console.log('Server running on http://localhost:5000');

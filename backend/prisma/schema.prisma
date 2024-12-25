@@ -89,3 +89,60 @@ enum Gender {
   Female
   Other
 }
+model Staff {
+  staffId          String    @id @unique @default(uuid())
+  role             String
+  designation      String?
+  department       String?
+  specialist       String?
+  firstName        String?
+  lastName         String?
+  fatherName       String?
+  motherName       String?
+  gender           String
+  maritalStatus    String?
+  bloodGroup       String?
+  dateOfBirth      DateTime
+  dateOfJoining    DateTime?
+  phone            String?
+  emergencyContact String?
+  email            String    @unique
+  photo            String?
+  currentAddress   String?
+  permanentAddress String?
+  qualification    String?
+  workExperience   String?
+  specialization   String?
+  note             String?
+  panNumber        String?
+  nationalIDNumber String?
+  localIDNumber    String?
+  referenceContact String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  staff_dynamic_field StaffDynamicField[] 
+
+  @@map("staff")
+}
+
+model StaffDynamicField {
+  id             Int          @id @default(autoincrement())
+  staff_id       String 
+  dynamicFieldId Int
+  value          String
+  staff          Staff        @relation(fields: [staff_id], references: [staffId]) 
+  dynamic_field  DynamicField @relation(fields: [dynamicFieldId], references: [id])
+
+  @@map("staff_dynamic_fields")
+}
+
+model DynamicField {
+  id                  Int                 @id @default(autoincrement())
+  field_name          String              @unique
+  field_type          String
+  dropdown_options    String? 
+  staff_dynamic_field StaffDynamicField[] 
+
+  @@map("dynamic_fields")
+}
+
