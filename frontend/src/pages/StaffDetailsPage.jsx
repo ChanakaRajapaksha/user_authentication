@@ -16,7 +16,65 @@ import MobileInput from "../components/FormInputs/MobileInput";
 import Checkbox from "../components/FormInputs/Checkbox";
 import TextareaInput from "../components/FormInputs/TextareaInput";
 const StaffDetailsPage = () => {
-    const [verificationResult, setVerificationResult] = useState("");
+    const initialDeductibleCopayData = {
+        Consultation: {
+            deductible: "",
+            deductibleType: "all",
+            copay: "",
+            copayType: "all",
+            min: "",
+            max: "",
+        },
+        Lab: {
+            deductible: "",
+            deductibleType: "all",
+            copay: "",
+            copayType: "all",
+            min: "",
+            max: "",
+        },
+        Radiology: {
+            deductible: "",
+            deductibleType: "all",
+            copay: "",
+            copayType: "all",
+            min: "",
+            max: "",
+        },
+        Treatment: {
+            deductible: "",
+            deductibleType: "all",
+            copay: "",
+            copayType: "all",
+            min: "",
+            max: "",
+        },
+        Medicine: {
+            deductible: "",
+            deductibleType: "all",
+            copay: "",
+            copayType: "all",
+            min: "",
+            max: "",
+        },
+        Dental: {
+            deductible: "",
+            deductibleType: "all",
+            copay: "",
+            copayType: "all",
+            min: "",
+            max: "",
+        },
+        Maternity: {
+            deductible: "",
+            deductibleType: "all",
+            copay: "",
+            copayType: "all",
+            min: "",
+            max: "",
+        },
+    };
+
     const [patientData, setPatientData] = useState({
         insuranceId: "",
         visitType: "Consultation",
@@ -63,16 +121,31 @@ const StaffDetailsPage = () => {
         encounterType: "",
         paymentType: "",
         insuranceProvider: "",
-        corporateName: "",
         subInsurance: "",
         networkType: "",
+        insuranceCardNumber: "",
+        extraCardNumber: "",
+        insuranceEffectiveDate: "",
+        insuranceExpiryDate: "",
+        certificateNo: "",
+        dependentsNo: "",
+        insuranceClaimNo: "",
+        maxInsuranceLiability: "",
+        insuranceApprovalLimit: "",
+        maxInsuranceCoPay: "",
+        coPayPatient: "",
+        deductibles: { ...initialDeductibleCopayData },
     });
+
+    const [verificationResult, setVerificationResult] = useState("");
     const [customFields, setCustomFields] = useState([]);
     const [loading, setLoading] = useState(false);
     const [consultationFeeMessage, setConsultationFeeMessage] = useState("");
     const [selectedLanguages, setSelectedLanguages] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const availableLanguages = ["English", "Arabic", "Spanish"];
+    const [insuranceTableData, setInsuranceTableData] = useState([]);
+    const [editingIndex, setEditingIndex] = useState(null); // Track which row is being edited
 
     // Format current date and time
     const formatDateTime = () => {
@@ -174,8 +247,11 @@ const StaffDetailsPage = () => {
 
     //Function to handle new custom fields data
     const handleAddField = (newField) => {
-        if (newField.field_type === "radio" && (!newField.radio_buttons || newField.radio_buttons.length === 0)) {
-            newField.radio_buttons = ["Option 1", "Option 2"];  // Ensure default 2 options
+        if (
+            newField.field_type === "radio" &&
+            (!newField.radio_buttons || newField.radio_buttons.length === 0)
+        ) {
+            newField.radio_buttons = ["Option 1", "Option 2"]; // Ensure default 2 options
         }
 
         setCustomFields((prevFields) => {
@@ -223,7 +299,7 @@ const StaffDetailsPage = () => {
 
         setLoading(true);
         try {
-            const response = await fetch(`${API_URL}/insurance/verify`, {
+            const response = await fetch('http://localhost:5000/insurance/verify', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -275,7 +351,7 @@ const StaffDetailsPage = () => {
                 dynamicFieldData,
             };
 
-            const response = await fetch(`${API_URL}/dynamic/add-staff-dynamic`, {
+            const response = await fetch('http://localhost:5000/dynamic/add-staff-dynamic', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -331,11 +407,6 @@ const StaffDetailsPage = () => {
                     specialty: "",
                     doctorName: "",
                     encounterType: "",
-                    paymentType: "",
-                    insuranceProvider: "",
-                    corporateName: "",
-                    subInsurance: "",
-                    networkType: "",
                 });
                 // Reset all custom fields
                 setCustomFields([]);
@@ -365,16 +436,134 @@ const StaffDetailsPage = () => {
         }
     };
 
+    const handleInputChangeForInsurance = (e) => {
+        const { name, value } = e.target;
+        // Check if the field belongs to deductibles
+        if (name.startsWith("deductibles_")) {
+            const [_, category, field] = name.split("_"); // Parse name to extract category and field
+            setPatientData((prev) => ({
+                ...prev,
+                deductibles: {
+                    ...prev.deductibles,
+                    [category]: {
+                        ...prev.deductibles[category],
+                        [field]: value,
+                    },
+                },
+            }));
+        } else {
+            // Handle non-deductibles fields
+            setPatientData({ ...patientData, [name]: value });
+        }
+    };
+
+    const handleAddInsurance = () => {
+        setLoading(true);
+
+        setTimeout(() => {
+            // Add the entered insurance details to the table data
+            setInsuranceTableData([...insuranceTableData, patientData]);
+
+            // Clear the fields, including deductibles
+            setPatientData({
+                paymentType: patientData.paymentType,
+                insuranceProvider: "",
+                subInsurance: "",
+                networkType: "",
+                insuranceCardNumber: "",
+                extraCardNumber: "",
+                insuranceEffectiveDate: "",
+                insuranceExpiryDate: "",
+                certificateNo: "",
+                dependentsNo: "",
+                insuranceClaimNo: "",
+                maxInsuranceLiability: "",
+                insuranceApprovalLimit: "",
+                maxInsuranceCoPay: "",
+                coPayPatient: "",
+                deductibles: { ...initialDeductibleCopayData }, // Reset deductibles to the initial state
+            });
+
+            setLoading(false);
+        }, 500);
+    };
+
+    // Handle edit data in insurance details table
+    const handleEditClick = (index) => {
+        setEditingIndex(index);
+        const selectedData = insuranceTableData[index];
+        setPatientData({ ...selectedData }); // Include deductibles in the edit data
+    };
+
+    // Handle save edit data in insurance table
+    const handleSaveEdit = () => {
+        const updatedData = [...insuranceTableData];
+        updatedData[editingIndex] = patientData; // Save the updated data, including deductibles
+        setInsuranceTableData(updatedData);
+        setEditingIndex(null);
+
+        // Reset fields, including deductibles
+        setPatientData({
+            paymentType: patientData.paymentType,
+            insuranceProvider: "",
+            subInsurance: "",
+            networkType: "",
+            insuranceCardNumber: "",
+            extraCardNumber: "",
+            insuranceEffectiveDate: "",
+            insuranceExpiryDate: "",
+            certificateNo: "",
+            dependentsNo: "",
+            insuranceClaimNo: "",
+            maxInsuranceLiability: "",
+            insuranceApprovalLimit: "",
+            maxInsuranceCoPay: "",
+            coPayPatient: "",
+            deductibles: { ...initialDeductibleCopayData }, // Reset deductibles to the initial state
+        });
+    };
+
+    // Handle cancel edit in insurance table
+    const handleCancelEdit = () => {
+        setEditingIndex(null);
+
+        // Reset fields, including deductibles
+        setPatientData({
+            paymentType: patientData.paymentType,
+            insuranceProvider: "",
+            subInsurance: "",
+            networkType: "",
+            insuranceCardNumber: "",
+            extraCardNumber: "",
+            insuranceEffectiveDate: "",
+            insuranceExpiryDate: "",
+            certificateNo: "",
+            dependentsNo: "",
+            insuranceClaimNo: "",
+            maxInsuranceLiability: "",
+            insuranceApprovalLimit: "",
+            maxInsuranceCoPay: "",
+            coPayPatient: "",
+            deductibles: { ...initialDeductibleCopayData }, // Reset deductibles to the initial state
+        });
+    };
+
     // Filter custom fields by category
-    const patientDetailFields = customFields.filter(field => field.category === "patientDetails");
-    const consultationFields = customFields.filter(field => field.category === "consultationDetails");
-    const paymentFields = customFields.filter(field => field.category === "paymentDetails");
+    const patientDetailFields = customFields.filter(
+        (field) => field.category === "patientDetails"
+    );
+    const consultationFields = customFields.filter(
+        (field) => field.category === "consultationDetails"
+    );
+    const paymentFields = customFields.filter(
+        (field) => field.category === "paymentDetails"
+    );
 
     return (
         <div className="bg-gray-50">
             <div className="flex flex-col m-5">
                 <div className="min-h-screen py-10 px-2">
-                    <div className="bg-white rounded-lg shadow-md mx-auto p-6 w-[95%] md:w-[90%] lg:w-[90%] xl:w-[85%]">
+                    <div className="bg-white rounded-lg shadow-md mx-auto p-6 w-[95%] md:w-[90%] lg:w-[90%] xl:w-[95%]">
                         <h2 className="text-xl font-semibold mb-6 text-black">
                             Insurance Eligibility Check
                         </h2>
@@ -941,7 +1130,6 @@ const StaffDetailsPage = () => {
                                                     label={field.field_name}
                                                     type="text"
                                                     name={field.field_name}
-
                                                 />
                                             )}
                                             {field.field_type === "number" && (
@@ -990,7 +1178,9 @@ const StaffDetailsPage = () => {
 
                                             {field.field_type === "select" && (
                                                 <div className="flex flex-col w-full">
-                                                    <label className="mb-1 font-normal text-sm text-gray-500">{field.field_name}</label>
+                                                    <label className="mb-1 font-normal text-sm text-gray-500">
+                                                        {field.field_name}
+                                                    </label>
                                                     <select
                                                         name={field.field_name}
                                                         className="border rounded-md h-8 px-2 bg-white font-normal text-black focus:outline-none"
@@ -1014,31 +1204,38 @@ const StaffDetailsPage = () => {
                                             )}
                                             {field.field_type === "radio" && (
                                                 <div className="h-fit">
-                                                    <div className="w-full border py-2 px-6 rounded-lg flex flex-col">
+                                                    <div className="w-full border py-2 px-6 rounded-lg">
                                                         {/* Field Label */}
-                                                        <label className="mb-3 font-normal text-gray-500">
+                                                        <label className="mb-3 font-normal text-gray-500 block">
                                                             {field.field_name}
                                                         </label>
                                                         {/* Render Radio Buttons Dynamically */}
-                                                        {field.radio_buttons && field.radio_buttons.map((option, optionIndex) => (
-                                                            <div key={optionIndex} className="flex flex-row gap-2">
-                                                                <input
-                                                                    type="radio"
-                                                                    name={field.field_name}
-                                                                    value={option.trim()}
-                                                                    id={`radio_${field.id}_${optionIndex}`}
-                                                                    className="h-4 w-4 text-blue-500 focus:ring focus:ring-blue-300 cursor-pointer"
-                                                                />
-                                                                <label
-                                                                    htmlFor={`radio_${field.id}_${optionIndex}`}
-                                                                    className="ml-2 flex items-center gap-2 text-sm text-gray-500"
-                                                                >
-                                                                    {option.trim()}
-                                                                </label>
-                                                            </div>
-                                                        ))}
+                                                        <div className="flex flex-wrap gap-4">
+                                                            {field.radio_buttons &&
+                                                                field.radio_buttons.map(
+                                                                    (option, optionIndex) => (
+                                                                        <div
+                                                                            key={optionIndex}
+                                                                            className="flex items-center gap-2"
+                                                                        >
+                                                                            <input
+                                                                                type="radio"
+                                                                                name={field.field_name}
+                                                                                value={option.trim()}
+                                                                                id={`radio_${field.id}_${optionIndex}`}
+                                                                                className="h-4 w-4 accent-black cursor-pointer"
+                                                                            />
+                                                                            <label
+                                                                                htmlFor={`radio_${field.id}_${optionIndex}`}
+                                                                                className="text-sm text-gray-500"
+                                                                            >
+                                                                                {option.trim()}
+                                                                            </label>
+                                                                        </div>
+                                                                    )
+                                                                )}
+                                                        </div>
                                                     </div>
-
                                                 </div>
                                             )}
                                             {field.field_type === "image" && (
@@ -1183,7 +1380,6 @@ const StaffDetailsPage = () => {
                                                     label={field.field_name}
                                                     type="text"
                                                     name={field.field_name}
-
                                                 />
                                             )}
                                             {field.field_type === "number" && (
@@ -1232,7 +1428,9 @@ const StaffDetailsPage = () => {
 
                                             {field.field_type === "select" && (
                                                 <div className="flex flex-col w-full">
-                                                    <label className="mb-1 font-normal text-sm text-gray-500">{field.field_name}</label>
+                                                    <label className="mb-1 font-normal text-sm text-gray-500">
+                                                        {field.field_name}
+                                                    </label>
                                                     <select
                                                         name={field.field_name}
                                                         className="border rounded-md h-8 px-2 bg-white font-normal text-black focus:outline-none"
@@ -1256,31 +1454,38 @@ const StaffDetailsPage = () => {
                                             )}
                                             {field.field_type === "radio" && (
                                                 <div className="h-fit">
-                                                    <div className="w-full border py-2 px-6 rounded-lg flex flex-col">
+                                                    <div className="w-full border py-2 px-6 rounded-lg">
                                                         {/* Field Label */}
-                                                        <label className="mb-3 font-normal text-gray-500">
+                                                        <label className="mb-3 font-normal text-gray-500 block">
                                                             {field.field_name}
                                                         </label>
                                                         {/* Render Radio Buttons Dynamically */}
-                                                        {field.radio_buttons && field.radio_buttons.map((option, optionIndex) => (
-                                                            <div key={optionIndex} className="flex flex-row gap-2">
-                                                                <input
-                                                                    type="radio"
-                                                                    name={field.field_name}
-                                                                    value={option.trim()}
-                                                                    id={`radio_${field.id}_${optionIndex}`}
-                                                                    className="h-4 w-4 text-blue-500 focus:ring focus:ring-blue-300 cursor-pointer"
-                                                                />
-                                                                <label
-                                                                    htmlFor={`radio_${field.id}_${optionIndex}`}
-                                                                    className="ml-2 flex items-center gap-2 text-sm text-gray-500"
-                                                                >
-                                                                    {option.trim()}
-                                                                </label>
-                                                            </div>
-                                                        ))}
+                                                        <div className="flex flex-wrap gap-4">
+                                                            {field.radio_buttons &&
+                                                                field.radio_buttons.map(
+                                                                    (option, optionIndex) => (
+                                                                        <div
+                                                                            key={optionIndex}
+                                                                            className="flex items-center gap-2"
+                                                                        >
+                                                                            <input
+                                                                                type="radio"
+                                                                                name={field.field_name}
+                                                                                value={option.trim()}
+                                                                                id={`radio_${field.id}_${optionIndex}`}
+                                                                                className="h-4 w-4 accent-black cursor-pointer"
+                                                                            />
+                                                                            <label
+                                                                                htmlFor={`radio_${field.id}_${optionIndex}`}
+                                                                                className="text-sm text-gray-500"
+                                                                            >
+                                                                                {option.trim()}
+                                                                            </label>
+                                                                        </div>
+                                                                    )
+                                                                )}
+                                                        </div>
                                                     </div>
-
                                                 </div>
                                             )}
                                             {field.field_type === "image" && (
@@ -1343,368 +1548,613 @@ const StaffDetailsPage = () => {
                                 Payment Details
                             </h2>
 
-                            <div className="flex flex-row w-[20%] gap-5">
-                                <SelectInput
-                                    label="Payment Type *"
-                                    name="paymentType"
-                                    value={patientData.paymentType}
-                                    onChange={handleInputChange}
-                                    select="Select Payment Type"
-                                    required
-                                    options={[
-                                        { value: "Cash", label: "Cash" },
-                                        { value: "Insurance", label: "Insurance" },
-                                        { value: "Corporate", label: "Corporate" },
-                                    ]}
-                                />
+                            <div className="flex items-center justify-between">
+                                <div className="flex flex-row w-[20%] gap-5">
+                                    <SelectInput
+                                        label="Payment Type *"
+                                        name="paymentType"
+                                        value={patientData.paymentType}
+                                        onChange={handleInputChangeForInsurance}
+                                        select="Select Payment Type"
+                                        required
+                                        options={[
+                                            { value: "Cash", label: "Cash" },
+                                            { value: "Insurance", label: "Insurance" },
+                                            { value: "Corporate", label: "Corporate" },
+                                        ]}
+                                    />
+                                </div>
+
+                                {patientData.paymentType === "Insurance" && (
+                                    <button
+                                        onClick={handleAddInsurance}
+                                        className={`bg-black text-white font-semibold py-2 px-4 rounded ${loading ? "opacity-50 cursor-not-allowed" : ""
+                                            }`}
+                                        disabled={loading}
+                                    >
+                                        {loading ? "Adding..." : "Add Insurance"}
+                                    </button>
+                                )}
                             </div>
 
                             {patientData.paymentType === "Insurance" && (
-                                <div className="space-y-6 mt-4">
-                                    <div className="flex flex-row w-full gap-5">
-                                        <SelectInput
-                                            label="Insurance Provider"
-                                            name="insuranceProvider"
-                                            value={patientData.insuranceProvider}
-                                            onChange={handleInputChange}
-                                            select="Select Insurance Provider"
-                                            required
-                                            options={[
-                                                { value: "Provider A", label: "Provider A" },
-                                                { value: "Provider B", label: "Provider B" },
-                                                { value: "Provider C", label: "Provider C" },
-                                            ]}
-                                        />
-                                        <SelectInput
-                                            label="Sub Insurance"
-                                            name="subInsurance"
-                                            value={patientData.subInsurance}
-                                            onChange={handleInputChange}
-                                            select="Select Sub Insurance"
-                                            required
-                                            options={[
-                                                { value: "Sub Insurance A", label: "Sub Insurance A" },
-                                                { value: "Sub Insurance B", label: "Sub Insurance B" },
-                                                { value: "Sub Insurance C", label: "Sub Insurance C" },
-                                            ]}
-                                        />
-                                        <SelectInput
-                                            label="Network Type"
-                                            name="networkType"
-                                            value={patientData.networkType}
-                                            onChange={handleInputChange}
-                                            select="Select Network Type"
-                                            required
-                                            options={[
-                                                { value: "Network Type A", label: "Network Type A" },
-                                                { value: "Network Type B", label: "Network Type B" },
-                                                { value: "Network Type C", label: "Network Type C" },
-                                            ]}
-                                        />
-                                    </div>
-
-                                    <div className="flex flex-row w-full gap-5">
-                                        <TextInput
-                                            label="Insurance Card Number *"
-                                            name="insuranceCardNumber"
-                                            value={patientData.insuranceCardNumber}
-                                            onChange={handleInputChange}
-                                            maxLength={20}
-                                            required
-                                        />
-
-                                        <TextInput
-                                            label="Extra Card Number"
-                                            name="extraCardNumber"
-                                            value={patientData.extraCardNumber}
-                                            onChange={handleInputChange}
-                                            maxLength={20}
-                                        />
-
-                                        <DateInput
-                                            label="Insurance Effective Date"
-                                            name="insuranceEffectiveDate"
-                                            value={patientData.insuranceEffectiveDate}
-                                            onChange={handleInputChange}
-                                            required
-                                        />
-
-                                        <DateInput
-                                            label="Insurance Expiry Date *"
-                                            name="insuranceExpiryDate"
-                                            value={patientData.insuranceExpiryDate}
-                                            onChange={handleInputChange}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="flex flex-row w-full gap-5">
-                                        <div className="w-[30%]">
+                                <div className="flex flex-col md:flex-row justify-between">
+                                    {/* Left Section: Input Fields */}
+                                    <div className="space-y-6 w-full md:w-[50%] mt-6">
+                                        <div className="flex flex-col md:flex-row w-full gap-5">
+                                            <SelectInput
+                                                label="Insurance Provider"
+                                                name="insuranceProvider"
+                                                value={patientData.insuranceProvider}
+                                                onChange={handleInputChangeForInsurance}
+                                                select="Select Insurance Provider"
+                                                required
+                                                options={[
+                                                    { value: "Provider A", label: "Provider A" },
+                                                    { value: "Provider B", label: "Provider B" },
+                                                    { value: "Provider C", label: "Provider C" },
+                                                ]}
+                                            />
+                                            <SelectInput
+                                                label="Sub Insurance"
+                                                name="subInsurance"
+                                                value={patientData.subInsurance}
+                                                onChange={handleInputChangeForInsurance}
+                                                select="Select Sub Insurance"
+                                                required
+                                                options={[
+                                                    {
+                                                        value: "Sub Insurance A",
+                                                        label: "Sub Insurance A",
+                                                    },
+                                                    {
+                                                        value: "Sub Insurance B",
+                                                        label: "Sub Insurance B",
+                                                    },
+                                                    {
+                                                        value: "Sub Insurance C",
+                                                        label: "Sub Insurance C",
+                                                    },
+                                                ]}
+                                            />
+                                        </div>
+                                        <div className="flex flex-col md:flex-row w-full md:w-[49%] gap-5">
+                                            <SelectInput
+                                                label="Network Type"
+                                                name="networkType"
+                                                value={patientData.networkType}
+                                                onChange={handleInputChangeForInsurance}
+                                                select="Select Network Type"
+                                                required
+                                                options={[
+                                                    { value: "Network Type A", label: "Network Type A" },
+                                                    { value: "Network Type B", label: "Network Type B" },
+                                                    { value: "Network Type C", label: "Network Type C" },
+                                                ]}
+                                            />
+                                        </div>
+                                        <div className="flex flex-col md:flex-row w-full gap-5">
+                                            <TextInput
+                                                label="Insurance Card Number *"
+                                                name="insuranceCardNumber"
+                                                value={patientData.insuranceCardNumber}
+                                                onChange={handleInputChangeForInsurance}
+                                                maxLength={20}
+                                                required
+                                            />
+                                            <TextInput
+                                                label="Extra Card Number"
+                                                name="extraCardNumber"
+                                                value={patientData.extraCardNumber}
+                                                onChange={handleInputChangeForInsurance}
+                                                maxLength={20}
+                                            />
+                                            <DateInput
+                                                label="Insurance Effective Date"
+                                                name="insuranceEffectiveDate"
+                                                value={patientData.insuranceEffectiveDate}
+                                                onChange={handleInputChangeForInsurance}
+                                                required
+                                            />
+                                            <DateInput
+                                                label="Insurance Expiry Date *"
+                                                name="insuranceExpiryDate"
+                                                value={patientData.insuranceExpiryDate}
+                                                onChange={handleInputChangeForInsurance}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="flex flex-col md:flex-row w-full gap-5">
                                             <TextInput
                                                 label="Certificate No"
                                                 name="certificateNo"
                                                 value={patientData.certificateNo}
-                                                onChange={handleInputChange}
+                                                onChange={handleInputChangeForInsurance}
                                                 maxLength={20}
                                             />
-                                        </div>
-                                        
-                                        <div className="w-[10%]">
-                                            <TextInput
-                                                label="Dependents No"
-                                                name="dependentsNo"
-                                                value={patientData.dependentsNo}
-                                                onChange={handleInputChange}
-                                                maxLength={2}
-                                            />
-                                        </div>
-                                       
-                                        <div className="w-[30%]">
+                                            <div className="w-full md:w-[12%]">
+                                                <TextInput
+                                                    label="Dependents No"
+                                                    name="dependentsNo"
+                                                    value={patientData.dependentsNo}
+                                                    onChange={handleInputChangeForInsurance}
+                                                    maxLength={2}
+                                                />
+                                            </div>
                                             <TextInput
                                                 label="Insurance Claim No"
                                                 name="insuranceClaimNo"
                                                 value={patientData.insuranceClaimNo}
-                                                onChange={handleInputChange}
+                                                onChange={handleInputChangeForInsurance}
                                                 maxLength={20}
                                             />
                                         </div>
-                                        
-                                        <div className="w-[30%] flex flex-row items-center justify-center gap-2">
-                                            <TextInput
-                                                label="Max. Insurance Liability"
-                                                name="maxInsuranceLiability"
-                                                value={patientData.maxInsuranceLiability}
-                                                onChange={handleInputChange}
-                                                maxLength={20}
-                                                type="number"
-                                            />
-                                            <span className="text-gray-500 text-sm mt-5">AED</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex flex-row w-full gap-5">
-                                        <div className="w-[40%] flex flex-row items-center justify-center gap-2">
-                                            <TextInput
-                                                label="Insurance Approval Limit"
-                                                name="insuranceApprovalLimit"
-                                                value={patientData.insuranceApprovalLimit}
-                                                onChange={handleInputChange}
-                                                maxLength={20}
-                                                type="number"
-                                            />
-                                            <span className="text-gray-500 text-sm mt-5">AED</span>
-                                        </div>
-
-                                        <div className="w-[30%] flex flex-row items-center justify-center gap-2">
-                                            <TextInput
-                                                label="Max. Insurance Co-Pay"
-                                                name="maxInsuranceCoPay"
-                                                value={patientData.maxInsuranceCoPay}
-                                                onChange={handleInputChange}
-                                                maxLength={20}
-                                                type="number"
-                                            />
-                                            <span className="text-gray-500 text-sm mt-5">AED</span>
-                                        </div>
-
-                                        <div className="w-[30%] flex flex-row items-center justify-center gap-2">
-                                            <TextInput
-                                                label="Co-Pay Patient"
-                                                name="coPayPatient"
-                                                value={patientData.coPayPatient}
-                                                onChange={handleInputChange}
-                                                maxLength={20}
-                                                type="number"
-                                            />
-                                            <span className="text-gray-500 text-sm mt-5">%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {patientData.paymentType === "Corporate" && (
-                                <div className="flex flex-row w-[20%] gap-5 mt-4">
-                                    <SelectInput
-                                        label="Corporate Name"
-                                        name="corporateName"
-                                        value={patientData.corporateName}
-                                        onChange={handleInputChange}
-                                        select="Select Corporate Name"
-                                        required
-                                        options={[
-                                            { value: "Corporate A", label: "Corporate A" },
-                                            { value: "Corporate B", label: "Corporate B" },
-                                            { value: "Corporate C", label: "Corporate C" },
-                                        ]}
-                                    />
-                                </div>
-                            )}
-
-                            {/* Render Payment Details Custom Fields */}
-                            {paymentFields.length > 0 && (
-                                <div className="mb-10 flex flex-wrap gap-5">
-                                    {paymentFields.map((field, index) => (
-                                        <div
-                                            key={field.id}
-                                            className={`w-3/12 md:w-${field.width} flex flex-col relative`}
-                                        >
-                                            {/* Render input based on the type */}
-                                            {field.field_type === "text" && (
+                                        <div className="flex flex-col md:flex-row w-full gap-5 md:gap-14">
+                                            <div className="w-full md:w-[20%] flex items-center gap-2">
                                                 <TextInput
-                                                    label={field.field_name}
-                                                    type="text"
-                                                    name={field.field_name}
-
-                                                />
-                                            )}
-                                            {field.field_type === "number" && (
-                                                <TextInput
-                                                    label={field.field_name}
+                                                    label="Max. Insurance Liability"
+                                                    name="maxInsuranceLiability"
+                                                    value={patientData.maxInsuranceLiability}
+                                                    onChange={handleInputChangeForInsurance}
+                                                    maxLength={20}
                                                     type="number"
-                                                    name={field.field_name}
                                                 />
-                                            )}
-                                            {field.field_type === "email" && (
+                                                <span className="text-gray-500 text-sm mt-5">AED</span>
+                                            </div>
+                                            <div className="w-full md:w-[20%] flex items-center gap-2">
                                                 <TextInput
-                                                    label={field.field_name}
-                                                    type="email"
-                                                    name={field.field_name}
+                                                    label="Insurance Approval Limit"
+                                                    name="insuranceApprovalLimit"
+                                                    value={patientData.insuranceApprovalLimit}
+                                                    onChange={handleInputChangeForInsurance}
+                                                    maxLength={20}
+                                                    type="number"
                                                 />
-                                            )}
-                                            {field.field_type === "password" && (
+                                                <span className="text-gray-500 text-sm mt-5">AED</span>
+                                            </div>
+                                            <div className="w-full md:w-[20%] flex items-center gap-2">
                                                 <TextInput
-                                                    label={field.field_name}
-                                                    type="password"
-                                                    name={field.field_name}
+                                                    label="Max. Insurance Co-Pay"
+                                                    name="maxInsuranceCoPay"
+                                                    value={patientData.maxInsuranceCoPay}
+                                                    onChange={handleInputChangeForInsurance}
+                                                    maxLength={20}
+                                                    type="number"
                                                 />
-                                            )}
-                                            {field.field_type === "date" && (
-                                                <DateInput
-                                                    label={field.field_name}
-                                                    type="date"
-                                                    name={field.field_name}
+                                                <span className="text-gray-500 text-sm mt-5">AED</span>
+                                            </div>
+                                            <div className="w-full md:w-[20%] flex items-center gap-2">
+                                                <TextInput
+                                                    label="Co-Pay Patient"
+                                                    name="coPayPatient"
+                                                    value={patientData.coPayPatient}
+                                                    onChange={handleInputChangeForInsurance}
+                                                    maxLength={20}
+                                                    type="number"
                                                 />
-                                            )}
-                                            {field.field_type === "textarea" && (
-                                                <TextareaInput
-                                                    label={field.field_name}
-                                                    type="textarea"
-                                                    name={field.field_name}
-                                                    placeholder="Note"
-                                                />
-                                            )}
-                                            {field.field_type === "checkbox" && (
-                                                <Checkbox
-                                                    label={field.field_name}
-                                                    type="checkbox"
-                                                    name={field.field_name}
-                                                />
-                                            )}
-
-                                            {field.field_type === "select" && (
-                                                <div className="flex flex-col w-full">
-                                                    <label className="mb-1 font-normal text-sm text-gray-500">{field.field_name}</label>
-                                                    <select
-                                                        name={field.field_name}
-                                                        className="border rounded-md h-8 px-2 bg-white font-normal text-black focus:outline-none"
-                                                    >
-                                                        <option value="" disabled selected>
-                                                            Select an option
-                                                        </option>
-                                                        {field.dropdown_options &&
-                                                            field.dropdown_options.map(
-                                                                (option, optionIndex) => (
-                                                                    <option
-                                                                        key={optionIndex}
-                                                                        value={option.trim()}
-                                                                    >
-                                                                        {option.trim()}
-                                                                    </option>
-                                                                )
-                                                            )}
-                                                    </select>
-                                                </div>
-                                            )}
-                                            {field.field_type === "radio" && (
-                                                <div className="h-fit">
-                                                    <div className="w-full border py-2 px-6 rounded-lg flex flex-col">
-                                                        {/* Field Label */}
-                                                        <label className="mb-3 font-normal text-gray-500">
-                                                            {field.field_name}
-                                                        </label>
-                                                        {/* Render Radio Buttons Dynamically */}
-                                                        {field.radio_buttons && field.radio_buttons.map((option, optionIndex) => (
-                                                            <div key={optionIndex} className="flex flex-row gap-2">
-                                                                <input
-                                                                    type="radio"
-                                                                    name={field.field_name}
-                                                                    value={option.trim()}
-                                                                    id={`radio_${field.id}_${optionIndex}`}
-                                                                    className="h-4 w-4 text-blue-500 focus:ring focus:ring-blue-300 cursor-pointer"
-                                                                />
-                                                                <label
-                                                                    htmlFor={`radio_${field.id}_${optionIndex}`}
-                                                                    className="ml-2 flex items-center gap-2 text-sm text-gray-500"
-                                                                >
-                                                                    {option.trim()}
-                                                                </label>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-
-                                                </div>
-                                            )}
-                                            {field.field_type === "image" && (
-                                                <div className="relative">
-                                                    <input
-                                                        type="file"
-                                                        id="imageUpload"
-                                                        name={field.field_name}
-                                                        className="mt-2 p-2 border rounded w-full opacity-0 absolute inset-0 cursor-pointer"
-                                                    />
-                                                    <div
-                                                        className="border-2 border-gray-200 rounded-md flex gap-2 items-center justify-center py-5 cursor-pointer"
-                                                        onClick={() =>
-                                                            document.getElementById("imageUpload").click()
-                                                        }
-                                                    >
-                                                        <AiOutlineCloudUpload className="w-8 h-8 text-gray-500" />
-                                                        <p className="text-gray-600 text-sm mt-2">
-                                                            Drop a file here or click
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {field.field_type === "file" && (
-                                                <div className="relative">
-                                                    <input
-                                                        type="file"
-                                                        id="fileUpload"
-                                                        name={field.field_name}
-                                                        className="mt-2 p-2 border rounded w-full opacity-0 absolute inset-0 cursor-pointer"
-                                                    />
-                                                    <div
-                                                        className="border-2 border-gray-200 rounded-md flex gap-2 items-center justify-center py-5 cursor-pointer"
-                                                        onClick={() =>
-                                                            document.getElementById("fileUpload").click()
-                                                        }
-                                                    >
-                                                        <AiOutlineCloudUpload className="w-8 h-8 text-gray-500" />
-                                                        <p className="text-gray-600 text-sm mt-2">
-                                                            Drop a file here or click
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRemoveField(field.id)}
-                                                className="absolute ml-[350px] mt-[12px] text-red-500 hover:text-red-700"
-                                            >
-                                                <IoIosRemoveCircle className="w-5 h-5" />
-                                            </button>
+                                                <span className="text-gray-500 text-sm mt-5">%</span>
+                                            </div>
                                         </div>
-                                    ))}
+
+                                        {/* Render Payment Details Custom Fields */}
+                                        {paymentFields.length > 0 && (
+                                            <div className="mb-10 flex flex-wrap gap-5">
+                                                {paymentFields.map((field, index) => (
+                                                    <div
+                                                        key={field.id}
+                                                        className={`w-fit md:w-${field.width} flex flex-col relative`}
+                                                    >
+                                                        {/* Render input based on the type */}
+                                                        {field.field_type === "text" && (
+                                                            <TextInput
+                                                                label={field.field_name}
+                                                                type="text"
+                                                                name={field.field_name}
+                                                            />
+                                                        )}
+                                                        {field.field_type === "number" && (
+                                                            <TextInput
+                                                                label={field.field_name}
+                                                                type="number"
+                                                                name={field.field_name}
+                                                            />
+                                                        )}
+                                                        {field.field_type === "email" && (
+                                                            <TextInput
+                                                                label={field.field_name}
+                                                                type="email"
+                                                                name={field.field_name}
+                                                            />
+                                                        )}
+                                                        {field.field_type === "password" && (
+                                                            <TextInput
+                                                                label={field.field_name}
+                                                                type="password"
+                                                                name={field.field_name}
+                                                            />
+                                                        )}
+                                                        {field.field_type === "date" && (
+                                                            <DateInput
+                                                                label={field.field_name}
+                                                                type="date"
+                                                                name={field.field_name}
+                                                            />
+                                                        )}
+                                                        {field.field_type === "textarea" && (
+                                                            <TextareaInput
+                                                                label={field.field_name}
+                                                                type="textarea"
+                                                                name={field.field_name}
+                                                                placeholder="Note"
+                                                            />
+                                                        )}
+                                                        {field.field_type === "checkbox" && (
+                                                            <Checkbox
+                                                                label={field.field_name}
+                                                                type="checkbox"
+                                                                name={field.field_name}
+                                                            />
+                                                        )}
+
+                                                        {field.field_type === "select" && (
+                                                            <div className="flex flex-col w-full">
+                                                                <label className="mb-1 font-normal text-sm text-gray-500">
+                                                                    {field.field_name}
+                                                                </label>
+                                                                <select
+                                                                    name={field.field_name}
+                                                                    className="border rounded-md h-8 px-2 bg-white font-normal text-black focus:outline-none"
+                                                                >
+                                                                    <option value="" disabled selected>
+                                                                        Select an option
+                                                                    </option>
+                                                                    {field.dropdown_options &&
+                                                                        field.dropdown_options.map(
+                                                                            (option, optionIndex) => (
+                                                                                <option
+                                                                                    key={optionIndex}
+                                                                                    value={option.trim()}
+                                                                                >
+                                                                                    {option.trim()}
+                                                                                </option>
+                                                                            )
+                                                                        )}
+                                                                </select>
+                                                            </div>
+                                                        )}
+                                                        {field.field_type === "radio" && (
+                                                            <div className="">
+                                                                <div className="border py-2 px-6 rounded-lg">
+                                                                    {/* Field Label */}
+                                                                    <label className="mb-3 font-normal text-gray-500 block">
+                                                                        {field.field_name}
+                                                                    </label>
+                                                                    {/* Render Radio Buttons Dynamically */}
+                                                                    <div className="flex flex-wrap gap-4">
+                                                                        {field.radio_buttons &&
+                                                                            field.radio_buttons.map(
+                                                                                (option, optionIndex) => (
+                                                                                    <div
+                                                                                        key={optionIndex}
+                                                                                        className="flex items-center gap-2"
+                                                                                    >
+                                                                                        <input
+                                                                                            type="radio"
+                                                                                            name={field.field_name}
+                                                                                            value={option.trim()}
+                                                                                            id={`radio_${field.id}_${optionIndex}`}
+                                                                                            className="h-4 w-4 accent-black cursor-pointer"
+                                                                                        />
+                                                                                        <label
+                                                                                            htmlFor={`radio_${field.id}_${optionIndex}`}
+                                                                                            className="text-sm text-gray-500"
+                                                                                        >
+                                                                                            {option.trim()}
+                                                                                        </label>
+                                                                                    </div>
+                                                                                )
+                                                                            )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        {field.field_type === "image" && (
+                                                            <div className="relative">
+                                                                <input
+                                                                    type="file"
+                                                                    id="imageUpload"
+                                                                    name={field.field_name}
+                                                                    className="mt-2 p-2 border rounded w-full opacity-0 absolute inset-0 cursor-pointer"
+                                                                />
+                                                                <div
+                                                                    className="border-2 border-gray-200 rounded-md flex gap-2 items-center justify-center py-5 cursor-pointer"
+                                                                    onClick={() =>
+                                                                        document
+                                                                            .getElementById("imageUpload")
+                                                                            .click()
+                                                                    }
+                                                                >
+                                                                    <AiOutlineCloudUpload className="w-8 h-8 text-gray-500" />
+                                                                    <p className="text-gray-600 text-sm mt-2">
+                                                                        Drop a file here or click
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        {field.field_type === "file" && (
+                                                            <div className="relative">
+                                                                <input
+                                                                    type="file"
+                                                                    id="fileUpload"
+                                                                    name={field.field_name}
+                                                                    className="mt-2 p-2 border rounded w-full opacity-0 absolute inset-0 cursor-pointer"
+                                                                />
+                                                                <div
+                                                                    className="border-2 border-gray-200 rounded-md flex gap-2 items-center justify-center py-5 cursor-pointer"
+                                                                    onClick={() =>
+                                                                        document
+                                                                            .getElementById("fileUpload")
+                                                                            .click()
+                                                                    }
+                                                                >
+                                                                    <AiOutlineCloudUpload className="w-8 h-8 text-gray-500" />
+                                                                    <p className="text-gray-600 text-sm mt-2">
+                                                                        Drop a file here or click
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveField(field.id)}
+                                                            className="absolute right-2 top-3 text-red-500 hover:text-red-700"
+                                                        >
+                                                            <IoIosRemoveCircle className="w-5 h-5" />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Right Section: Table-like Design */}
+                                    <div className="w-full lg:w-[43%] mt-4">
+                                        <div className="space-y-6 text-sm">
+                                            {/* Header Row */}
+                                            <div className="grid grid-cols-9 items-center text-gray-600 text-sm font-semibold">
+                                                <span className="col-span-1"></span>
+                                                <span className="col-span-1 text-center">
+                                                    | [Deductible (AED)
+                                                </span>
+                                                <span className="col-span-1 text-center">All</span>
+                                                <span className="col-span-1 text-center">Each]</span>
+                                                <span className="col-span-1 text-center">
+                                                    | [Co Pay %
+                                                </span>
+                                                <span className="col-span-1 text-center">Min</span>
+                                                <span className="col-span-1 text-center">Max</span>
+                                                <span className="col-span-1 text-center">All</span>
+                                                <span className="col-span-1 text-center">Each] |</span>
+                                            </div>
+                                            {/* Dynamic Rows for Categories */}
+                                            {[
+                                                "Consultation",
+                                                "Lab",
+                                                "Radiology",
+                                                "Treatment",
+                                                "Medicine",
+                                                "Dental",
+                                                "Maternity",
+                                            ].map((category) => (
+                                                <div
+                                                    key={category}
+                                                    className="grid grid-cols-9 items-center"
+                                                >
+                                                    {/* Category Name */}
+                                                    <span className="col-span-1 font-normal text-sm text-gray-500 -ml-4">
+                                                        {category}
+                                                    </span>
+                                                    <div className="col-span-1 text-center ml-4">
+                                                        <input
+                                                            type="number"
+                                                            name={`deductibles_${category}_deductible`}
+                                                            value={
+                                                                patientData.deductibles[category]?.deductible ||
+                                                                ""
+                                                            }
+                                                            onChange={handleInputChangeForInsurance}
+                                                            className="border rounded px-2 py-1 w-full text-center"
+                                                        />
+                                                    </div>
+
+                                                    <div className="col-span-2 flex justify-center gap-[42px]">
+                                                        {category !== "Consultation" &&
+                                                            category !== "Maternity" && (
+                                                                <>
+                                                                    <label className="flex items-center">
+                                                                        <input
+                                                                            type="radio"
+                                                                            name={`deductibles_${category}_allOrEach`}
+                                                                            value="all"
+                                                                            checked={
+                                                                                patientData.deductibles[category]
+                                                                                    ?.allOrEach === "all"
+                                                                            }
+                                                                            onChange={handleInputChangeForInsurance}
+                                                                            className="accent-black cursor-pointer"
+                                                                        />
+                                                                    </label>
+                                                                    <label className="flex items-center gap-1">
+                                                                        <input
+                                                                            type="radio"
+                                                                            name={`deductibles_${category}_allOrEach`}
+                                                                            value="each"
+                                                                            checked={
+                                                                                patientData.deductibles[category]
+                                                                                    ?.allOrEach === "each"
+                                                                            }
+                                                                            onChange={handleInputChangeForInsurance}
+                                                                            className="accent-black cursor-pointer"
+                                                                        />
+                                                                    </label>
+                                                                </>
+                                                            )}
+                                                    </div>
+
+                                                    <div className="col-span-1 text-center ml-4">
+                                                        <input
+                                                            type="number"
+                                                            name={`deductibles_${category}_min`}
+                                                            value={
+                                                                patientData.deductibles[category]?.min || ""
+                                                            }
+                                                            onChange={handleInputChangeForInsurance}
+                                                            className="border rounded px-2 py-1 w-full text-center"
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-1 text-center ml-4">
+                                                        <input
+                                                            type="number"
+                                                            name={`deductibles_${category}_max`}
+                                                            value={
+                                                                patientData.deductibles[category]?.max || ""
+                                                            }
+                                                            onChange={handleInputChangeForInsurance}
+                                                            className="border rounded px-2 py-1 w-full text-center"
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-1 text-center ml-4">
+                                                        <input
+                                                            type="number"
+                                                            name={`deductibles_${category}_copay`}
+                                                            value={
+                                                                patientData.deductibles[category]?.copay || ""
+                                                            }
+                                                            onChange={handleInputChangeForInsurance}
+                                                            className="border rounded px-2 py-1 w-full text-center"
+                                                        />
+                                                    </div>
+
+                                                    <div className="col-span-2 flex justify-center gap-[42px]">
+                                                        <label className="flex items-center gap-1">
+                                                            <input
+                                                                type="radio"
+                                                                name={`deductibles_${category}_copayAllOrEach`}
+                                                                value="all"
+                                                                checked={
+                                                                    patientData.deductibles[category]
+                                                                        ?.copayAllOrEach === "all"
+                                                                }
+                                                                onChange={handleInputChangeForInsurance}
+                                                                className="accent-black cursor-pointer"
+                                                            />
+                                                        </label>
+                                                        <label className="flex items-center gap-1">
+                                                            <input
+                                                                type="radio"
+                                                                name={`deductibles_${category}_copayAllOrEach`}
+                                                                value="each"
+                                                                checked={
+                                                                    patientData.deductibles[category]
+                                                                        ?.copayAllOrEach === "each"
+                                                                }
+                                                                onChange={handleInputChangeForInsurance}
+                                                                className="accent-black cursor-pointer"
+                                                            />
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Insurance details table */}
+                            {insuranceTableData.length > 0 && (
+                                <div className="flex items-center justify-center">
+                                    <table className="table-auto border-collapse border border-gray-300 mt-8">
+                                        <thead>
+                                            <tr className="bg-gray-100">
+                                                <th className="border border-gray-300 px-4 py-2">
+                                                    Insurance Card Number
+                                                </th>
+                                                <th className="border border-gray-300 px-4 py-2">
+                                                    Extra Card Number
+                                                </th>
+                                                <th className="border border-gray-300 px-4 py-2">
+                                                    Insurance Effective Date
+                                                </th>
+                                                <th className="border border-gray-300 px-4 py-2">
+                                                    Insurance Expiry Date
+                                                </th>
+                                                <th className="border border-gray-300 px-4 py-2">
+                                                    Certificate No
+                                                </th>
+                                                <th className="border border-gray-300 px-4 py-2">
+                                                    Dependents No
+                                                </th>
+                                                <th className="border border-gray-300 px-4 py-2">
+                                                    Insurance Claim No
+                                                </th>
+                                                <th className="border border-gray-300 px-4 py-2">
+                                                    Action
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {insuranceTableData.map((data, index) => (
+                                                <tr key={index}>
+                                                    <td className="border border-gray-300 px-4 py-2">
+                                                        {data.insuranceCardNumber}
+                                                    </td>
+                                                    <td className="border border-gray-300 px-4 py-2">
+                                                        {data.extraCardNumber || "N/A"}
+                                                    </td>
+                                                    <td className="border border-gray-300 px-4 py-2">
+                                                        {data.insuranceEffectiveDate}
+                                                    </td>
+                                                    <td className="border border-gray-300 px-4 py-2">
+                                                        {data.insuranceExpiryDate}
+                                                    </td>
+                                                    <td className="border border-gray-300 px-4 py-2">
+                                                        {data.certificateNo || "N/A"}
+                                                    </td>
+                                                    <td className="border border-gray-300 px-4 py-2">
+                                                        {data.dependentsNo || "N/A"}
+                                                    </td>
+                                                    <td className="border border-gray-300 px-4 py-2">
+                                                        {data.insuranceClaimNo || "N/A"}
+                                                    </td>
+                                                    <td className="border border-gray-300 px-4 py-2">
+                                                        {editingIndex === index ? (
+                                                            <>
+                                                                <button
+                                                                    onClick={handleSaveEdit}
+                                                                    className="text-green-500"
+                                                                >
+                                                                    Save
+                                                                </button>
+                                                                <button
+                                                                    onClick={handleCancelEdit}
+                                                                    className="text-red-500 ml-2"
+                                                                >
+                                                                    Cancel
+                                                                </button>
+                                                            </>
+                                                        ) : (
+                                                            <button onClick={() => handleEditClick(index)}>
+                                                                <FaEdit
+                                                                    size={18}
+                                                                    className="text-yellow-600 ml-4"
+                                                                />
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             )}
                         </div>

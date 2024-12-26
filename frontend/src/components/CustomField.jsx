@@ -98,7 +98,7 @@ const CustomField = ({ onAddField }) => {
                         options={[
                             { value: "patientDetails", label: "Patient Details" },
                             { value: "consultationDetails", label: "Consultation Details" },
-                            { value: "paymentDetails", label: "Payment Details" },
+                            { value: "paymentDetails", label: "Insurance Details" },
                         ]}
                     />
 
