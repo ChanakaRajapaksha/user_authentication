@@ -1,58 +1,62 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
-
-import useAuth from "../../hooks/useAuth";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
+import useAuth from "../../hooks/useAuth";
+import Message from "./Notifications/Message";
+import { loginUserService } from "../services/authService";
+import BranchSelector from "./BranchSelector";
+
+const branches = [
+    { id: 1, name: "Dubai London Clinic and Speciality Hospital L.L.C." },
+    { id: 2, name: "Dubai London Clinic and Speciality Hospital L.L.C. Br, DFC" },
+    { id: 3, name: "Dubai London Clinic and Speciality Hospital L.L.C. Br, Villa" },
+    { id: 4, name: "Dubai London Clinic and Speciality Hospital L.L.C. Br, Nakheel" },
+    { id: 5, name: "Warehouse" },
+    { id: 6, name: "Dubai London Clinic and Speciality Hospital L.L.C. Br, Dental Center" },
+    { id: 7, name: "Dubai London Hospital L.L.C." },
+];
 
 const AuthPage = () => {
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [rememberMe, setRememberMe] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const [passwordStrength, setPasswordStrength] = useState(0);
-    const [isEmailValid, setIsEmailValid] = useState(true);
+    const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [message, setMessage] = useState("");
+    const [type, setType] = useState("");
+    const [isMessageVisible, setMessageVisible] = useState(false);
+    const [showBranchSelector, setShowBranchSelector] = useState(false);
+    const [selectedBranch, setSelectedBranch] = useState(null);
+    const [authData, setAuthData] = useState(null);
+
+
     const { setAuth } = useAuth();
     const navigate = useNavigate();
 
+    const showMessage = (msg) => {
+        setMessage(msg);
+        setMessageVisible(true);
+    };
+
+    const closeMessage = () => {
+        setMessageVisible(false);
+    };
+
     useEffect(() => {
-        const savedEmail = sessionStorage.getItem("rememberedEmail");
-        if (savedEmail) {
-            setEmail(savedEmail);
+        const savedUsername = sessionStorage.getItem("rememberedUsername");
+        if (savedUsername) {
+            setUsername(savedUsername);
             setRememberMe(true);
         }
     }, []);
 
-    useEffect(() => {
-        calculatePasswordStrength(password);
-    }, [password]);
-
-    const handleEmailChange = (e) => {
-        const value = e.target.value;
-        setEmail(value);
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        setIsEmailValid(emailRegex.test(value));
-    };
-
-    const calculatePasswordStrength = (password) => {
-        let strength = 0;
-
-        if (password.length >= 8) strength++;
-        if (/[A-Z]/.test(password)) strength++;
-        if (/[0-9]/.test(password)) strength++;
-        if (/[^A-Za-z0-9]/.test(password)) strength++;
-
-        setPasswordStrength(strength);
-    };
-
     const handleLogin = async (e) => {
         e.preventDefault();
-        if (!isEmailValid) {
-            toast.error("Invalid email format.", { position: "top-right" });
+
+        if (!username) {
+            toast.error("Username cannot be empty.", { position: "top-right" });
             return;
         }
 
@@ -64,63 +68,90 @@ const AuthPage = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch("http://localhost:5000/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-                credentials: "include",
-            });
+            const data = await loginUserService(username, password);
+            const { masterPassword, resetToken } = data;
 
-            const data = await response.json();
-
-            if (response.ok) {
-                const { masterPassword, resetToken } = data;
-              
-                if (masterPassword) {
-                    if (resetToken) {
-                        navigate(`/reset-password/${resetToken}`);
-                    } else {
-                        toast.error("Reset token is missing.", { position: "top-right" });
-                    }
-                    return;
+            if (masterPassword) {
+                if (resetToken) {
+                    navigate(`/reset-password/${resetToken}`);
                 } else {
-                    handleRoleBasedRedirection(data); 
+                    toast.error("Reset token is missing.", { position: "top-right" });
                 }
+                return;
+            }
 
-                if (response.status === 403) {
-                    toast.error("Your account is inactive. Please contact the admin.", { position: "top-right" });
-                    return;
-                }
-           
-                if (rememberMe) {
-                    sessionStorage.setItem("rememberedEmail", email);
-                } else {
-                    sessionStorage.removeItem("rememberedEmail");
-                }
+
+            setAuthData(data);
+            setShowBranchSelector(true);
+
+            if (rememberMe) {
+                sessionStorage.setItem("rememberedUsername", username);
             } else {
-                toast.error(data.message || "Login failed.", { position: "top-right" });
+                sessionStorage.removeItem("rememberedUsername");
             }
         } catch (error) {
-            toast.error("An error occurred. Please try again.", { position: "top-right" });
+            if (error.status === 403) {
+                toast.error("Your account is inactive. Please contact the admin.", { position: "top-right" });
+            } else {
+                console.error("Error", error);
+                toast.error(error.message || "An error occurred. Please try again.", { position: "top-right" });
+            }
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleRoleBasedRedirection = async (data) => {
-        const { roles = [], accessToken, username } = data;
+    const handleBranchSelection = async (selectedBranch) => {
+        setSelectedBranch(selectedBranch);
+        setShowBranchSelector(false);
 
+        if (authData) {
+            setIsLoading(true)
+            try {
+                const { accessToken, roles, username } = authData
+                const response = await fetch(`http://localhost:5000/auth/update-branch`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({ branch: selectedBranch }),
+                });
+
+                if (response.ok) {
+                    const updatedUserData = await response.json();
+                    handleRoleBasedRedirection({ ...authData, branch: updatedUserData.branch });
+                } else {
+                    const errorMessage = await response.text();
+                    throw new Error(errorMessage || "Failed to update branch.")
+                }
+            } catch (error) {
+                console.error("Error during branch update and role-based redirection:", error);
+                toast.error(error.message || "Redirection failed.", { position: "top-right" });
+            } finally {
+                setIsLoading(false);
+            }
+
+        }
+    };
+
+
+    const handleRoleBasedRedirection = async (data) => {
+        const { roles = [], accessToken, username, branch } = data;
         if (!roles.length) {
             toast.error("User has no roles assigned!", { position: "top-right" });
             setIsLoading(false);
             return;
         }
 
-        setAuth({ email, roles, accessToken, username });
 
-        const role = roles[0]; 
+        setAuth({ roles, accessToken, username });
+
+        const role = roles[0];
+
 
         const roleEndpoints = {
+            super_admin: "/api/super-dashboard",
             admin: "/api/dashboard",
             Doctor: "/api/doctor-home",
             Nurse: "/api/nurse-home",
@@ -129,6 +160,7 @@ const AuthPage = () => {
         };
 
         const roleRedirections = {
+            super_admin: "/super-dashboard",
             admin: "/dashboard",
             Doctor: "/doctor-home",
             Nurse: "/nurse-home",
@@ -137,47 +169,63 @@ const AuthPage = () => {
         };
 
         try {
-            const response = await fetch(`http://localhost:5000${roleEndpoints[role]}`, {
+            const endpoint = roleEndpoints[role];
+            const redirectionPath = roleRedirections[role];
+
+            if (!endpoint || !redirectionPath) {
+                throw new Error(`Unknown role: ${role}`);
+            }
+
+
+            const response = await fetch(`http://localhost:5000${endpoint}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
             });
 
             if (response.ok) {
-                navigate(roleRedirections[role]);
+                navigate(redirectionPath);
             } else {
-                throw new Error("Access denied or unexpected role.");
+                const errorMessage = await response.text();
+                throw new Error(errorMessage || "Access denied or unexpected role.");
             }
         } catch (error) {
+            console.error("Error during role-based redirection:", error);
             toast.error(error.message || "Redirection failed.", { position: "top-right" });
         } finally {
             setIsLoading(false);
         }
     };
 
+
+
     return (
-        <div className="flex h-[100vh]">
-            <div className="w-1/2 bg-gray-200 flex items-center justify-center">
-                <div className="rounded-full bg-gray-300 w-96 h-96"></div>
+        <div className="flex flex-col lg:flex-row h-screen">
+            {/* Left Section */}
+            <div className="hidden lg:flex lg:w-1/2 bg-gray-200 items-center justify-center">
+                <img src="/login_image.jpg" className="h-full object-cover" alt="Login" />
             </div>
-            <div className="w-1/2 flex items-center justify-center p-6">
+
+            {/* Right Section */}
+            <div className="flex flex-1 items-center justify-center p-4 sm:p-6 lg:p-12">
                 <div className="w-full max-w-lg">
-                    <h1 className="flex justify-center text-[46px] font-bold mb-8 leading-[58px]">Welcome!</h1>
+                    <h1 className="text-center text-3xl lg:text-4xl font-bold mb-6 lg:mb-8">Welcome!</h1>
                     <form onSubmit={handleLogin}>
                         <div className="flex flex-col gap-[4px] mb-8">
-                            <label className="block text-gray-700 text-[14px] font-normal">Email address</label>
+                            <label className="block text-gray-700 text-[14px] font-medium">Username</label>
                             <input
-                                type="email"
-                                className={`w-full h-[48px] p-2 border rounded-lg focus:outline-none ${isEmailValid ? "" : "border-red-500"}`}
-                                value={email}
-                                onChange={handleEmailChange}
+                                type="text"
+                                className="w-full h-[48px] p-2 border rounded-lg focus:outline-none"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 required
                             />
-                            {!isEmailValid && <span className="text-red-500 text-sm">Invalid email format</span>}
                         </div>
 
-                        <div className="flex flex-col gap-[4px] mb-4">
-                            <label className="block text-gray-700 text-[14px] font-normal">Your password</label>
+                        <div className="flex flex-col gap-[4px] mb-8">
+                            <label className="block text-gray-700 text-[14px] font-medium">
+                                Your password
+                            </label>
                             <div className="relative">
                                 <input
                                     type={showPassword ? "text" : "password"}
@@ -194,24 +242,17 @@ const AuthPage = () => {
                                 </span>
                             </div>
                         </div>
-                        <div className="mb-8">
-                            <div className="w-full bg-gray-200 h-2 rounded-lg">
-                                <div
-                                    className={`h-full rounded-lg ${passwordStrength === 1
-                                        ? "bg-red-500"
-                                        : passwordStrength === 2
-                                            ? "bg-orange-500"
-                                            : passwordStrength === 3
-                                                ? "bg-yellow-500"
-                                                : passwordStrength === 4
-                                                    ? "bg-green-500"
-                                                    : "bg-gray-500"}`}
-                                    style={{ width: `${passwordStrength * 25}%` }}
-                                ></div>
-                            </div>
-                            <span className="text-gray-600 text-sm">
-                                {["Too Weak", "Weak", "Fair", "Strong", "Very Strong"][passwordStrength]}
-                            </span>
+
+                        <div className="flex justify-start items-center mb-6">
+                            <label className="flex items-center text-[16px] font-medium cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="mr-2 w-[24px] h-[24px] accent-black cursor-pointer"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                />
+                                Remember me
+                            </label>
                         </div>
 
                         <button
@@ -221,16 +262,7 @@ const AuthPage = () => {
                             Log in
                         </button>
 
-                        <div className="flex justify-between items-center mb-6">
-                            <label className="flex items-center text-[16px] font-medium">
-                                <input
-                                    type="checkbox"
-                                    className="mr-2 w-[24px] h-[24px]"
-                                    checked={rememberMe}
-                                    onChange={(e) => setRememberMe(e.target.checked)}
-                                />
-                                Remember me
-                            </label>
+                        <div className="flex justify-center mb-6">
                             <a href="/forgot-password" className="text-black text-[16px] font-medium">
                                 Forgot password?
                             </a>
@@ -238,7 +270,21 @@ const AuthPage = () => {
                     </form>
                 </div>
             </div>
+            <Message
+                isVisible={isMessageVisible}
+                onClose={closeMessage}
+                msg={message}
+                type={type}
+            />
+            {showBranchSelector && (
+                <BranchSelector
+                    branches={branches}
+                    onSelectBranch={handleBranchSelection}
+                    onClose={() => setShowBranchSelector(false)}
+                />
+            )}
 
+            {/* Preloader */}
             {isLoading && (
                 <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
                     <ClipLoader size={50} color={"#ffffff"} />

@@ -6,18 +6,19 @@ const jwt = require('jsonwebtoken');
 const { getNetworkDetails } = require('../utils/networkUtils');
 
 const handleLogin = async (req, res) => {
-    const { email, password } = req.body;
+    const { username: reqUsername, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ message: "Email and password are required." });
+    if (!reqUsername || !password) {
+        return res.status(400).json({ message: "Username and password are required." });
     }
 
+
     try {
-        const foundUser = await prisma.user.findFirst({ where: { email } });
-        const foundMasterUser = await prisma.masterUser.findFirst({ where: { email } });
+        const foundUser = await prisma.user.findFirst({ where: { username: reqUsername } });
+        const foundMasterUser = await prisma.masterUser.findFirst({ where: { username: reqUsername } });
 
         if (!foundUser && !foundMasterUser) {
-            return res.status(401).json({ message: "Unauthorized: Invalid email or password." });
+            return res.status(401).json({ message: "Unauthorized: Invalid username or password." });
         }
 
         if (foundMasterUser && foundMasterUser.status === "Inactive") {
@@ -37,29 +38,30 @@ const handleLogin = async (req, res) => {
             match = await bcrypt.compare(password, user.password);
         }
 
+
         if (!match) {
-            return res.status(401).json({ message: "Unauthorized: Invalid email or password." });
+            return res.status(401).json({ message: "Unauthorized: Invalid username or password." });
         }
+
 
         const roles = [user.role || (isMasterUser ? "masterUser" : "user")];
         const payload = {
             id: isMasterUser ? user.empId : user.id,
-            email: user.email,
+            username: user.username,
             roles,
         };
 
         const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
         const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 
-        // Store refresh token in the appropriate table
         if (isMasterUser) {
             await prisma.masterUser.update({
-                where: { email },
+                where: { email: user.email },
                 data: { refreshToken },
             });
         } else {
             await prisma.user.update({
-                where: { email },
+                where: { username: reqUsername },
                 data: { refreshToken },
             });
         }
@@ -68,11 +70,10 @@ const handleLogin = async (req, res) => {
             const resetToken = crypto.randomBytes(32).toString("hex");
             const resetTokenExpiry = new Date(Date.now() + 3600 * 1000); // 1 hour expiry
             await prisma.masterUser.update({
-                where: { email },
+                where: { email: user.email },
                 data: { resetToken, resetTokenExpiry },
             });
 
-            // Attach refresh token for temporary password case
             res.cookie("jwt", refreshToken, {
                 httpOnly: true,
                 sameSite: "Strict",
@@ -88,6 +89,7 @@ const handleLogin = async (req, res) => {
             });
         }
 
+
         const networkDetails = await getNetworkDetails();
         await prisma.networkLog.create({
             data: {
@@ -100,24 +102,72 @@ const handleLogin = async (req, res) => {
             },
         });
 
+
         res.cookie("jwt", refreshToken, {
             httpOnly: true,
             sameSite: "Strict",
             secure: true,
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
         res.status(200).json({
-            success: `${roles[0]} ${user.email} is logged in!`,
+            success: `${roles[0]} ${user.username} is logged in!`,
             accessToken,
             refreshToken,
             roles,
             username: user.username,
         });
+
     } catch (err) {
-        console.error(`Error during login for email: ${email}`, err);
+        console.error(`Error during login for username: ${reqUsername}`, err);
         res.status(500).json({ message: "Internal Server Error." });
     }
 };
 
-module.exports = { handleLogin };
+const updateBranch = async (req, res) => {
+    const { branch } = req.body;
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: "Unauthorized: Access token is missing." });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    try {
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        let updatedUser;
+        if (decoded.roles[0] === "masterUser") {
+            updatedUser = await prisma.masterUser.update({
+                where: { empId: decoded.id },
+                data: { branch },
+            });
+        } else {
+            updatedUser = await prisma.user.update({
+                where: { id: decoded.id },
+                data: { branch },
+            });
+        }
+
+        // Create a new payload including the branch and basic user info
+        const payload = {
+            id: decoded.id,
+            username: decoded.username,
+            roles: decoded.roles,
+            branch: updatedUser.branch,
+
+        };
+        //create a new access token
+        const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
+
+
+        res.status(200).json({ ...updatedUser, accessToken: accessToken });
+
+    } catch (error) {
+        console.error("Error updating branch: ", error);
+        return res.status(500).json({ message: "Internal Server Error while updating the branch." });
+    }
+}
+
+
+module.exports = { handleLogin, updateBranch };

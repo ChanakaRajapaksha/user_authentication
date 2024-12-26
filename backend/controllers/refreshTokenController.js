@@ -7,7 +7,7 @@ const handleRefreshToken = async (req, res) => {
 
     if (!cookies?.jwt) {
         console.error("No refresh token in cookies.");
-        return res.sendStatus(401); 
+        return res.sendStatus(401);
     }
 
     const refreshToken = cookies.jwt;
@@ -34,8 +34,8 @@ const handleRefreshToken = async (req, res) => {
 
         // Verify the refresh token
         jwt.verify(refreshToken, tokenSecret, (err, decoded) => {
-            if (err || user.email !== decoded.email) {
-                console.error("JWT Verification Error or Email Mismatch:", err?.message);
+            if (err || user.username !== decoded.username) {
+                console.error("JWT Verification Error or Username Mismatch:", err?.message);
                 return res.sendStatus(403); // Forbidden
             }
 
@@ -43,7 +43,7 @@ const handleRefreshToken = async (req, res) => {
             const roles = [user.role || (isMasterUser ? 'masterUser' : 'user')];
             const payload = {
                 id: isMasterUser ? user.empId : user.id,
-                email: user.email,
+                username: user.username,
                 roles,
             };
 

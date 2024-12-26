@@ -5,7 +5,7 @@ const logger = require('../logger');
 // Handle new user registration
 const handleNewUser = async (req, res) => {
     const { username, email, password, branch, role } = req.body;
- 
+
     // Validate input
     if (!username || !email || !password || !branch || !role) {
         return res.status(400).json({ message: 'Username, email, password, branch and role are required.' });

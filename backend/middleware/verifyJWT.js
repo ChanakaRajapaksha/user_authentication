@@ -17,29 +17,32 @@ const verifyJWT = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         console.log('Decoded Token:', decoded);
 
-        // Check both User and masterUser tables
-        const user = await prisma.user.findUnique({
-            where: { email: decoded.email },
-        });
+        let user = null;
+        let masterUser = null;
 
-        const masterUser = await prisma.masterUser.findUnique({
-            where: { email: decoded.email },
-        });
+        if (decoded.id) {
+            user = await prisma.user.findUnique({
+                where: { username: decoded.username },
+            });
+        }
+
+        if (decoded.id) {
+            masterUser = await prisma.masterUser.findUnique({
+                where: { empId: String(decoded.id) }, // Convert to string to match schema type
+            });
+        }
 
         console.log('User from User table:', user);
-        console.log('User from masterUser table:', masterUser);
+        console.log('User from MasterUser table:', masterUser);
 
-        // If neither a regular user nor a master user is found
         if (!user && !masterUser) {
-            console.log('User not found for email:', decoded.email);
+            console.log('User not found.');
             return res.status(403).json({ message: 'Forbidden: User not found.' });
         }
 
-        // Determine which user type and set role and permissions
         if (user) {
             req.user = {
                 id: user.id,
-                email: user.email,
                 username: user.username,
                 role: user.role,
                 branch: user.branch,
@@ -48,8 +51,8 @@ const verifyJWT = async (req, res, next) => {
         } else if (masterUser) {
             req.user = {
                 id: masterUser.id,
-                email: masterUser.email,
                 empId: masterUser.empId,
+                username: masterUser.username,
                 role: masterUser.role,
                 branch: masterUser.branch,
                 status: masterUser.status,
@@ -57,7 +60,7 @@ const verifyJWT = async (req, res, next) => {
             };
         }
 
-        next(); // Pass control to the next middleware
+        next();
     } catch (err) {
         console.error('Error verifying JWT:', err.message);
         return res.status(403).json({ message: 'Forbidden: Invalid or expired token.' });
