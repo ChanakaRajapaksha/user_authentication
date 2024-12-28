@@ -19,3 +19,12 @@
 {"level":"info","message":{"action":"findUnique","duration":"15ms","model":"DynamicField"},"timestamp":"2024-12-28T14:41:55.677Z"}
 {"level":"info","message":{"action":"findUnique","duration":"10ms","model":"DynamicField"},"timestamp":"2024-12-28T14:50:33.954Z"}
 {"level":"info","message":{"action":"findUnique","duration":"2ms","model":"DynamicField"},"timestamp":"2024-12-28T14:50:46.317Z"}
+{"level":"info","message":{"action":"findUnique","duration":"12ms","model":"DynamicField"},"timestamp":"2024-12-28T14:52:01.807Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"DynamicField"},"timestamp":"2024-12-28T14:52:01.813Z"}
+{"level":"info","message":{"action":"delete","duration":"297ms","model":"DynamicField"},"timestamp":"2024-12-28T14:55:57.994Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"DynamicField"},"timestamp":"2024-12-28T14:56:44.789Z"}
+{"level":"info","message":{"action":"create","duration":"3ms","model":"DynamicField"},"timestamp":"2024-12-28T14:56:44.793Z"}
+{"level":"info","message":{"action":"delete","duration":"26ms","model":"DynamicField"},"timestamp":"2024-12-28T14:57:16.678Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"DynamicField"},"timestamp":"2024-12-28T14:57:43.664Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"DynamicField"},"timestamp":"2024-12-28T14:57:43.669Z"}
+{"level":"info","message":{"action":"delete","duration":"4ms","model":"DynamicField"},"timestamp":"2024-12-28T14:58:08.989Z"}

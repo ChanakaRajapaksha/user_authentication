@@ -76,7 +76,6 @@ const StaffDetailsPage = () => {
     };
 
     const [patientData, setPatientData] = useState({
-        insuranceId: "",
         visitType: "Consultation",
         referralCase: "",
         referredBy: "",
@@ -134,6 +133,7 @@ const StaffDetailsPage = () => {
         insuranceApprovalLimit: "",
         maxInsuranceCoPay: "",
         coPayPatient: "",
+        corporateName: "",
         deductibles: { ...initialDeductibleCopayData },
     });
 
@@ -364,7 +364,6 @@ const StaffDetailsPage = () => {
                 console.log("staff data saved:", data);
 
                 setPatientData({
-                    insuranceId: "",
                     visitType: "",
                     referralCase: "",
                     referredBy: "",
@@ -407,6 +406,7 @@ const StaffDetailsPage = () => {
                     specialty: "",
                     doctorName: "",
                     encounterType: "",
+                    corporateName: "",
                 });
                 // Reset all custom fields
                 setCustomFields([]);
@@ -481,7 +481,7 @@ const StaffDetailsPage = () => {
                 insuranceApprovalLimit: "",
                 maxInsuranceCoPay: "",
                 coPayPatient: "",
-                deductibles: { ...initialDeductibleCopayData }, // Reset deductibles to the initial state
+                deductibles: { ...initialDeductibleCopayData }, 
             });
 
             setLoading(false);
@@ -2113,6 +2113,22 @@ const StaffDetailsPage = () => {
                                             ))}
                                         </tbody>
                                     </table>
+                                </div>
+                            )}
+
+                            {patientData.paymentType === "Corporate" && (
+                                <div className="flex flex-row w-[20%] gap-5">
+                                    <SelectInput
+                                        label="Corporate Name"
+                                        name="corporateName"
+                                        value={patientData.corporateName}
+                                        onChange={handleInputChange}
+                                        select="Select a Corporate Name"
+                                        options={[
+                                            { value: "Corporate Name One", label: "Corporate Name One" },
+                                            { value: "Corporate Name Two", label: "Corporate Name Two" },
+                                        ]}
+                                    />
                                 </div>
                             )}
                         </div>

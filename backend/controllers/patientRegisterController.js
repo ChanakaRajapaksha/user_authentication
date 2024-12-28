@@ -1,85 +1,5 @@
 const prisma = require("../database/prismaClient");
 
-// const addStaff = async (req, res) => {
-//     try {
-//       const {
-//         role,
-//         designation,
-//         department,
-//         specialist,
-//         firstName,
-//         lastName,
-//         fatherName,
-//         motherName,
-//         gender,
-//         maritalStatus,
-//         bloodGroup,
-//         dateOfBirth,
-//         dateOfJoining,
-//         phone,
-//         emergencyContact,
-//         email,
-//         photo,
-//         currentAddress,
-//         permanentAddress,
-//         qualification,
-//         workExperience,
-//         specialization,
-//         note,
-//         panNumber,
-//         nationalIDNumber,
-//         localIDNumber,
-//         referenceContact,
-//       } = req.body;
-
-//       // Validate mandatory fields
-//       if (!role || !gender || !dateOfBirth || !email) {
-//         return res.status(400).json({ message: 'Required fields are missing!' });
-//       }
-
-//       // Create the staff record
-//       const newStaff = await prisma.staff.create({
-//         data: {
-//           role,
-//           designation,
-//           department,
-//           specialist,
-//           firstName,
-//           lastName,
-//           fatherName,
-//           motherName,
-//           gender,
-//           maritalStatus,
-//           bloodGroup,
-//           dateOfBirth: new Date(dateOfBirth),
-//           dateOfJoining: dateOfJoining ? new Date(dateOfJoining) : null,
-//           phone,
-//           emergencyContact,
-//           email,
-//           photo,
-//           currentAddress,
-//           permanentAddress,
-//           qualification,
-//           workExperience,
-//           specialization,
-//           note,
-//           panNumber,
-//           nationalIDNumber,
-//           localIDNumber,
-//           referenceContact,
-//         },
-//       });
-
-//       res.status(201).json({
-//         message: 'Staff member created successfully!',
-//         staff: newStaff,
-//       });
-//     } catch (error) {
-//       console.error('Error creating staff:', error);
-//       res.status(500).json({ message: 'Internal server error', error: error.message });
-//     }
-//   };
-
 const addDynamicFields = async (req, res) => {
     try {
         const fields = req.body;
@@ -163,86 +83,167 @@ const getDynamicFields = async (req, res) => {
     }
 };
 
+const parseCustomDate = (dateString) => {
+    if (!dateString) return null;
+
+    const [datePart, timePart] = dateString.split(' ');
+    const [day, month, year] = datePart.split('-');
+    const [time, period] = timePart.split(' ');
+    let [hours, minutes] = time.split(':');
+
+    hours = parseInt(hours);
+    if (period === "PM" && hours !== 12) {
+        hours += 12;
+    }
+    if (period === "AM" && hours === 12) {
+        hours = 0;
+    }
+
+    // Return ISO Date
+    return new Date(`${year}-${month}-${day}T${hours.toString().padStart(2, '0')}:${minutes}:00.000Z`);
+};
+
 const addPatientWithDynamicData = async (req, res) => {
     try {
         const {
-            staffId,
-            role,
-            designation,
-            department,
-            specialist,
-            firstName,
-            lastName,
-            fatherName,
-            motherName,
+            visitType = "Consultation",
+            referralCase,
+            referredBy,
+            existing,
+            patientType,
+            registrationDate,
+            patientPriority,
+            patientFullName,
+            dob,
+            age,
             gender,
+            nationality,
+            emailId,
             maritalStatus,
-            bloodGroup,
-            dateOfBirth,
-            dateOfJoining,
-            phone,
-            emergencyContact,
-            email,
-            photo,
-            currentAddress,
-            permanentAddress,
-            qualification,
-            workExperience,
-            specialization,
-            note,
-            panNumber,
-            nationalIDNumber,
-            localIDNumber,
-            referenceContact,
+            visaType,
+            nationalId,
+            idType,
+            idNumber,
+            mobile,
+            work,
+            landPhone,
+            wMobile,
+            preferredLanguage,
+            occupation,
+            infoSource,
+            emirates,
+            place,
+            mainDistrict,
+            district,
+            area,
+            address,
+            hasanaId,
+            companyName,
+            empId,
+            patientRemark,
+            emPerson,
+            emNumber,
+            relationship,
+            alert,
+            specialty,
+            doctorName,
+            encounterType,
+            paymentType,
+            corporateName,
             dynamicFieldData,
         } = req.body;
 
         // Validate mandatory fields
-        if (!staffId || !role || !gender || !firstName || !email) {
+        if (!visitType || !existing || !patientPriority || !patientFullName || !dob || !age || !gender || !nationality || !emailId || !maritalStatus || !visaType || !nationalId || !idType || !idNumber || !mobile || !occupation || !infoSource || !emirates || !place || !mainDistrict || !district || !area || !address || !companyName || !specialty || !doctorName || !paymentType) {
             return res.status(400).json({
                 message: "Required fields are missing",
                 missingFields: [
-                    !staffId && "staffId",
-                    !role && "role",
+                    !visitType && "visitType",
+                    !existing && "existing",
+                    !patientPriority && "patientPriority",
+                    !patientFullName && "patientFullName",
+                    !dob && "dob",
+                    !age && "age",
                     !gender && "gender",
-                    !firstName && "firstName",
-                    !email && "email",
+                    !nationality && "nationality",
+                    !emailId && "emailId",
+                    !maritalStatus && "maritalStatus",
+                    !visaType && "visaType",
+                    !nationalId && "nationalId",
+                    !idType && "idType",
+                    !idNumber && "idNumber",
+                    !mobile && "mobile",
+                    !occupation && "occupation",
+                    !infoSource && "infoSource",
+                    !emirates && "emirates",
+                    !place && "place",
+                    !mainDistrict && "mainDistrict",
+                    !district && "district",
+                    !area && "area",
+                    !address && "address",
+                    !companyName && "companyName",
+                    !specialty && "specialty",
+                    !doctorName && "doctorName",
+                    !paymentType && "paymentType"
                 ].filter(Boolean),
             });
         }
 
         const result = await prisma.$transaction(async (prisma) => {
-            // Create the staff record
-            const newStaff = await prisma.staff.create({
+            // Generate MRD Number
+            const mrdNumber = `DLJ${Math.floor(Math.random() * 1000000).toString().padStart(7, "0")}`;
+
+            // Convert Registration Date to ISO
+            const isoRegistrationDate = parseCustomDate(registrationDate);
+
+            // Create the patient record
+            const newPatient = await prisma.patient.create({
                 data: {
-                    staffId,
-                    role,
-                    designation,
-                    department,
-                    specialist,
-                    firstName,
-                    lastName,
-                    fatherName,
-                    motherName,
+                    mrdNumber,
+                    visitType,
+                    referralCase,
+                    referredBy,
+                    existing,
+                    patientType,
+                    registrationDate: isoRegistrationDate, // Save as ISO date
+                    patientPriority,
+                    patientFullName,
+                    dob: new Date(dob),
+                    age,
                     gender,
+                    nationality,
+                    emailId,
                     maritalStatus,
-                    bloodGroup,
-                    dateOfBirth: new Date(dateOfBirth),
-                    dateOfJoining: dateOfJoining ? new Date(dateOfJoining) : null,
-                    phone,
-                    emergencyContact,
-                    email,
-                    photo,
-                    currentAddress,
-                    permanentAddress,
-                    qualification,
-                    workExperience,
-                    specialization,
-                    note,
-                    panNumber,
-                    nationalIDNumber,
-                    localIDNumber,
-                    referenceContact,
+                    visaType,
+                    nationalId,
+                    idType,
+                    idNumber,
+                    mobile,
+                    work,
+                    landPhone,
+                    wMobile,
+                    preferredLanguage,
+                    occupation,
+                    infoSource,
+                    emirates,
+                    place,
+                    mainDistrict,
+                    district,
+                    area,
+                    address,
+                    hasanaId,
+                    companyName,
+                    empId,
+                    patientRemark,
+                    emPerson,
+                    emNumber,
+                    relationship,
+                    alert,
+                    specialty,
+                    doctorName,
+                    encounterType,
+                    paymentType,
+                    corporateName,
                 },
             });
 
@@ -253,9 +254,9 @@ const addPatientWithDynamicData = async (req, res) => {
                         where: { field_name: fieldName },
                     });
                     if (field) {
-                        await prisma.staffDynamicField.create({
+                        await prisma.patientDynamicField.create({
                             data: {
-                                staff_id: newStaff.staffId,
+                                patientId: newPatient.id,
                                 dynamicFieldId: field.id,
                                 value: value || "",
                             },
@@ -264,18 +265,16 @@ const addPatientWithDynamicData = async (req, res) => {
                 }
             }
 
-            return newStaff;
+            return newPatient;
         });
 
         res.status(201).json({
-            message: "Staff member and dynamic data created successfully!",
-            staff: result,
+            message: "Patient and dynamic data created successfully!",
+            patient: result,
         });
     } catch (error) {
-        console.error("Error creating staff with dynamic data:", error);
-        res
-            .status(500)
-            .json({ message: "Internal server error", error: error.message });
+        console.error("Error creating patient with dynamic data:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
 

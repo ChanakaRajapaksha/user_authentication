@@ -55,86 +55,67 @@ model NetworkLog {
 }
 
 model Patient {
-  patientId            String    @id @default(cuid())
-  fullName             String?   @db.VarChar(100)
-  dateOfBirth          DateTime?
-  age                  Int?      @db.SmallInt
-  gender               Gender?
-  nationality          String?   @db.VarChar(50)
-  email                String?   @unique @db.VarChar(50)
-  maritalStatus        String?   @db.VarChar(20)
-  visaType             String?   @db.VarChar(20)
-  nationalId           String?   @unique @db.VarChar(20)
-  otherIdType          String?   @db.VarChar(50)
-  otherIdValue         String?   @db.VarChar(20)
-  contactNumberMobile  String?   @db.VarChar(15)
-  contactNumberWork    String?   @db.VarChar(15)
-  consultationType     String?   @db.VarChar(50)
-  doctorName           String?   @db.VarChar(100)
-  appointmentDate      DateTime?
-  speciality           String?   @db.VarChar(50)
-  consultationReason   String?   @db.VarChar(200)
-  paymentType          String?   @db.VarChar(50)
-  insurancePlan        String?   @db.VarChar(50)
-  policyNumber         String?   @db.VarChar(50)
-  policyExpiryDate     DateTime?
-  insuranceCardNumber  String?   @db.VarChar(50)
-  insuranceProvider    String?   @db.VarChar(100)
-  insuranceSubProvider String?   @db.VarChar(100)
-  customFields         Json?
-}
-
-enum Gender {
-  Male
-  Female
-  Other
-}
-
-model Staff {
-  staffId               String                @id @unique @default(uuid())
-  role                  String
-  designation           String?
-  department            String?
-  specialist            String?
-  firstName             String?
-  lastName              String?
-  fatherName            String?
-  motherName            String?
-  gender                String
-  maritalStatus         String?
-  bloodGroup            String?
-  dateOfBirth           DateTime
-  dateOfJoining         DateTime?
-  phone                 String?
-  emergencyContact      String?
-  email                 String                @unique
-  photo                 String?
-  currentAddress        String?
-  permanentAddress      String?
-  qualification         String?
-  workExperience        String?
-  specialization        String?
-  note                  String?
-  panNumber             String?
-  nationalIDNumber      String?
-  localIDNumber         String?
-  referenceContact      String?
-  createdAt             DateTime              @default(now())
-  updatedAt             DateTime              @updatedAt
-  patient_dynamic_field PatientDynamicField[]
-
-  @@map("staff")
+  id                  String                @id @unique @default(uuid())
+  mrdNumber           String                @unique
+  visitType           String                @default("Consultation")
+  referralCase        String?
+  referredBy          String?               @db.VarChar(100)
+  existing            String
+  patientType         String?
+  registrationDate    DateTime?              @default(now())
+  patientPriority     String
+  patientFullName     String                @db.VarChar(100)
+  dob                 DateTime
+  age                 String
+  gender              String
+  nationality         String
+  emailId             String                @db.VarChar(50)
+  maritalStatus       String
+  visaType            String
+  nationalId          String                @db.VarChar(20)
+  idType              String
+  idNumber            String                @db.VarChar(20)
+  mobile              String                @db.VarChar(15)
+  work                String?               @db.VarChar(15)
+  landPhone           String?               @db.VarChar(15)
+  wMobile             String?               @db.VarChar(15)
+  preferredLanguage   String?
+  occupation          String                @db.VarChar(50)
+  infoSource          String
+  emirates            String
+  place               String                @db.VarChar(50)
+  mainDistrict        String
+  district            String
+  area                String
+  address             String                @db.VarChar(500)
+  hasanaId            String?               @db.VarChar(20)
+  companyName         String                @db.VarChar(70)
+  empId               String?               @db.VarChar(20)
+  patientRemark       String?               @db.VarChar(500)
+  emPerson            String?               @db.VarChar(100)
+  emNumber            String?               @db.VarChar(15)
+  relationship        String?               @db.VarChar(20)
+  alert               String?
+  specialty           String
+  doctorName          String
+  encounterType       String?
+  paymentType         String
+  corporateName       String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  patientDynamicField PatientDynamicField[]
 }
 
 model PatientDynamicField {
-  id             Int          @id @default(autoincrement())
-  staff_id       String
+  id             Int     @id @default(autoincrement())
+  patientId      String
   dynamicFieldId Int
-  value          String
-  staff          Staff        @relation(fields: [staff_id], references: [staffId])
-  dynamic_field  DynamicField @relation(fields: [dynamicFieldId], references: [id])
+  value          String?
 
-  @@map("staff_dynamic_fields")
+  patient      Patient      @relation(fields: [patientId], references: [id])
+  dynamicField DynamicField @relation(fields: [dynamicFieldId], references: [id])
+
+  @@map("patient_dynamic_field")
 }
 
 model DynamicField {
@@ -142,9 +123,9 @@ model DynamicField {
   field_name            String                @unique
   field_type            String
   dropdown_options      String?
-  radio_buttons         String? 
-  is_required           Boolean               @default(false) 
-  category              String 
+  radio_buttons         String?
+  is_required           Boolean               @default(false)
+  category              String
   patient_dynamic_field PatientDynamicField[]
 
   @@map("dynamic_fields")
