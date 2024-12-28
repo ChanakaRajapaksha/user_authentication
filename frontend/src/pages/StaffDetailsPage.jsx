@@ -466,7 +466,6 @@ const StaffDetailsPage = () => {
 
             // Clear the fields, including deductibles
             setPatientData({
-                paymentType: patientData.paymentType,
                 insuranceProvider: "",
                 subInsurance: "",
                 networkType: "",

@@ -62,7 +62,7 @@ model Patient {
   referredBy          String?               @db.VarChar(100)
   existing            String
   patientType         String?
-  registrationDate    DateTime?              @default(now())
+  registrationDate    DateTime?             @default(now())
   patientPriority     String
   patientFullName     String                @db.VarChar(100)
   dob                 DateTime
@@ -103,9 +103,52 @@ model Patient {
   corporateName       String?
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
+  insurance           Insurance[]
   patientDynamicField PatientDynamicField[]
 }
+model Insurance {
+  id                     Int          @id @default(autoincrement())
+  insuranceProvider      String
+  subInsurance           String
+  networkType            String
+  insuranceCardNumber    String       @db.VarChar(20)
+  extraCardNumber        String?      @db.VarChar(20)
+  insuranceEffectiveDate DateTime
+  insuranceExpiryDate    DateTime
+  certificateNo          String       @db.VarChar(20)
+  dependentsNo           Int          @default(0) @db.TinyInt
+  insuranceClaimNo       String?      @db.VarChar(20)
+  maxInsuranceLiability  Decimal      @db.Decimal(20, 2)
+  insuranceApprovalLimit Decimal      @db.Decimal(20, 2)
+  maxInsuranceCoPay      Decimal      @db.Decimal(20, 2)
+  coPayPatient           Decimal      @db.Decimal(20, 2)
+  patientId              String
+  deductibles            Deductible[]
+  patient                Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+}
+model Deductible {
+  id             Int            @id @default(autoincrement())
+  insuranceId    Int
+  category       String
+  deductible     Decimal?       @db.Decimal(20, 2)
+  deductibleType DeductibleType
+  copay          Decimal?       @db.Decimal(20, 2)
+  copayType      CopayType
+  min            Decimal?       @db.Decimal(20, 2)
+  max            Decimal?       @db.Decimal(20, 2)
 
+  insurance Insurance @relation(fields: [insuranceId], references: [id], onDelete: Cascade)
+}
+
+enum DeductibleType {
+  all
+  each
+}
+
+enum CopayType {
+  all
+  each
+}
 model PatientDynamicField {
   id             Int     @id @default(autoincrement())
   patientId      String
@@ -117,7 +160,6 @@ model PatientDynamicField {
 
   @@map("patient_dynamic_field")
 }
-
 model DynamicField {
   id                    Int                   @id @default(autoincrement())
   field_name            String                @unique

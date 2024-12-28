@@ -83,6 +83,110 @@ const getDynamicFields = async (req, res) => {
     }
 };
 
+// Create Insurance Data
+const addInsurance = async (req, res) => {
+    try {
+        const {
+            insuranceProvider,
+            subInsurance,
+            networkType,
+            insuranceCardNumber,
+            extraCardNumber,
+            insuranceEffectiveDate,
+            insuranceExpiryDate,
+            certificateNo,
+            dependentsNo = 0,
+            insuranceClaimNo,
+            maxInsuranceLiability,
+            insuranceApprovalLimit,
+            maxInsuranceCoPay,
+            coPayPatient,
+            patientId,
+        } = req.body;
+
+        // Validate mandatory fields
+        if (!insuranceCardNumber || !insuranceExpiryDate) {
+            return res.status(400).json({
+                message: "Required fields are missing",
+                missingFields: [
+                    !insuranceCardNumber && "insuranceCardNumber",
+                    !insuranceExpiryDate && "insuranceExpiryDate",
+                ].filter(Boolean),
+            });
+        }
+
+        const result = await prisma.insurance.create({
+            data: {
+                insuranceProvider,
+                subInsurance,
+                networkType,
+                insuranceCardNumber,
+                extraCardNumber,
+                insuranceEffectiveDate: new Date(insuranceEffectiveDate),
+                insuranceExpiryDate: new Date(insuranceExpiryDate),
+                certificateNo,
+                dependentsNo,
+                insuranceClaimNo,
+                maxInsuranceLiability: parseFloat(maxInsuranceLiability),
+                insuranceApprovalLimit: parseFloat(insuranceApprovalLimit),
+                maxInsuranceCoPay: parseFloat(maxInsuranceCoPay),
+                coPayPatient: parseFloat(coPayPatient),
+                patientId,
+            },
+        });
+
+        res.status(201).json({
+            message: "Insurance added successfully!",
+            insurance: result,
+        });
+    } catch (error) {
+        console.error("Error adding insurance:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+};
+
+// Add deductible data
+const addDeductible = async (req, res) => {
+    try {
+        const {
+            deductibleType,
+            amount,
+            deductibleDate,
+            insuranceId,
+        } = req.body;
+
+        // Validate mandatory fields
+        if (!deductibleType || !amount || !deductibleDate || !insuranceId) {
+            return res.status(400).json({
+                message: "Required fields are missing",
+                missingFields: [
+                    !deductibleType && "deductibleType",
+                    !amount && "amount",
+                    !deductibleDate && "deductibleDate",
+                    !insuranceId && "insuranceId",
+                ].filter(Boolean),
+            });
+        }
+
+        const result = await prisma.deductible.create({
+            data: {
+                deductibleType,
+                amount: parseFloat(amount),
+                deductibleDate: new Date(deductibleDate),
+                insuranceId,
+            },
+        });
+
+        res.status(201).json({
+            message: "Deductible added successfully!",
+            deductible: result,
+        });
+    } catch (error) {
+        console.error("Error adding deductible:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+};
+
 const parseCustomDate = (dateString) => {
     if (!dateString) return null;
 
@@ -151,6 +255,7 @@ const addPatientWithDynamicData = async (req, res) => {
             paymentType,
             corporateName,
             dynamicFieldData,
+            insuranceData, // Adding the insurance data field
         } = req.body;
 
         // Validate mandatory fields
@@ -265,6 +370,48 @@ const addPatientWithDynamicData = async (req, res) => {
                 }
             }
 
+            // Add Insurance information if provided
+            if (insuranceData && Array.isArray(insuranceData)) {
+                for (const insurance of insuranceData) {
+                    const {
+                        insuranceProvider,
+                        subInsurance,
+                        networkType,
+                        insuranceCardNumber,
+                        extraCardNumber,
+                        insuranceEffectiveDate,
+                        insuranceExpiryDate,
+                        certificateNo,
+                        dependentsNo = 0,
+                        insuranceClaimNo,
+                        maxInsuranceLiability,
+                        insuranceApprovalLimit,
+                        maxInsuranceCoPay,
+                        coPayPatient,
+                    } = insurance;
+
+                    await prisma.insurance.create({
+                        data: {
+                            insuranceProvider,
+                            subInsurance,
+                            networkType,
+                            insuranceCardNumber,
+                            extraCardNumber,
+                            insuranceEffectiveDate: new Date(insuranceEffectiveDate),
+                            insuranceExpiryDate: new Date(insuranceExpiryDate),
+                            certificateNo,
+                            dependentsNo,
+                            insuranceClaimNo,
+                            maxInsuranceLiability: parseFloat(maxInsuranceLiability),
+                            insuranceApprovalLimit: parseFloat(insuranceApprovalLimit),
+                            maxInsuranceCoPay: parseFloat(maxInsuranceCoPay),
+                            coPayPatient: parseFloat(coPayPatient),
+                            patientId: newPatient.id, // Link to the created patient
+                        },
+                    });
+                }
+            }
+
             return newPatient;
         });
 
@@ -277,36 +424,6 @@ const addPatientWithDynamicData = async (req, res) => {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
-
-// const saveStaffData = async (req, res) => {
-//     try {
-//         const { staffId, dynamicFieldData } = req.body;
-
-//         // Example `dynamicFieldData` structure:
-//         // { "height": "180", "weight": "75", "blood_pressure": "120/80" }
-
-//         for (const [fieldName, value] of Object.entries(dynamicFieldData)) {
-//             const field = await prisma.dynamicField.findUnique({
-//                 where: { field_name: fieldName },
-//             });
-
-//             if (field) {
-//                 await prisma.staffDynamicField.create({
-//                     data: {
-//                         staffId,
-//                         dynamicFieldId: field.id,
-//                         value,
-//                     },
-//                 });
-//             }
-//         }
-
-//         return res.status(201).json({ message: "Staff data saved successfully." });
-//     } catch (error) {
-//         console.error("Error saving patient data:", error);
-//         return res.status(500).json({ error: "Internal server error." });
-//     }
-// };
 
 const getPatientDynamicFields = async (req, res) => {
     const { staffId } = req.params;
