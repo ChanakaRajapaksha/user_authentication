@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const { handleNewPatient, getAllPatients, getPatientDetails } = require('../controllers/patientRegisterController');
+const { addDynamicFields, getDynamicFields, addPatientWithDynamicData, getPatientDynamicFields, deleteDynamicField } = require('../controllers/patientRegisterController');
 
-router.post('/patient-register', handleNewPatient);
-router.get('/patients', getAllPatients);
-router.get('/patients/:patientId', getPatientDetails);
+router.post("/add-dynamic-fields", addDynamicFields);
+router.get("/", getDynamicFields)
+router.post("/add-patient-dynamic", addPatientWithDynamicData);
+router.get('/:patientId', getPatientDynamicFields);
+router.delete("/add-dynamic-fields/:id", deleteDynamicField);
 
 module.exports = router;

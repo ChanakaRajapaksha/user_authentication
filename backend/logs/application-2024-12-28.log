@@ -1,0 +1,21 @@
+{"level":"info","message":{"action":"findFirst","duration":"382ms","model":"User"},"timestamp":"2024-12-28T12:15:09.148Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-28T12:15:09.151Z"}
+{"level":"info","message":{"action":"update","duration":"33ms","model":"User"},"timestamp":"2024-12-28T12:15:09.275Z"}
+{"level":"info","message":{"action":"create","duration":"6ms","model":"NetworkLog"},"timestamp":"2024-12-28T12:15:09.905Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-12-28T12:15:11.895Z"}
+{"level":"info","message":{"action":"findUnique","duration":"3ms","model":"masterUser"},"timestamp":"2024-12-28T12:15:11.898Z"}
+{"level":"info","message":{"action":"update","duration":"4ms","model":"User"},"timestamp":"2024-12-28T12:15:11.907Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"User"},"timestamp":"2024-12-28T12:15:11.921Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"masterUser"},"timestamp":"2024-12-28T12:15:11.925Z"}
+{"level":"info","message":{"action":"findMany","duration":"4ms","model":"masterUser"},"timestamp":"2024-12-28T12:15:11.970Z"}
+{"level":"info","message":{"action":"findMany","duration":"7ms","model":"Patient"},"timestamp":"2024-12-28T12:15:11.976Z"}
+{"level":"info","message":"Fetched 3 patients from the database.","timestamp":"2024-12-28T12:15:11.977Z"}
+{"level":"info","message":{"action":"findUnique","duration":"12ms","model":"DynamicField"},"timestamp":"2024-12-28T12:51:26.966Z"}
+{"level":"info","message":{"action":"create","duration":"5ms","model":"DynamicField"},"timestamp":"2024-12-28T12:51:26.972Z"}
+{"level":"info","message":{"action":"delete","duration":"64ms","model":"DynamicField"},"timestamp":"2024-12-28T12:51:51.087Z"}
+{"level":"info","message":{"action":"findUnique","duration":"427ms","model":"DynamicField"},"timestamp":"2024-12-28T14:05:19.407Z"}
+{"level":"info","message":{"action":"create","duration":"11ms","model":"DynamicField"},"timestamp":"2024-12-28T14:05:19.420Z"}
+{"level":"info","message":{"action":"delete","duration":"5ms","model":"DynamicField"},"timestamp":"2024-12-28T14:05:21.374Z"}
+{"level":"info","message":{"action":"findUnique","duration":"15ms","model":"DynamicField"},"timestamp":"2024-12-28T14:41:55.677Z"}
+{"level":"info","message":{"action":"findUnique","duration":"10ms","model":"DynamicField"},"timestamp":"2024-12-28T14:50:33.954Z"}
+{"level":"info","message":{"action":"findUnique","duration":"2ms","model":"DynamicField"},"timestamp":"2024-12-28T14:50:46.317Z"}

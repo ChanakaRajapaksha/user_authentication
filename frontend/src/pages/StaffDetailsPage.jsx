@@ -265,7 +265,7 @@ const StaffDetailsPage = () => {
         try {
             // Send DELETE request to your backend using fetch
             const response = await fetch(
-                `http://localhost:5000/dynamic/add-dynamic-fields/${id}`,
+                `http://localhost:5000/patients/add-dynamic-fields/${id}`,
                 {
                     method: "DELETE",
                 }
@@ -299,7 +299,7 @@ const StaffDetailsPage = () => {
 
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/insurance/verify', {
+            const response = await fetch('http://localhost:5000/patients/insurance/verify', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -351,7 +351,7 @@ const StaffDetailsPage = () => {
                 dynamicFieldData,
             };
 
-            const response = await fetch('http://localhost:5000/dynamic/add-staff-dynamic', {
+            const response = await fetch('http://localhost:5000/patients/add-patient-dynamic', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -1139,20 +1139,6 @@ const StaffDetailsPage = () => {
                                                     name={field.field_name}
                                                 />
                                             )}
-                                            {field.field_type === "email" && (
-                                                <TextInput
-                                                    label={field.field_name}
-                                                    type="email"
-                                                    name={field.field_name}
-                                                />
-                                            )}
-                                            {field.field_type === "password" && (
-                                                <TextInput
-                                                    label={field.field_name}
-                                                    type="password"
-                                                    name={field.field_name}
-                                                />
-                                            )}
                                             {field.field_type === "date" && (
                                                 <DateInput
                                                     label={field.field_name}
@@ -1283,7 +1269,7 @@ const StaffDetailsPage = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => handleRemoveField(field.id)}
-                                                className="absolute ml-[350px] mt-[12px] text-red-500 hover:text-red-700"
+                                                className="absolute right-2 top-3 text-red-500 hover:text-red-700"
                                             >
                                                 <IoIosRemoveCircle className="w-5 h-5" />
                                             </button>
@@ -1389,20 +1375,6 @@ const StaffDetailsPage = () => {
                                                     name={field.field_name}
                                                 />
                                             )}
-                                            {field.field_type === "email" && (
-                                                <TextInput
-                                                    label={field.field_name}
-                                                    type="email"
-                                                    name={field.field_name}
-                                                />
-                                            )}
-                                            {field.field_type === "password" && (
-                                                <TextInput
-                                                    label={field.field_name}
-                                                    type="password"
-                                                    name={field.field_name}
-                                                />
-                                            )}
                                             {field.field_type === "date" && (
                                                 <DateInput
                                                     label={field.field_name}
@@ -1533,7 +1505,7 @@ const StaffDetailsPage = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => handleRemoveField(field.id)}
-                                                className="absolute ml-[350px] mt-[12px] text-red-500 hover:text-red-700"
+                                                className="absolute right-2 top-3 text-red-500 hover:text-red-700"
                                             >
                                                 <IoIosRemoveCircle className="w-5 h-5" />
                                             </button>
@@ -1742,7 +1714,7 @@ const StaffDetailsPage = () => {
                                                 {paymentFields.map((field, index) => (
                                                     <div
                                                         key={field.id}
-                                                        className={`w-fit md:w-${field.width} flex flex-col relative`}
+                                                        className={`w-3/12 md:w-${field.width} flex flex-col relative`}
                                                     >
                                                         {/* Render input based on the type */}
                                                         {field.field_type === "text" && (
@@ -1756,20 +1728,6 @@ const StaffDetailsPage = () => {
                                                             <TextInput
                                                                 label={field.field_name}
                                                                 type="number"
-                                                                name={field.field_name}
-                                                            />
-                                                        )}
-                                                        {field.field_type === "email" && (
-                                                            <TextInput
-                                                                label={field.field_name}
-                                                                type="email"
-                                                                name={field.field_name}
-                                                            />
-                                                        )}
-                                                        {field.field_type === "password" && (
-                                                            <TextInput
-                                                                label={field.field_name}
-                                                                type="password"
                                                                 name={field.field_name}
                                                             />
                                                         )}

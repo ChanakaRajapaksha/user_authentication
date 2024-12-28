@@ -1,255 +1,429 @@
-const prisma = require('../database/prismaClient');
-const logger = require('../logger');
+const prisma = require("../database/prismaClient");
 
+// const addStaff = async (req, res) => {
+//     try {
+//       const {
+//         role,
+//         designation,
+//         department,
+//         specialist,
+//         firstName,
+//         lastName,
+//         fatherName,
+//         motherName,
+//         gender,
+//         maritalStatus,
+//         bloodGroup,
+//         dateOfBirth,
+//         dateOfJoining,
+//         phone,
+//         emergencyContact,
+//         email,
+//         photo,
+//         currentAddress,
+//         permanentAddress,
+//         qualification,
+//         workExperience,
+//         specialization,
+//         note,
+//         panNumber,
+//         nationalIDNumber,
+//         localIDNumber,
+//         referenceContact,
+//       } = req.body;
 
-const handleNewPatient = async (req, res) => {
-    console.log(req.body);
+//       // Validate mandatory fields
+//       if (!role || !gender || !dateOfBirth || !email) {
+//         return res.status(400).json({ message: 'Required fields are missing!' });
+//       }
 
-    const {
-        fullName = null,
-        dateOfBirth = null,
-        gender = null,
-        nationality = null,
-        email = null,
-        maritalStatus = null,
-        visaType = null,
-        nationalId = null,
-        otherIdType = null,
-        otherIdValue = null,
-        contactNumberMobile = null,
-        contactNumberWork = null,
-        consultationType = null,
-        doctorName = null,
-        appointmentDate = null,
-        speciality = null,
-        consultationReason = null,
-        paymentType = null,
-        insurancePlan = null,
-        policyNumber = null,
-        policyExpiryDate = null,
-        insuranceCardNumber = null,
-        insuranceProvider = null,
-        insuranceSubProvider = null,
-        ...dynamicFields 
-    } = req.body;
-    
-    // Validate required fields
-    // if (
-    //     !fullName ||
-    //     !dateOfBirth ||
-    //     !gender ||
-    //     !email ||
-    //     !nationalId 
-    // ) {
-    //     return res.status(400).json({ message: 'All required fields must be filled.' });
-    // }
+//       // Create the staff record
+//       const newStaff = await prisma.staff.create({
+//         data: {
+//           role,
+//           designation,
+//           department,
+//           specialist,
+//           firstName,
+//           lastName,
+//           fatherName,
+//           motherName,
+//           gender,
+//           maritalStatus,
+//           bloodGroup,
+//           dateOfBirth: new Date(dateOfBirth),
+//           dateOfJoining: dateOfJoining ? new Date(dateOfJoining) : null,
+//           phone,
+//           emergencyContact,
+//           email,
+//           photo,
+//           currentAddress,
+//           permanentAddress,
+//           qualification,
+//           workExperience,
+//           specialization,
+//           note,
+//           panNumber,
+//           nationalIDNumber,
+//           localIDNumber,
+//           referenceContact,
+//         },
+//       });
 
-    // Conditional validation for Insurance payment type
-    if (paymentType === "Insurance" && (!insuranceCardNumber || !insuranceProvider || !insuranceSubProvider)) {
-        return res.status(400).json({
-            message: 'Insurance card number, provider, and sub-provider are required for Insurance payment type.',
-        });
-    }
+//       res.status(201).json({
+//         message: 'Staff member created successfully!',
+//         staff: newStaff,
+//       });
+//     } catch (error) {
+//       console.error('Error creating staff:', error);
+//       res.status(500).json({ message: 'Internal server error', error: error.message });
+//     }
+//   };
 
+const addDynamicFields = async (req, res) => {
     try {
-        const duplicateEmail = await prisma.patient.findUnique({
-            where: { email },
-        });
+        const fields = req.body;
 
-        const duplicateNationalId = await prisma.patient.findUnique({
-            where: { nationalId },
-        });
-
-        if (duplicateEmail) {
-            return res.status(409).json({ message: 'Email already exists.' });
+        if (!Array.isArray(fields) || fields.length === 0) {
+            return res.status(400).json({
+                error: "Input should be a non-empty array of fields",
+            });
         }
 
-        if (duplicateNationalId) {
-            return res.status(409).json({ message: 'National ID already exists.' });
-        }
+        const addedFields = [];
+        for (const field of fields) {
+            const {
+                field_name,
+                field_type,
+                dropdown_options,
+                radio_buttons,
+                is_required,
+                category,
+            } = field;
 
-        const currentDate = new Date();
-        const birthDate = new Date(dateOfBirth);
-        const age = currentDate.getFullYear() - birthDate.getFullYear() -
-            (currentDate.getMonth() < birthDate.getMonth() ||
-                (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate()) ? 1 : 0);
+            if (!field_name || !field_type || !category) {
+                return res.status(400).json({
+                    error: "All fields are required: field_name, field_type, category",
+                });
+            }
 
-        const normalizedGender = gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase();
+            const existingDynamicField = await prisma.dynamicField.findUnique({
+                where: { field_name },
+            });
 
-        const newPatient = await prisma.patient.create({
-            data: {
-                fullName,
-                dateOfBirth: birthDate,
-                age,
-                gender: normalizedGender,
-                nationality,
-                email,
-                maritalStatus,
-                visaType,
-                nationalId,
-                otherIdType,
-                otherIdValue,
-                contactNumberMobile, 
-                contactNumberWork,
-                consultationType,
-                doctorName,
-                appointmentDate: new Date(appointmentDate),
-                speciality,
-                consultationReason,
-                paymentType,
-                insurancePlan,
-                insuranceCardNumber: paymentType === "Insurance" ? insuranceCardNumber : null,
-                insuranceProvider: paymentType === "Insurance" ? insuranceProvider : null,
-                insuranceSubProvider: paymentType === "Insurance" ? insuranceSubProvider : null,
-                policyNumber,
-                policyExpiryDate: policyExpiryDate ? new Date(policyExpiryDate) : null,
-                customFields: dynamicFields, 
-            },
-        });
-
-        logger.info(`Patient registered: ${email}`);
-        res.status(201).json({ success: `New patient ${newPatient.fullName} created!` });
-    } catch (err) {
-        console.error(err);
-        logger.error(`Error during patient registration: ${err.message}`);
-        res.status(500).json({ message: 'Internal Server Error.' });
-    }
-};
-
-const getAllPatients = async (req, res) => {
-    try {
-        const patients = await prisma.patient.findMany({
-            select: {
-                patientId: true,
-                fullName: true,
-                dateOfBirth: true,
-                age: true,
-                gender: true,
-                nationality: true,
-                email: true,
-                maritalStatus: true,
-                visaType: true,
-                nationalId: true,
-                otherIdType: true,
-                otherIdValue: true,
-                contactNumberMobile: true,
-                contactNumberWork: true,
-                consultationType: true,
-                doctorName: true,
-                appointmentDate: true,
-                speciality: true,
-                consultationReason: true,
-                paymentType: true,
-                insurancePlan: true,
-                policyNumber: true,
-                policyExpiryDate: true,
-                insuranceCardNumber: true,
-                insuranceProvider: true,
-                insuranceSubProvider: true,
-                customFields: true,
-            },
-        });
-
-        logger.info(`Fetched ${patients.length} patients from the database.`);
-        res.status(200).json(patients);
-    } catch (err) {
-        console.error(err);
-        logger.error(`Error retrieving patients: ${err.message}`);
-        res.status(500).json({ message: 'Internal Server Error.' });
-    }
-};
-
-const getPatientDetails = async (req, res) => {
-    const { patientId } = req.params;
-
-    if (!patientId) {
-        return res.status(400).json({ message: 'Patient ID is required.' });
-    }
-
-    try {
-        const patient = await prisma.patient.findUnique({
-            where: { patientId },
-            select: {
-                patientId: true,
-                fullName: true,
-                dateOfBirth: true,
-                age: true,
-                gender: true,
-                nationality: true,
-                email: true,
-                maritalStatus: true,
-                visaType: true,
-                nationalId: true,
-                otherIdType: true,
-                otherIdValue: true,
-                contactNumberMobile: true,
-                contactNumberWork: true,
-                consultationType: true,
-                doctorName: true,
-                appointmentDate: true,
-                speciality: true,
-                consultationReason: true,
-                paymentType: true,
-                insurancePlan: true,
-                policyNumber: true,
-                policyExpiryDate: true,
-                insuranceCardNumber: true,
-                insuranceProvider: true,
-                insuranceSubProvider: true,
-                customFields: true,
-            },
-        });
-
-        if (!patient) {
-            logger.warn(`Patient with ID ${patientId} not found.`);
-            return res.status(404).json({ message: 'Patient not found.' });
-        }
-
-        const formattedCustomFields = [];
-        if (patient.customFields) {
-            for (const [key, value] of Object.entries(patient.customFields)) {
-                const cleanedKey = key.replace(/_\d+$/, '');
-                formattedCustomFields.push({ key: cleanedKey, value });
+            let newDynamicField;
+            if (!existingDynamicField) {
+                newDynamicField = await prisma.dynamicField.create({
+                    data: {
+                        field_name,
+                        field_type,
+                        dropdown_options: Array.isArray(dropdown_options)
+                            ? dropdown_options.join(", ")
+                            : dropdown_options || null,
+                        radio_buttons: Array.isArray(radio_buttons)
+                            ? radio_buttons.join(", ")
+                            : radio_buttons || null,
+                        is_required,
+                        category,
+                    },
+                });
+                addedFields.push(newDynamicField);
+            } else {
+                addedFields.push(existingDynamicField);
             }
         }
 
-        const response = {
-            patientId: patient.patientId,
-            fullName: patient.fullName,
-            dateOfBirth: patient.dateOfBirth,
-            age: patient.age,
-            gender: patient.gender,
-            nationality: patient.nationality,
-            email: patient.email,
-            maritalStatus: patient.maritalStatus,
-            visaType: patient.visaType,
-            nationalId: patient.nationalId,
-            otherIdType: patient.otherIdType,
-            otherIdValue: patient.otherIdValue,
-            contactNumberMobile: patient.contactNumberMobile,
-            contactNumberWork: patient.contactNumberWork,
-            consultationType: patient.consultationType,
-            doctorName: patient.doctorName,
-            appointmentDate: patient.appointmentDate,
-            speciality: patient.speciality,
-            consultationReason: patient.consultationReason,
-            paymentType: patient.paymentType,
-            insurancePlan: patient.insurancePlan,
-            policyNumber: patient.policyNumber,
-            policyExpiryDate: patient.policyExpiryDate,
-            insuranceCardNumber: patient.insuranceCardNumber,
-            insuranceProvider: patient.insuranceProvider,
-            insuranceSubProvider: patient.insuranceSubProvider,
-            customFields: formattedCustomFields,
-        };
-
-        logger.info(`Fetched details for patient ID: ${patientId}`);
-        res.status(200).json(response);
-    } catch (err) {
-        console.error(err);
-        logger.error(`Error retrieving patient details: ${err.message}`);
-        res.status(500).json({ message: 'Internal Server Error.' });
+        return res.status(201).json({
+            message: "Dynamic fields added successfully",
+            data: addedFields.map((field) => ({
+                ...field,
+                dropdown_options: field.dropdown_options
+                    ? field.dropdown_options.split(", ")
+                    : null,
+                radio_buttons: field.radio_buttons
+                    ? field.radio_buttons.split(", ")
+                    : null,
+            })),
+        });
+    } catch (error) {
+        console.error("Error adding dynamic fields:", error);
+        return res.status(500).json({ error: "Internal server error." });
     }
 };
 
-module.exports = { handleNewPatient, getAllPatients, getPatientDetails };
+const getDynamicFields = async (req, res) => {
+    try {
+        const fields = await prisma.dynamicField.findMany({
+            select: { field_name: true, field_type: true },
+        });
+        return res.status(200).json(fields);
+    } catch (error) {
+        console.error("Error fetching dynamic fields:", error);
+        return res.status(500).json({ error: "Internal server error." });
+    }
+};
+
+const addPatientWithDynamicData = async (req, res) => {
+    try {
+        const {
+            staffId,
+            role,
+            designation,
+            department,
+            specialist,
+            firstName,
+            lastName,
+            fatherName,
+            motherName,
+            gender,
+            maritalStatus,
+            bloodGroup,
+            dateOfBirth,
+            dateOfJoining,
+            phone,
+            emergencyContact,
+            email,
+            photo,
+            currentAddress,
+            permanentAddress,
+            qualification,
+            workExperience,
+            specialization,
+            note,
+            panNumber,
+            nationalIDNumber,
+            localIDNumber,
+            referenceContact,
+            dynamicFieldData,
+        } = req.body;
+
+        // Validate mandatory fields
+        if (!staffId || !role || !gender || !firstName || !email) {
+            return res.status(400).json({
+                message: "Required fields are missing",
+                missingFields: [
+                    !staffId && "staffId",
+                    !role && "role",
+                    !gender && "gender",
+                    !firstName && "firstName",
+                    !email && "email",
+                ].filter(Boolean),
+            });
+        }
+
+        const result = await prisma.$transaction(async (prisma) => {
+            // Create the staff record
+            const newStaff = await prisma.staff.create({
+                data: {
+                    staffId,
+                    role,
+                    designation,
+                    department,
+                    specialist,
+                    firstName,
+                    lastName,
+                    fatherName,
+                    motherName,
+                    gender,
+                    maritalStatus,
+                    bloodGroup,
+                    dateOfBirth: new Date(dateOfBirth),
+                    dateOfJoining: dateOfJoining ? new Date(dateOfJoining) : null,
+                    phone,
+                    emergencyContact,
+                    email,
+                    photo,
+                    currentAddress,
+                    permanentAddress,
+                    qualification,
+                    workExperience,
+                    specialization,
+                    note,
+                    panNumber,
+                    nationalIDNumber,
+                    localIDNumber,
+                    referenceContact,
+                },
+            });
+
+            // Process dynamic fields if provided
+            if (dynamicFieldData && Object.keys(dynamicFieldData).length > 0) {
+                for (const [fieldName, value] of Object.entries(dynamicFieldData)) {
+                    const field = await prisma.dynamicField.findUnique({
+                        where: { field_name: fieldName },
+                    });
+                    if (field) {
+                        await prisma.staffDynamicField.create({
+                            data: {
+                                staff_id: newStaff.staffId,
+                                dynamicFieldId: field.id,
+                                value: value || "",
+                            },
+                        });
+                    }
+                }
+            }
+
+            return newStaff;
+        });
+
+        res.status(201).json({
+            message: "Staff member and dynamic data created successfully!",
+            staff: result,
+        });
+    } catch (error) {
+        console.error("Error creating staff with dynamic data:", error);
+        res
+            .status(500)
+            .json({ message: "Internal server error", error: error.message });
+    }
+};
+
+// const saveStaffData = async (req, res) => {
+//     try {
+//         const { staffId, dynamicFieldData } = req.body;
+
+//         // Example `dynamicFieldData` structure:
+//         // { "height": "180", "weight": "75", "blood_pressure": "120/80" }
+
+//         for (const [fieldName, value] of Object.entries(dynamicFieldData)) {
+//             const field = await prisma.dynamicField.findUnique({
+//                 where: { field_name: fieldName },
+//             });
+
+//             if (field) {
+//                 await prisma.staffDynamicField.create({
+//                     data: {
+//                         staffId,
+//                         dynamicFieldId: field.id,
+//                         value,
+//                     },
+//                 });
+//             }
+//         }
+
+//         return res.status(201).json({ message: "Staff data saved successfully." });
+//     } catch (error) {
+//         console.error("Error saving patient data:", error);
+//         return res.status(500).json({ error: "Internal server error." });
+//     }
+// };
+
+const getPatientDynamicFields = async (req, res) => {
+    const { staffId } = req.params;
+
+    try {
+        // Fetch staff data along with dynamic fields and their associated dynamic field details
+        const staffData = await prisma.staff.findUnique({
+            where: { staffId: staffId },
+            include: {
+                staff_dynamic_field: {
+                    include: {
+                        dynamic_field: true,
+                    },
+                },
+            },
+        });
+
+        if (!staffData) {
+            return res.status(404).json({ message: "Staff not found" });
+        }
+
+        const transformedDynamicFields = staffData.staff_dynamic_field.map(
+            (field) => ({
+                id: field.id,
+                staff_id: field.staff_id,
+                dynamicFieldId: field.dynamicFieldId,
+                value: field.value,
+                field_name: field.dynamic_field.field_name,
+            })
+        );
+
+        const response = {
+            ...staffData,
+            staff_dynamic_field: transformedDynamicFields,
+        };
+
+        return res.status(200).json(response);
+    } catch (error) {
+        console.error(error);
+        return res
+            .status(500)
+            .json({ message: "Error fetching staff data with dynamic fields" });
+    }
+};
+
+const deleteDynamicField = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ error: "Field ID is required." });
+        }
+
+        // Convert ID to a Number
+        const fieldId = Number(id);
+
+        const deletedField = await prisma.dynamicField.delete({
+            where: { id: fieldId },
+        });
+
+        if (!deletedField) {
+            return res.status(404).json({ error: "Field not found!" });
+        }
+
+        return res.status(200).json({
+            message: "Dynamic field deleted successfully",
+        });
+    } catch (error) {
+        console.error("Error deleting dynamic field:", error);
+        return res.status(500).json({ error: "Internal server error." });
+    }
+};
+
+const verifyInsurance = async (req, res) => {
+    const { insuranceId } = req.body;
+
+    if (!insuranceId || insuranceId.length !== 25) {
+        return res.status(400).json({ message: "Invalid insurance ID" });
+    }
+
+    try {
+        const insuranceApiUrl = "/";
+
+        const response = await fetch(insuranceApiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ insuranceId }),
+        });
+
+        if (!response.ok) {
+            return res.status(400).json({ message: "Insurance verification failed." });
+        }
+
+        const data = await response.json();
+
+        if (data.eligible) {
+            res.status(200).json({ message: "Successfully verified." });
+        } else {
+            res.status(400).json({ message: "Insurance verification failed." });
+        }
+    } catch (error) {
+        console.error("Error verifying insurance:", error.message);
+        res
+            .status(500)
+            .json({ message: "Failed to verify insurance. Please try again." });
+    }
+};
+
+
+module.exports = {
+    addDynamicFields,
+    getDynamicFields,
+    addPatientWithDynamicData,
+    getPatientDynamicFields,
+    deleteDynamicField,
+    verifyInsurance,
+};

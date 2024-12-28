@@ -3,6 +3,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import { toast } from "react-toastify";
 import TextInput from "./FormInputs/TextInput";
 import SelectInput from "./FormInputs/SelectInput";
+import Checkbox from "./FormInputs/Checkbox";
 
 const CustomField = ({ onAddField }) => {
     const [label, setLabel] = useState("");
@@ -12,6 +13,7 @@ const CustomField = ({ onAddField }) => {
     const [radioOptions, setRadioOptions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState("patientDetails");
+    const [isRequired, setIsRequired] = useState(false);
 
     const handleAddCustomField = async () => {
         if (!label) {
@@ -23,7 +25,7 @@ const CustomField = ({ onAddField }) => {
 
         try {
             const newField = {
-                field_name: label,
+                field_name: isRequired ? `${label} *` : label,
                 field_type: type,
                 dropdown_options:
                     type === "select"
@@ -33,11 +35,16 @@ const CustomField = ({ onAddField }) => {
                     type === "radio" && radioOptions.length
                         ? radioOptions.map((option) => option.trim())
                         : null,
-                category: selectedCategory, 
+                checkbox_options:
+                    type === "checkbox" && options.length
+                        ? options.split(",").map((option) => option.trim())
+                        : null,
+                category: selectedCategory,
+                is_required: isRequired,
             };
 
             const response = await fetch(
-                'http://localhost:5000/dynamic/add-dynamic-fields',
+                'http://localhost:5000/patients/add-dynamic-fields',
                 {
                     method: "POST",
                     headers: {
@@ -60,16 +67,21 @@ const CustomField = ({ onAddField }) => {
                 setOptions("");
                 setRadioCount("");
                 setRadioOptions([]);
+                setIsRequired(false);
 
                 toast.success("Custom field added successfully!", {
                     position: "top-right",
                 });
             } else {
-                toast.error("Failed to add custom field", { position: "top-right" });
+                toast.error("Failed to add custom field", {
+                    position: "top-right",
+                });
             }
         } catch (error) {
             console.error("Error adding custom field:", error);
-            toast.error("Failed to add custom field", { position: "top-right" });
+            toast.error("Failed to add custom field", {
+                position: "top-right",
+            });
         } finally {
             setLoading(false);
         }
@@ -88,8 +100,10 @@ const CustomField = ({ onAddField }) => {
 
     return (
         <div className="mt-8 p-6 bg-gray-200 shadow-md rounded-md">
-            <h2 className="text-xl text-black font-semibold mb-4">Add Custom Field</h2>
-            <div className="flex justify-start gap-4">
+            <h2 className="text-xl text-black font-semibold mb-4">
+                Add Custom Field
+            </h2>
+            <div className="flex flex-wrap gap-4">
                 <div className="flex flex-row w-full gap-5">
                     <SelectInput
                         label="Category"
@@ -116,8 +130,6 @@ const CustomField = ({ onAddField }) => {
                         options={[
                             { value: "text", label: "Text" },
                             { value: "number", label: "Number" },
-                            { value: "email", label: "Email" },
-                            { value: "password", label: "Password" },
                             { value: "date", label: "Date" },
                             { value: "textarea", label: "Textarea" },
                             { value: "checkbox", label: "Checkbox" },
@@ -137,7 +149,17 @@ const CustomField = ({ onAddField }) => {
                         />
                     )}
 
-                    {type === "radio" && (
+                    <div className="flex flex-col items-center justify-center h-20">
+                        <Checkbox
+                            label="Required"
+                            checked={isRequired}
+                            onChange={(e) => setIsRequired(e.target.checked)}
+                        />
+                    </div>
+                </div>
+
+                {type === "radio" && (
+                    <div className="w-[10%]">
                         <TextInput
                             label="Number of Radio Buttons"
                             type="number"
@@ -147,24 +169,28 @@ const CustomField = ({ onAddField }) => {
                                 handleGenerateRadioFields(e.target.value);
                             }}
                         />
-                    )}
-
-                    {type === "radio" && radioOptions.map((option, index) => (
-                        <div key={index}>
-                            <TextInput
-                                label={`Radio Option ${index + 1}`}
-                                value={option}
-                                onChange={(e) => handleRadioOptionChange(index, e.target.value)}
-                            />
+                        <div className="flex flex-wrap gap-4 mt-4 border py-2 px-6 rounded-lg">
+                            {radioOptions.map((option, index) => (
+                                <div key={index} className="flex flex-col gap-2">
+                                    <TextInput
+                                        label={`Radio Option ${index + 1}`}
+                                        value={option}
+                                        onChange={(e) =>
+                                            handleRadioOptionChange(index, e.target.value)
+                                        }
+                                    />
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    </div>
+                )}
             </div>
 
             <button
                 type="button"
                 onClick={handleAddCustomField}
-                className={`mt-8 bg-black text-white font-semibold rounded py-2 px-4 flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`mt-8 bg-black text-white font-semibold rounded py-2 px-4 flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                 disabled={loading}
             >
                 {loading ? "Adding..." : "Add Field"}

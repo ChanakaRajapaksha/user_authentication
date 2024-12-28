@@ -200,7 +200,7 @@ const AuthPage = () => {
 
 
     return (
-        <div className="flex flex-col lg:flex-row h-screen">
+        <div className="flex flex-col lg:flex-row h-[100vh]">
             {/* Left Section */}
             <div className="hidden lg:flex lg:w-1/2 bg-gray-200 items-center justify-center">
                 <img src="/login_image.jpg" className="h-full object-cover" alt="Login" />

@@ -52,7 +52,7 @@ export default function App() {
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           <Route path="/patient-register" element={<PatientRegisterPage />} />
-          <Route path="/staff" element={<StaffDetailsPage />} />
+          <Route path="/new-patient" element={<StaffDetailsPage />} />
         </Route>
       </Routes>
 
