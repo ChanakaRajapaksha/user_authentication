@@ -232,7 +232,7 @@ const addPatientWithDynamicData = async (req, res) => {
             work,
             landPhone,
             wMobile,
-            preferredLanguage,
+            preferredLanguage, 
             occupation,
             infoSource,
             emirates,
@@ -259,38 +259,19 @@ const addPatientWithDynamicData = async (req, res) => {
         } = req.body;
 
         // Validate mandatory fields
-        if (!visitType || !existing || !patientPriority || !patientFullName || !dob || !age || !gender || !nationality || !emailId || !maritalStatus || !visaType || !nationalId || !idType || !idNumber || !mobile || !occupation || !infoSource || !emirates || !place || !mainDistrict || !district || !area || !address || !companyName || !specialty || !doctorName || !paymentType) {
+        const requiredFields = [
+            "visitType", "existing", "patientPriority", "patientFullName", "dob", "age",
+            "gender", "nationality", "emailId", "maritalStatus", "visaType", "nationalId",
+            "idType", "idNumber", "mobile", "occupation", "infoSource", "emirates", "place",
+            "mainDistrict", "district", "area", "address", "companyName", "specialty",
+            "doctorName", "paymentType"
+        ];
+
+        const missingFields = requiredFields.filter(field => !req.body[field]);
+        if (missingFields.length > 0) {
             return res.status(400).json({
                 message: "Required fields are missing",
-                missingFields: [
-                    !visitType && "visitType",
-                    !existing && "existing",
-                    !patientPriority && "patientPriority",
-                    !patientFullName && "patientFullName",
-                    !dob && "dob",
-                    !age && "age",
-                    !gender && "gender",
-                    !nationality && "nationality",
-                    !emailId && "emailId",
-                    !maritalStatus && "maritalStatus",
-                    !visaType && "visaType",
-                    !nationalId && "nationalId",
-                    !idType && "idType",
-                    !idNumber && "idNumber",
-                    !mobile && "mobile",
-                    !occupation && "occupation",
-                    !infoSource && "infoSource",
-                    !emirates && "emirates",
-                    !place && "place",
-                    !mainDistrict && "mainDistrict",
-                    !district && "district",
-                    !area && "area",
-                    !address && "address",
-                    !companyName && "companyName",
-                    !specialty && "specialty",
-                    !doctorName && "doctorName",
-                    !paymentType && "paymentType"
-                ].filter(Boolean),
+                missingFields,
             });
         }
 
@@ -300,6 +281,9 @@ const addPatientWithDynamicData = async (req, res) => {
 
             // Convert Registration Date to ISO
             const isoRegistrationDate = parseCustomDate(registrationDate);
+
+            // Ensure preferredLanguage is an array
+            const languages = Array.isArray(preferredLanguage) ? preferredLanguage : [preferredLanguage];
 
             // Create the patient record
             const newPatient = await prisma.patient.create({
@@ -327,7 +311,7 @@ const addPatientWithDynamicData = async (req, res) => {
                     work,
                     landPhone,
                     wMobile,
-                    preferredLanguage,
+                    preferredLanguage: languages, // Save as array
                     occupation,
                     infoSource,
                     emirates,
@@ -425,49 +409,49 @@ const addPatientWithDynamicData = async (req, res) => {
     }
 };
 
-const getPatientDynamicFields = async (req, res) => {
-    const { staffId } = req.params;
+// const getPatientDynamicFields = async (req, res) => {
+//     const { staffId } = req.params;
 
-    try {
-        // Fetch staff data along with dynamic fields and their associated dynamic field details
-        const staffData = await prisma.staff.findUnique({
-            where: { staffId: staffId },
-            include: {
-                staff_dynamic_field: {
-                    include: {
-                        dynamic_field: true,
-                    },
-                },
-            },
-        });
+//     try {
+//         // Fetch staff data along with dynamic fields and their associated dynamic field details
+//         const staffData = await prisma.staff.findUnique({
+//             where: { staffId: staffId },
+//             include: {
+//                 staff_dynamic_field: {
+//                     include: {
+//                         dynamic_field: true,
+//                     },
+//                 },
+//             },
+//         });
 
-        if (!staffData) {
-            return res.status(404).json({ message: "Staff not found" });
-        }
+//         if (!staffData) {
+//             return res.status(404).json({ message: "Staff not found" });
+//         }
 
-        const transformedDynamicFields = staffData.staff_dynamic_field.map(
-            (field) => ({
-                id: field.id,
-                staff_id: field.staff_id,
-                dynamicFieldId: field.dynamicFieldId,
-                value: field.value,
-                field_name: field.dynamic_field.field_name,
-            })
-        );
+//         const transformedDynamicFields = staffData.staff_dynamic_field.map(
+//             (field) => ({
+//                 id: field.id,
+//                 staff_id: field.staff_id,
+//                 dynamicFieldId: field.dynamicFieldId,
+//                 value: field.value,
+//                 field_name: field.dynamic_field.field_name,
+//             })
+//         );
 
-        const response = {
-            ...staffData,
-            staff_dynamic_field: transformedDynamicFields,
-        };
+//         const response = {
+//             ...staffData,
+//             staff_dynamic_field: transformedDynamicFields,
+//         };
 
-        return res.status(200).json(response);
-    } catch (error) {
-        console.error(error);
-        return res
-            .status(500)
-            .json({ message: "Error fetching staff data with dynamic fields" });
-    }
-};
+//         return res.status(200).json(response);
+//     } catch (error) {
+//         console.error(error);
+//         return res
+//             .status(500)
+//             .json({ message: "Error fetching staff data with dynamic fields" });
+//     }
+// };
 
 const deleteDynamicField = async (req, res) => {
     try {
@@ -539,7 +523,8 @@ module.exports = {
     addDynamicFields,
     getDynamicFields,
     addPatientWithDynamicData,
-    getPatientDynamicFields,
     deleteDynamicField,
     verifyInsurance,
+    addInsurance,
+    addDeductible,
 };

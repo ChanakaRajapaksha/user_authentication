@@ -79,7 +79,7 @@ model Patient {
   work                String?               @db.VarChar(15)
   landPhone           String?               @db.VarChar(15)
   wMobile             String?               @db.VarChar(15)
-  preferredLanguage   String?
+  preferredLanguage   Json?
   occupation          String                @db.VarChar(50)
   infoSource          String
   emirates            String
@@ -116,7 +116,7 @@ model Insurance {
   insuranceEffectiveDate DateTime
   insuranceExpiryDate    DateTime
   certificateNo          String       @db.VarChar(20)
-  dependentsNo           Int          @default(0) @db.TinyInt
+  dependentsNo           String       @db.VarChar(2)
   insuranceClaimNo       String?      @db.VarChar(20)
   maxInsuranceLiability  Decimal      @db.Decimal(20, 2)
   insuranceApprovalLimit Decimal      @db.Decimal(20, 2)

@@ -18,60 +18,60 @@ import TextareaInput from "../components/FormInputs/TextareaInput";
 const StaffDetailsPage = () => {
     const initialDeductibleCopayData = {
         Consultation: {
-            deductible: "",
+            deductible: null,
             deductibleType: "all",
-            copay: "",
+            copay: null,
             copayType: "all",
-            min: "",
-            max: "",
+            min: null,
+            max: null,
         },
         Lab: {
-            deductible: "",
+            deductible: null,
             deductibleType: "all",
-            copay: "",
+            copay: null,
             copayType: "all",
-            min: "",
-            max: "",
+            min: null,
+            max: null,
         },
         Radiology: {
-            deductible: "",
+            deductible: null,
             deductibleType: "all",
-            copay: "",
+            copay: null,
             copayType: "all",
-            min: "",
-            max: "",
+            min: null,
+            max: null,
         },
         Treatment: {
-            deductible: "",
+            deductible: null,
             deductibleType: "all",
-            copay: "",
+            copay: null,
             copayType: "all",
-            min: "",
-            max: "",
+            min: null,
+            max: null,
         },
         Medicine: {
-            deductible: "",
+            deductible: null,
             deductibleType: "all",
-            copay: "",
+            copay: null,
             copayType: "all",
-            min: "",
-            max: "",
+            min: null,
+            max: null,
         },
         Dental: {
-            deductible: "",
+            deductible: null,
             deductibleType: "all",
-            copay: "",
+            copay: null,
             copayType: "all",
-            min: "",
-            max: "",
+            min: null,
+            max: null,
         },
         Maternity: {
-            deductible: "",
+            deductible: null,
             deductibleType: "all",
-            copay: "",
+            copay: null,
             copayType: "all",
-            min: "",
-            max: "",
+            min: null,
+            max: null,
         },
     };
 
@@ -98,7 +98,7 @@ const StaffDetailsPage = () => {
         work: "",
         landPhone: "",
         wMobile: "",
-        preferredLanguage: "",
+        preferredLanguage: [], 
         occupation: "",
         infoSource: "",
         emirates: "",
@@ -141,11 +141,12 @@ const StaffDetailsPage = () => {
     const [customFields, setCustomFields] = useState([]);
     const [loading, setLoading] = useState(false);
     const [consultationFeeMessage, setConsultationFeeMessage] = useState("");
-    const [selectedLanguages, setSelectedLanguages] = useState([]);
+    const [selectedLanguages, setSelectedLanguages] = useState(patientData.preferredLanguage);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const availableLanguages = ["English", "Arabic", "Spanish"];
     const [insuranceTableData, setInsuranceTableData] = useState([]);
-    const [editingIndex, setEditingIndex] = useState(null); // Track which row is being edited
+    const [editingIndex, setEditingIndex] = useState(null); 
+    const [insuranceList, setInsuranceList] = useState([]);
 
     // Format current date and time
     const formatDateTime = () => {
@@ -194,14 +195,6 @@ const StaffDetailsPage = () => {
         return `${ageInYears} years, ${ageInMonths} months, ${ageInDays} days`;
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setPatientData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
     // Update age when dob changes
     useEffect(() => {
         if (patientData.dob) {
@@ -224,9 +217,25 @@ const StaffDetailsPage = () => {
     // Function to add a preferred language
     const handleAddRemoveLanguage = (language) => {
         if (selectedLanguages.includes(language)) {
-            setSelectedLanguages((prev) => prev.filter((lang) => lang !== language));
+            setSelectedLanguages((prev) => {
+                const updatedLanguages = prev.filter((lang) => lang !== language);
+                // Update patientData's preferredLanguage with the selected languages array
+                setPatientData((prevData) => ({
+                    ...prevData,
+                    preferredLanguage: updatedLanguages,
+                }));
+                return updatedLanguages;
+            });
         } else {
-            setSelectedLanguages((prev) => [...prev, language]);
+            setSelectedLanguages((prev) => {
+                const updatedLanguages = [...prev, language];
+                // Update patientData's preferredLanguage with the selected languages array
+                setPatientData((prevData) => ({
+                    ...prevData,
+                    preferredLanguage: updatedLanguages,
+                }));
+                return updatedLanguages;
+            });
         }
     };
 
@@ -339,6 +348,7 @@ const StaffDetailsPage = () => {
         try {
             const dynamicFieldData = {};
 
+            // Collect dynamic custom fields
             customFields.forEach((field) => {
                 const inputElement = document.querySelector(
                     `[name="${field.field_name}"]`
@@ -346,23 +356,80 @@ const StaffDetailsPage = () => {
                 dynamicFieldData[field.field_name] = inputElement?.value || "";
             });
 
+            // Build insurance data dynamically from patientData (only for 'insurance' payment type)
+            const insurancePayload = patientData.paymentType === "insurance" ? [{
+                insuranceProvider: patientData.insuranceProvider,
+                subInsurance: patientData.subInsurance,
+                networkType: patientData.networkType,
+                insuranceCardNumber: patientData.insuranceCardNumber,
+                extraCardNumber: patientData.extraCardNumber,
+                insuranceEffectiveDate: patientData.insuranceEffectiveDate,
+                insuranceExpiryDate: patientData.insuranceExpiryDate,
+                certificateNo: patientData.certificateNo,
+                dependentsNo: patientData.dependentsNo,
+                insuranceClaimNo: patientData.insuranceClaimNo,
+                maxInsuranceLiability: patientData.maxInsuranceLiability,
+                insuranceApprovalLimit: patientData.insuranceApprovalLimit,
+                maxInsuranceCoPay: patientData.maxInsuranceCoPay,
+                coPayPatient: patientData.coPayPatient,
+            }] : [];
+
+            // Build corporate data dynamically from patientData (only for 'corporate' payment type)
+            const corporatePayload = patientData.paymentType === "corporate" ? [{
+                corporateName: patientData.corporateName,
+            }] : [];
+
+            // Include the preferredLanguage in the request body
             const requestBody = {
                 ...patientData,
                 dynamicFieldData,
+                insuranceData: insurancePayload,
+                corporateData: corporatePayload,
+                preferredLanguage: patientData.preferredLanguage || "",  // Ensure preferredLanguage is included
             };
 
-            const response = await fetch('http://localhost:5000/patients/add-patient-dynamic', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
+            const response = await fetch(
+                'http://localhost:5000/patients/add-patient-dynamic',
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(requestBody),
+                }
+            );
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("staff data saved:", data);
+                console.log("Patient data saved:", data);
 
+                // Handle deductible submission if payment type is insurance
+                if (patientData.paymentType === "insurance") {
+                    const deductiblePayload = Object.entries(patientData.deductibles).map(([key, value]) => ({
+                        deductibleType: value.deductibleType,
+                        copayType: value.copayType,
+                        deductible: value.deductible,
+                        copay: value.copay,
+                        min: value.min,
+                        max: value.max,
+                        insuranceId: data.patient.id,
+                        category: key,  // Category like 'Consultation', 'Lab'
+                    }));
+
+                    for (const deductible of deductiblePayload) {
+                        if (deductible.deductible || deductible.copay) {
+                            await fetch('http://localhost:5000/patients/add-deductible', {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(deductible),
+                            });
+                        }
+                    }
+                }
+
+                // Reset the form after successful submission
                 setPatientData({
                     visitType: "",
                     referralCase: "",
@@ -386,7 +453,7 @@ const StaffDetailsPage = () => {
                     work: "",
                     landPhone: "",
                     wMobile: "",
-                    preferredLanguage: "",
+                    preferredLanguage: "",  // Reset preferredLanguage
                     occupation: "",
                     infoSource: "",
                     emirates: "",
@@ -406,29 +473,30 @@ const StaffDetailsPage = () => {
                     specialty: "",
                     doctorName: "",
                     encounterType: "",
-                    corporateName: "",
+                    paymentType: "", // Reset paymentType
+                    corporateName: "", // Reset corporateName if necessary
+                    deductibles: { ...initialDeductibleCopayData },  // Reset deductibles
                 });
-                // Reset all custom fields
+
                 setCustomFields([]);
+                setInsuranceList([]);
                 localStorage.removeItem("customFields");
 
-                toast.success("Staff member added successfully", {
+                toast.success("Patient registered successfully!", {
                     position: "top-right",
                 });
             } else {
                 const errorData = await response.json();
-                console.log("Error saving staff data:", errorData);
+                console.log("Error saving patient data:", errorData);
                 toast.error(
-                    `Failed to save staff data. ${errorData.message || "Please check the console for errors."
-                    }`,
+                    `Failed to save patient data. ${errorData.message || "Please check the console for errors."}`,
                     { position: "top-right" }
                 );
             }
         } catch (error) {
-            console.error("Error saving staff data:", error);
+            console.error("Error saving patient data:", error);
             toast.error(
-                `Failed to save staff data. ${error.message || "Please check the console for errors."
-                }`,
+                `Failed to save patient data. ${error.message || "Please check the console for errors."}`,
                 { position: "top-right" }
             );
         } finally {
@@ -436,24 +504,32 @@ const StaffDetailsPage = () => {
         }
     };
 
-    const handleInputChangeForInsurance = (e) => {
-        const { name, value } = e.target;
-        // Check if the field belongs to deductibles
+    const handleInputChange = (e) => {
+        const { name, value, type, checked } = e.target;
+
+        // Check if the input field belongs to deductibles (nested fields)
         if (name.startsWith("deductibles_")) {
-            const [_, category, field] = name.split("_"); // Parse name to extract category and field
+            const [_, category, field] = name.split("_");  // e.g., deductibles_Consultation_deductible
+
+            // Handle number inputs and radio buttons correctly
+            const fieldValue = type === "number" ? parseFloat(value) || '' : value;
+
             setPatientData((prev) => ({
                 ...prev,
                 deductibles: {
                     ...prev.deductibles,
                     [category]: {
                         ...prev.deductibles[category],
-                        [field]: value,
+                        [field]: type === "radio" ? (checked ? value : prev.deductibles[category]?.[field]) : fieldValue,
                     },
                 },
             }));
         } else {
-            // Handle non-deductibles fields
-            setPatientData({ ...patientData, [name]: value });
+            // Update regular patient fields
+            setPatientData((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
         }
     };
 
@@ -480,7 +556,7 @@ const StaffDetailsPage = () => {
                 insuranceApprovalLimit: "",
                 maxInsuranceCoPay: "",
                 coPayPatient: "",
-                deductibles: { ...initialDeductibleCopayData }, 
+                deductibles: { ...initialDeductibleCopayData },
             });
 
             setLoading(false);
@@ -1525,18 +1601,18 @@ const StaffDetailsPage = () => {
                                         label="Payment Type *"
                                         name="paymentType"
                                         value={patientData.paymentType}
-                                        onChange={handleInputChangeForInsurance}
+                                        onChange={handleInputChange}
                                         select="Select Payment Type"
                                         required
                                         options={[
-                                            { value: "Cash", label: "Cash" },
-                                            { value: "Insurance", label: "Insurance" },
-                                            { value: "Corporate", label: "Corporate" },
+                                            { value: "cash", label: "Cash" },
+                                            { value: "insurance", label: "Insurance" },
+                                            { value: "corporate", label: "Corporate" },
                                         ]}
                                     />
                                 </div>
 
-                                {patientData.paymentType === "Insurance" && (
+                                {patientData.paymentType === "insurance" && (
                                     <button
                                         onClick={handleAddInsurance}
                                         className={`bg-black text-white font-semibold py-2 px-4 rounded ${loading ? "opacity-50 cursor-not-allowed" : ""
@@ -1548,7 +1624,7 @@ const StaffDetailsPage = () => {
                                 )}
                             </div>
 
-                            {patientData.paymentType === "Insurance" && (
+                            {patientData.paymentType === "insurance" && (
                                 <div className="flex flex-col md:flex-row justify-between">
                                     {/* Left Section: Input Fields */}
                                     <div className="space-y-6 w-full md:w-[50%] mt-6">
@@ -1557,7 +1633,7 @@ const StaffDetailsPage = () => {
                                                 label="Insurance Provider"
                                                 name="insuranceProvider"
                                                 value={patientData.insuranceProvider}
-                                                onChange={handleInputChangeForInsurance}
+                                                onChange={handleInputChange}
                                                 select="Select Insurance Provider"
                                                 required
                                                 options={[
@@ -1570,7 +1646,7 @@ const StaffDetailsPage = () => {
                                                 label="Sub Insurance"
                                                 name="subInsurance"
                                                 value={patientData.subInsurance}
-                                                onChange={handleInputChangeForInsurance}
+                                                onChange={handleInputChange}
                                                 select="Select Sub Insurance"
                                                 required
                                                 options={[
@@ -1594,7 +1670,7 @@ const StaffDetailsPage = () => {
                                                 label="Network Type"
                                                 name="networkType"
                                                 value={patientData.networkType}
-                                                onChange={handleInputChangeForInsurance}
+                                                onChange={handleInputChange}
                                                 select="Select Network Type"
                                                 required
                                                 options={[
@@ -1609,7 +1685,7 @@ const StaffDetailsPage = () => {
                                                 label="Insurance Card Number *"
                                                 name="insuranceCardNumber"
                                                 value={patientData.insuranceCardNumber}
-                                                onChange={handleInputChangeForInsurance}
+                                                onChange={handleInputChange}
                                                 maxLength={20}
                                                 required
                                             />
@@ -1617,21 +1693,21 @@ const StaffDetailsPage = () => {
                                                 label="Extra Card Number"
                                                 name="extraCardNumber"
                                                 value={patientData.extraCardNumber}
-                                                onChange={handleInputChangeForInsurance}
+                                                onChange={handleInputChange}
                                                 maxLength={20}
                                             />
                                             <DateInput
                                                 label="Insurance Effective Date"
                                                 name="insuranceEffectiveDate"
                                                 value={patientData.insuranceEffectiveDate}
-                                                onChange={handleInputChangeForInsurance}
+                                                onChange={handleInputChange}
                                                 required
                                             />
                                             <DateInput
                                                 label="Insurance Expiry Date *"
                                                 name="insuranceExpiryDate"
                                                 value={patientData.insuranceExpiryDate}
-                                                onChange={handleInputChangeForInsurance}
+                                                onChange={handleInputChange}
                                                 required
                                             />
                                         </div>
@@ -1640,7 +1716,7 @@ const StaffDetailsPage = () => {
                                                 label="Certificate No"
                                                 name="certificateNo"
                                                 value={patientData.certificateNo}
-                                                onChange={handleInputChangeForInsurance}
+                                                onChange={handleInputChange}
                                                 maxLength={20}
                                             />
                                             <div className="w-full md:w-[12%]">
@@ -1648,7 +1724,7 @@ const StaffDetailsPage = () => {
                                                     label="Dependents No"
                                                     name="dependentsNo"
                                                     value={patientData.dependentsNo}
-                                                    onChange={handleInputChangeForInsurance}
+                                                    onChange={handleInputChange}
                                                     maxLength={2}
                                                 />
                                             </div>
@@ -1656,7 +1732,7 @@ const StaffDetailsPage = () => {
                                                 label="Insurance Claim No"
                                                 name="insuranceClaimNo"
                                                 value={patientData.insuranceClaimNo}
-                                                onChange={handleInputChangeForInsurance}
+                                                onChange={handleInputChange}
                                                 maxLength={20}
                                             />
                                         </div>
@@ -1666,7 +1742,7 @@ const StaffDetailsPage = () => {
                                                     label="Max. Insurance Liability"
                                                     name="maxInsuranceLiability"
                                                     value={patientData.maxInsuranceLiability}
-                                                    onChange={handleInputChangeForInsurance}
+                                                    onChange={handleInputChange}
                                                     maxLength={20}
                                                     type="number"
                                                 />
@@ -1677,7 +1753,7 @@ const StaffDetailsPage = () => {
                                                     label="Insurance Approval Limit"
                                                     name="insuranceApprovalLimit"
                                                     value={patientData.insuranceApprovalLimit}
-                                                    onChange={handleInputChangeForInsurance}
+                                                    onChange={handleInputChange}
                                                     maxLength={20}
                                                     type="number"
                                                 />
@@ -1688,7 +1764,7 @@ const StaffDetailsPage = () => {
                                                     label="Max. Insurance Co-Pay"
                                                     name="maxInsuranceCoPay"
                                                     value={patientData.maxInsuranceCoPay}
-                                                    onChange={handleInputChangeForInsurance}
+                                                    onChange={handleInputChange}
                                                     maxLength={20}
                                                     type="number"
                                                 />
@@ -1699,7 +1775,7 @@ const StaffDetailsPage = () => {
                                                     label="Co-Pay Patient"
                                                     name="coPayPatient"
                                                     value={patientData.coPayPatient}
-                                                    onChange={handleInputChangeForInsurance}
+                                                    onChange={handleInputChange}
                                                     maxLength={20}
                                                     type="number"
                                                 />
@@ -1903,106 +1979,93 @@ const StaffDetailsPage = () => {
                                                 "Dental",
                                                 "Maternity",
                                             ].map((category) => (
-                                                <div
-                                                    key={category}
-                                                    className="grid grid-cols-9 items-center"
-                                                >
+                                                <div key={category} className="grid grid-cols-9 items-center">
                                                     {/* Category Name */}
                                                     <span className="col-span-1 font-normal text-sm text-gray-500 -ml-4">
                                                         {category}
                                                     </span>
+
+                                                    {/* Deductible Input */}
                                                     <div className="col-span-1 text-center ml-4">
                                                         <input
                                                             type="number"
                                                             name={`deductibles_${category}_deductible`}
-                                                            value={
-                                                                patientData.deductibles[category]?.deductible ||
-                                                                ""
-                                                            }
-                                                            onChange={handleInputChangeForInsurance}
+                                                            value={patientData.deductibles[category]?.deductible || ""}
+                                                            onChange={handleInputChange}
                                                             className="border rounded px-2 py-1 w-full text-center"
                                                         />
                                                     </div>
 
+                                                    {/* Deductible All/Each (Radio Buttons) */}
                                                     <div className="col-span-2 flex justify-center gap-[42px]">
-                                                        {category !== "Consultation" &&
-                                                            category !== "Maternity" && (
-                                                                <>
-                                                                    <label className="flex items-center">
-                                                                        <input
-                                                                            type="radio"
-                                                                            name={`deductibles_${category}_allOrEach`}
-                                                                            value="all"
-                                                                            checked={
-                                                                                patientData.deductibles[category]
-                                                                                    ?.allOrEach === "all"
-                                                                            }
-                                                                            onChange={handleInputChangeForInsurance}
-                                                                            className="accent-black cursor-pointer"
-                                                                        />
-                                                                    </label>
-                                                                    <label className="flex items-center gap-1">
-                                                                        <input
-                                                                            type="radio"
-                                                                            name={`deductibles_${category}_allOrEach`}
-                                                                            value="each"
-                                                                            checked={
-                                                                                patientData.deductibles[category]
-                                                                                    ?.allOrEach === "each"
-                                                                            }
-                                                                            onChange={handleInputChangeForInsurance}
-                                                                            className="accent-black cursor-pointer"
-                                                                        />
-                                                                    </label>
-                                                                </>
-                                                            )}
+                                                        {category !== "Consultation" && category !== "Maternity" && (
+                                                            <>
+                                                                <label className="flex items-center">
+                                                                    <input
+                                                                        type="radio"
+                                                                        name={`deductibles_${category}_allOrEach`}
+                                                                        value="all"
+                                                                        checked={patientData.deductibles[category]?.allOrEach === "all"}
+                                                                        onChange={handleInputChange}
+                                                                        className="accent-black cursor-pointer"
+                                                                    />
+                                                                </label>
+                                                                <label className="flex items-center gap-1">
+                                                                    <input
+                                                                        type="radio"
+                                                                        name={`deductibles_${category}_allOrEach`}
+                                                                        value="each"
+                                                                        checked={patientData.deductibles[category]?.allOrEach === "each"}
+                                                                        onChange={handleInputChange}
+                                                                        className="accent-black cursor-pointer"
+                                                                    />
+                                                                </label>
+                                                            </>
+                                                        )}
                                                     </div>
 
+                                                    {/* Min Input */}
                                                     <div className="col-span-1 text-center ml-4">
                                                         <input
                                                             type="number"
                                                             name={`deductibles_${category}_min`}
-                                                            value={
-                                                                patientData.deductibles[category]?.min || ""
-                                                            }
-                                                            onChange={handleInputChangeForInsurance}
-                                                            className="border rounded px-2 py-1 w-full text-center"
-                                                        />
-                                                    </div>
-                                                    <div className="col-span-1 text-center ml-4">
-                                                        <input
-                                                            type="number"
-                                                            name={`deductibles_${category}_max`}
-                                                            value={
-                                                                patientData.deductibles[category]?.max || ""
-                                                            }
-                                                            onChange={handleInputChangeForInsurance}
-                                                            className="border rounded px-2 py-1 w-full text-center"
-                                                        />
-                                                    </div>
-                                                    <div className="col-span-1 text-center ml-4">
-                                                        <input
-                                                            type="number"
-                                                            name={`deductibles_${category}_copay`}
-                                                            value={
-                                                                patientData.deductibles[category]?.copay || ""
-                                                            }
-                                                            onChange={handleInputChangeForInsurance}
+                                                            value={patientData.deductibles[category]?.min || ""}
+                                                            onChange={handleInputChange}
                                                             className="border rounded px-2 py-1 w-full text-center"
                                                         />
                                                     </div>
 
+                                                    {/* Max Input */}
+                                                    <div className="col-span-1 text-center ml-4">
+                                                        <input
+                                                            type="number"
+                                                            name={`deductibles_${category}_max`}
+                                                            value={patientData.deductibles[category]?.max || ""}
+                                                            onChange={handleInputChange}
+                                                            className="border rounded px-2 py-1 w-full text-center"
+                                                        />
+                                                    </div>
+
+                                                    {/* Copay Input */}
+                                                    <div className="col-span-1 text-center ml-4">
+                                                        <input
+                                                            type="number"
+                                                            name={`deductibles_${category}_copay`}
+                                                            value={patientData.deductibles[category]?.copay || ""}
+                                                            onChange={handleInputChange}
+                                                            className="border rounded px-2 py-1 w-full text-center"
+                                                        />
+                                                    </div>
+
+                                                    {/* Copay All/Each (Radio Buttons) */}
                                                     <div className="col-span-2 flex justify-center gap-[42px]">
                                                         <label className="flex items-center gap-1">
                                                             <input
                                                                 type="radio"
                                                                 name={`deductibles_${category}_copayAllOrEach`}
                                                                 value="all"
-                                                                checked={
-                                                                    patientData.deductibles[category]
-                                                                        ?.copayAllOrEach === "all"
-                                                                }
-                                                                onChange={handleInputChangeForInsurance}
+                                                                checked={patientData.deductibles[category]?.copayAllOrEach === "all"}
+                                                                onChange={handleInputChange}
                                                                 className="accent-black cursor-pointer"
                                                             />
                                                         </label>
@@ -2011,11 +2074,8 @@ const StaffDetailsPage = () => {
                                                                 type="radio"
                                                                 name={`deductibles_${category}_copayAllOrEach`}
                                                                 value="each"
-                                                                checked={
-                                                                    patientData.deductibles[category]
-                                                                        ?.copayAllOrEach === "each"
-                                                                }
-                                                                onChange={handleInputChangeForInsurance}
+                                                                checked={patientData.deductibles[category]?.copayAllOrEach === "each"}
+                                                                onChange={handleInputChange}
                                                                 className="accent-black cursor-pointer"
                                                             />
                                                         </label>
@@ -2115,7 +2175,7 @@ const StaffDetailsPage = () => {
                                 </div>
                             )}
 
-                            {patientData.paymentType === "Corporate" && (
+                            {patientData.paymentType === "corporate" && (
                                 <div className="flex flex-row w-[20%] gap-5">
                                     <SelectInput
                                         label="Corporate Name"
