@@ -106,6 +106,7 @@ model Patient {
   insurance           Insurance[]
   patientDynamicField PatientDynamicField[]
 }
+
 model Insurance {
   id                     Int          @id @default(autoincrement())
   insuranceProvider      String
@@ -126,6 +127,7 @@ model Insurance {
   deductibles            Deductible[]
   patient                Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
+
 model Deductible {
   id             Int            @id @default(autoincrement())
   insuranceId    Int
@@ -149,6 +151,7 @@ enum CopayType {
   all
   each
 }
+
 model PatientDynamicField {
   id             Int     @id @default(autoincrement())
   patientId      String
@@ -160,6 +163,7 @@ model PatientDynamicField {
 
   @@map("patient_dynamic_field")
 }
+
 model DynamicField {
   id                    Int                   @id @default(autoincrement())
   field_name            String                @unique
@@ -171,4 +175,149 @@ model DynamicField {
   patient_dynamic_field PatientDynamicField[]
 
   @@map("dynamic_fields")
+}
+
+// Pre-Registration (Front Office)
+model PatientPreRegistration {
+  id              Int      @id @default(autoincrement())
+  temporaryId     String   @unique
+  scheduleType    String
+  scheduleDate    DateTime
+  branch          String
+  specialty       String
+  doctorName      String
+  scheduleTime    String
+  slot            String?
+  patientFullName String   @db.VarChar(100)
+  dob             DateTime
+  age             String   @db.VarChar(20)
+  gender          String
+  mobile          String   @db.VarChar(20)
+  email           String   @db.VarChar(50)
+  nationalId      String?  @db.VarChar(20)
+  whatsappMobile  String   @db.VarChar(15)
+  remark          String?  @db.VarChar(500)
+  isVIP           Boolean  @default(false)
+  scheduledBy     String?
+  confirmViaSms   Boolean  @default(false)
+  confirmViaEmail Boolean  @default(false)
+  remindViaSms    Boolean  @default(false)
+  remindViaEmail  Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Master Data - General Settings
+model AppointmentStatus {
+  id          Int      @id @default(autoincrement())
+  statusName  String   @db.VarChar(25)
+  description String   @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ScheduleType {
+  id          Int      @id @default(autoincrement())
+  typeName    String   @db.VarChar(25)
+  description String   @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Country {
+  id          Int                 @id @default(autoincrement())
+  countryName String              @db.VarChar(100)
+  countryCode String              @db.VarChar(5)
+  isoCode     String              @db.VarChar(10)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  languages   LanguageOnCountry[]
+}
+
+model Language {
+  id        Int                 @id @default(autoincrement())
+  language  String              @db.VarChar(50)
+  enabled   Boolean             @default(true)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  countries LanguageOnCountry[]
+}
+
+model LanguageOnCountry {
+  countryId  Int
+  languageId Int
+  country    Country  @relation(fields: [countryId], references: [id])
+  language   Language @relation(fields: [languageId], references: [id])
+
+  @@id([countryId, languageId])
+}
+
+model CallStatus {
+  id          Int      @id @default(autoincrement())
+  status      String   @db.VarChar(25)
+  description String   @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model EmploymentType {
+  id          Int      @id @default(autoincrement())
+  type        String   @db.VarChar(25)
+  description String   @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Emirates {
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(40)
+  mainDistrict MainDistrict[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model MainDistrict {
+  id         Int        @id @default(autoincrement())
+  emiratesId Int
+  emirates   Emirates   @relation(fields: [emiratesId], references: [id])
+  name       String     @db.VarChar(60)
+  districts  District[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model District {
+  id             Int          @id @default(autoincrement())
+  mainDistrictId Int
+  mainDistrict   MainDistrict @relation(fields: [mainDistrictId], references: [id])
+  name           String       @db.VarChar(60)
+  communities    Community[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Community {
+  id         Int      @id @default(autoincrement())
+  districtId Int
+  district   District @relation(fields: [districtId], references: [id])
+  name       String   @db.VarChar(60)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ResourceType {
+  id          Int      @id @default(autoincrement())
+  type        String   @db.VarChar(10)
+  name        String   @db.VarChar(50)
+  description String?  @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model InformationSource {
+  id          Int      @id @default(autoincrement())
+  sourceName  String   @db.VarChar(50)
+  description String?  @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
