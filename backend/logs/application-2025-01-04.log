@@ -11,3 +11,7 @@
 {"level":"info","message":{"action":"create","duration":"4ms","model":"PatientType"},"timestamp":"2025-01-04T10:45:26.927Z"}
 {"level":"info","message":{"action":"create","duration":"3ms","model":"PatientType"},"timestamp":"2025-01-04T10:45:52.138Z"}
 {"level":"info","message":{"action":"findMany","duration":"93ms","model":"PatientType"},"timestamp":"2025-01-04T10:46:41.996Z"}
+{"level":"info","message":{"action":"update","duration":"87ms","model":"PatientType"},"timestamp":"2025-01-04T10:49:01.920Z"}
+{"level":"info","message":{"action":"findMany","duration":"2ms","model":"PatientType"},"timestamp":"2025-01-04T10:49:07.244Z"}
+{"level":"info","message":{"action":"delete","duration":"5ms","model":"PatientType"},"timestamp":"2025-01-04T10:49:54.272Z"}
+{"level":"info","message":{"action":"findMany","duration":"1ms","model":"PatientType"},"timestamp":"2025-01-04T10:49:58.036Z"}
