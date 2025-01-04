@@ -54,6 +54,122 @@ model NetworkLog {
   masteruser   masterUser? @relation(fields: [masterUserId], references: [empId], onDelete: Cascade)
 }
 
+model Doctor {
+  id             Int            @id @default(autoincrement())
+  employeeId     String?        @unique
+  name           String
+  image          String?
+  specialty      String?
+  dhaLicenseId   String?
+  nationalId     String?
+  otherId        String?
+  eClaimId       String?
+  eClaimPassword String?
+  dateOfBirth    DateTime?
+  gender         String?
+  mobile         String?
+  whatsAppMobile String?
+  email          String?
+  languageKnown  String?
+  employmentType String?
+  country        String?
+  qualifications String?        @db.Text
+  experience     String?        @db.Text
+  status         String?        @default("Active")
+  createdAt      DateTime       @default(now())
+  createdBy      String?
+  doctorBranches DoctorBranch[]
+  overBookings   OverBooking[]
+
+  @@map("doctors")
+}
+
+model Nurse {
+  id             Int       @id @default(autoincrement())
+  employeeId     String?   @unique
+  name           String
+  image          String?
+  nurseType      String?
+  dhaLicenseId   String?
+  nationalId     String?
+  otherId        String?
+  eClaimId       String?
+  eClaimPassword String?
+  dateOfBirth    DateTime?
+  gender         String?
+  mobile         String?
+  whatsAppMobile String?
+  email          String?
+  languageKnown  String?
+  employmentType String?
+  country        String?
+  qualifications String?   @db.Text
+  experience     String?   @db.Text
+  status         String?   @default("Active")
+  createdAt      DateTime  @default(now())
+  createdBy      String?
+  branch         Branch?   @relation(fields: [branchId], references: [id])
+  branchId       Int?
+
+  @@map("nurses")
+}
+
+model OtherStaff {
+  id                 Int                @id @default(autoincrement())
+  employeeId         String?            @unique
+  name               String
+  image              String?
+  userType           String?
+  nationalId         String?
+  otherId            String?
+  dateOfBirth        DateTime?
+  gender             String?
+  mobile             String?
+  whatsAppMobile     String?
+  email              String?
+  languageKnown      String?
+  employmentType     String?
+  country            String?
+  qualifications     String?            @db.Text
+  experience         String?            @db.Text
+  status             String?            @default("Active")
+  createdAt          DateTime           @default(now())
+  createdBy          String?
+  otherStaffBranches OtherStaffBranch[]
+
+  @@map("other_staff")
+}
+
+model Branch {
+  id         Int                @id @default(autoincrement())
+  name       String             @unique
+  doctors    DoctorBranch[]
+  nurses     Nurse[]
+  otherStaff OtherStaffBranch[]
+
+  @@map("branches")
+}
+
+model DoctorBranch {
+  doctorId Int
+  branchId Int
+  doctor   Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@id([doctorId, branchId])
+  @@map("doctor_branch")
+}
+
+model OtherStaffBranch {
+  otherStaffId Int
+  branchId     Int
+  otherStaff   OtherStaff @relation(fields: [otherStaffId], references: [id], onDelete: Cascade)
+  branch       Branch     @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@id([otherStaffId, branchId])
+  @@map("other_staff_branch")
+}
+
 model Patient {
   id                  String                @id @unique @default(uuid())
   mrdNumber           String                @unique
@@ -325,6 +441,60 @@ model InformationSource {
 model PatientType {
   id          Int      @id @default(autoincrement())
   typeName    String   @db.VarChar(50)
+  description String?  @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model NurseType {
+  id          Int      @id @default(autoincrement())
+  typeName    String   @db.VarChar(50)
+  description String?  @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PatientPriority {
+  id           Int      @id @default(autoincrement())
+  priorityName String   @db.VarChar(50)
+  description  String?  @db.VarChar(100)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model OverBooking {
+  id                   Int      @id @default(autoincrement())
+  doctorId             Int
+  specialty            String   @db.VarChar(100)
+  overBookingAvailable Boolean  @default(false)
+  slotOverBookingCount Int?     @default(0)
+  dayOverBookingCount  Int?     @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  doctor Doctor @relation(fields: [doctorId], references: [id])
+
+  @@unique([doctorId, specialty])
+}
+
+model EncounterType {
+  id            Int      @id @default(autoincrement())
+  encounterType String   @db.VarChar(50)
+  description   String?  @db.VarChar(100)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model OtherID {
+  id          Int      @id @default(autoincrement())
+  otherId     String   @db.VarChar(50)
+  description String?  @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+model BlockType {
+  id          Int      @id @default(autoincrement())
+  blockType   String   @db.VarChar(50)
   description String?  @db.VarChar(100)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

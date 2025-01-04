@@ -21,6 +21,11 @@ const languageRoutes = require('./routes/MasterData/GeneralSettings/language');
 const resourceTypeRoutes = require('./routes/MasterData/GeneralSettings/resourceType');
 const informationSourceRoutes = require('./routes/MasterData/GeneralSettings/informationSource');
 const patientTypeRoutes = require('./routes/MasterData/GeneralSettings/patientType');
+const nurseTypeRoutes = require('./routes/MasterData/GeneralSettings/nurseType');
+const patientPriorityRoutes = require('./routes/MasterData/GeneralSettings/patientPriority');
+const overBookingRoutes = require('./routes/MasterData/GeneralSettings/overBooking');
+const encounterTypeRoutes = require('./routes/MasterData/GeneralSettings/encounterType');
+const otherIdTypeRoutes = require('./routes/MasterData/GeneralSettings/otherIdType');
 
 require('dotenv').config();
 
@@ -53,6 +58,11 @@ app.use('/master/general', languageRoutes);
 app.use('/master/general', resourceTypeRoutes);
 app.use('/master/general', informationSourceRoutes);
 app.use('/master/general', patientTypeRoutes);
+app.use('/master/general', nurseTypeRoutes);
+app.use('/master/general', patientPriorityRoutes);
+app.use('/master/general', overBookingRoutes);
+app.use('/master/general', encounterTypeRoutes);
+app.use('/master/general', otherIdTypeRoutes);
 
 app.listen(5000, () => {
     console.log('Server running on http://localhost:5000');
