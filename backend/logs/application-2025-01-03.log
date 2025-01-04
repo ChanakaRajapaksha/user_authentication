@@ -1,0 +1,10 @@
+{"level":"info","message":{"action":"create","duration":"460ms","model":"InformationSource"},"timestamp":"2025-01-03T17:35:15.714Z"}
+{"level":"info","message":{"action":"create","duration":"28ms","model":"InformationSource"},"timestamp":"2025-01-03T17:39:17.445Z"}
+{"level":"info","message":{"action":"create","duration":"32ms","model":"InformationSource"},"timestamp":"2025-01-03T17:41:48.489Z"}
+{"level":"info","message":{"action":"create","duration":"6ms","model":"InformationSource"},"timestamp":"2025-01-03T17:42:06.210Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"InformationSource"},"timestamp":"2025-01-03T17:42:27.866Z"}
+{"level":"info","message":{"action":"findMany","duration":"109ms","model":"InformationSource"},"timestamp":"2025-01-03T17:42:44.999Z"}
+{"level":"info","message":{"action":"update","duration":"77ms","model":"InformationSource"},"timestamp":"2025-01-03T17:43:55.166Z"}
+{"level":"info","message":{"action":"findMany","duration":"2ms","model":"InformationSource"},"timestamp":"2025-01-03T17:44:02.095Z"}
+{"level":"info","message":{"action":"delete","duration":"10ms","model":"InformationSource"},"timestamp":"2025-01-03T17:44:56.957Z"}
+{"level":"info","message":{"action":"findMany","duration":"1ms","model":"InformationSource"},"timestamp":"2025-01-03T17:45:01.429Z"}

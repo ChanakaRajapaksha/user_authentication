@@ -1,0 +1,13 @@
+{"level":"error","message":"Error during registration: \nInvalid `prisma.user.findUnique()` invocation in\nD:\\Projects\\user_authentication\\backend\\controllers\\registerController.js:16:50\n\n  13 \n  14 try {\n  15     // Check for duplicate email or username in the database\n→ 16     const duplicateEmail = await prisma.user.findUnique(\nAuthentication failed against database server at `localhost`, the provided database credentials for `root` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.","timestamp":"2025-01-04T10:09:38.905Z"}
+{"level":"info","message":{"action":"findUnique","duration":"362ms","model":"User"},"timestamp":"2025-01-04T10:11:28.666Z"}
+{"level":"info","message":{"action":"findUnique","duration":"1ms","model":"User"},"timestamp":"2025-01-04T10:11:28.669Z"}
+{"level":"info","message":{"action":"create","duration":"32ms","model":"User"},"timestamp":"2025-01-04T10:11:28.766Z"}
+{"level":"info","message":"User registered: admin@gmail.com","timestamp":"2025-01-04T10:11:28.766Z"}
+{"level":"info","message":{"action":"create","duration":"6ms","model":"InformationSource"},"timestamp":"2025-01-04T10:11:35.029Z"}
+{"level":"info","message":{"action":"create","duration":"20ms","model":"PatientType"},"timestamp":"2025-01-04T10:41:01.612Z"}
+{"level":"info","message":{"action":"create","duration":"28ms","model":"PatientType"},"timestamp":"2025-01-04T10:43:54.643Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"PatientType"},"timestamp":"2025-01-04T10:44:43.308Z"}
+{"level":"info","message":{"action":"create","duration":"5ms","model":"PatientType"},"timestamp":"2025-01-04T10:45:04.407Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"PatientType"},"timestamp":"2025-01-04T10:45:26.927Z"}
+{"level":"info","message":{"action":"create","duration":"3ms","model":"PatientType"},"timestamp":"2025-01-04T10:45:52.138Z"}
+{"level":"info","message":{"action":"findMany","duration":"93ms","model":"PatientType"},"timestamp":"2025-01-04T10:46:41.996Z"}

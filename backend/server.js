@@ -19,6 +19,8 @@ const districtRoutes = require('./routes/MasterData/GeneralSettings/district');
 const communityRoutes = require('./routes/MasterData/GeneralSettings/community');
 const languageRoutes = require('./routes/MasterData/GeneralSettings/language');
 const resourceTypeRoutes = require('./routes/MasterData/GeneralSettings/resourceType');
+const informationSourceRoutes = require('./routes/MasterData/GeneralSettings/informationSource');
+const patientTypeRoutes = require('./routes/MasterData/GeneralSettings/patientType');
 
 require('dotenv').config();
 
@@ -49,6 +51,8 @@ app.use('/master/general', districtRoutes);
 app.use('/master/general', communityRoutes);
 app.use('/master/general', languageRoutes);
 app.use('/master/general', resourceTypeRoutes);
+app.use('/master/general', informationSourceRoutes);
+app.use('/master/general', patientTypeRoutes);
 
 app.listen(5000, () => {
     console.log('Server running on http://localhost:5000');
