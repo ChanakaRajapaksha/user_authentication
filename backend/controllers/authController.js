@@ -12,7 +12,6 @@ const handleLogin = async (req, res) => {
         return res.status(400).json({ message: "Username and password are required." });
     }
 
-
     try {
         const foundUser = await prisma.user.findFirst({ where: { username: reqUsername } });
         const foundMasterUser = await prisma.masterUser.findFirst({ where: { username: reqUsername } });
@@ -42,7 +41,6 @@ const handleLogin = async (req, res) => {
         if (!match) {
             return res.status(401).json({ message: "Unauthorized: Invalid username or password." });
         }
-
 
         const roles = [user.role || (isMasterUser ? "masterUser" : "user")];
         const payload = {
@@ -89,7 +87,6 @@ const handleLogin = async (req, res) => {
             });
         }
 
-
         const networkDetails = await getNetworkDetails();
         await prisma.networkLog.create({
             data: {
@@ -101,7 +98,6 @@ const handleLogin = async (req, res) => {
                 username: networkDetails.username,
             },
         });
-
 
         res.cookie("jwt", refreshToken, {
             httpOnly: true,
@@ -159,7 +155,6 @@ const updateBranch = async (req, res) => {
         };
         //create a new access token
         const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
-
 
         res.status(200).json({ ...updatedUser, accessToken: accessToken });
 

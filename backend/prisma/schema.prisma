@@ -9,9 +9,9 @@ datasource db {
 
 model User {
   id               Int          @id @default(autoincrement())
-  username         String       @unique
+  username         String       @unique @db.VarChar(15)
   email            String       @unique
-  password         String
+  password         String       @db.VarChar(12)
   branch           String
   role             String?      @default("admin")
   refreshToken     String?      @db.VarChar(255)
