@@ -492,10 +492,22 @@ model OtherID {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
 model BlockType {
   id          Int      @id @default(autoincrement())
   blockType   String   @db.VarChar(50)
   description String?  @db.VarChar(100)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model SessionTimeout {
+  id              Int      @id @default(autoincrement())
+  minTimeoutValue Int
+  minTimeoutUnit  String   @db.VarChar(10)
+  maxTimeoutValue Int
+  maxTimeoutUnit  String   @db.VarChar(10)
+  isEnabled       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

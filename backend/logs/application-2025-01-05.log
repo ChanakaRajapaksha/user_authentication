@@ -1,0 +1,15 @@
+{"level":"info","message":{"action":"create","duration":"685ms","model":"BlockType"},"timestamp":"2025-01-05T01:57:21.175Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"BlockType"},"timestamp":"2025-01-05T01:57:32.382Z"}
+{"level":"info","message":{"action":"create","duration":"50ms","model":"BlockType"},"timestamp":"2025-01-05T02:02:21.935Z"}
+{"level":"info","message":{"action":"create","duration":"3ms","model":"BlockType"},"timestamp":"2025-01-05T02:02:34.813Z"}
+{"level":"info","message":{"action":"create","duration":"5ms","model":"BlockType"},"timestamp":"2025-01-05T02:03:01.963Z"}
+{"level":"info","message":{"action":"findMany","duration":"62ms","model":"BlockType"},"timestamp":"2025-01-05T02:03:23.285Z"}
+{"level":"info","message":{"action":"findMany","duration":"103ms","model":"BlockType"},"timestamp":"2025-01-05T02:07:46.139Z"}
+{"level":"info","message":{"action":"update","duration":"155ms","model":"BlockType"},"timestamp":"2025-01-05T02:10:45.734Z"}
+{"level":"info","message":{"action":"findMany","duration":"2ms","model":"BlockType"},"timestamp":"2025-01-05T02:10:49.142Z"}
+{"level":"info","message":{"action":"delete","duration":"37ms","model":"BlockType"},"timestamp":"2025-01-05T02:11:21.074Z"}
+{"level":"info","message":{"action":"findMany","duration":"1ms","model":"BlockType"},"timestamp":"2025-01-05T02:11:24.358Z"}
+{"level":"info","message":{"action":"create","duration":"148ms","model":"SessionTimeout"},"timestamp":"2025-01-05T02:59:34.587Z"}
+{"level":"info","message":{"action":"create","duration":"4ms","model":"SessionTimeout"},"timestamp":"2025-01-05T02:59:46.892Z"}
+{"level":"info","message":{"action":"create","duration":"5ms","model":"SessionTimeout"},"timestamp":"2025-01-05T03:00:21.348Z"}
+{"level":"info","message":{"action":"findMany","duration":"2ms","model":"SessionTimeout"},"timestamp":"2025-01-05T03:00:44.402Z"}
