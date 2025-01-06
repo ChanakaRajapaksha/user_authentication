@@ -1,0 +1,2 @@
+{"level":"info","message":{"action":"findFirst","duration":"5ms","model":"User"},"timestamp":"2025-01-06T18:30:12.738Z"}
+{"level":"info","message":{"action":"findFirst","duration":"2ms","model":"masterUser"},"timestamp":"2025-01-06T18:30:12.741Z"}

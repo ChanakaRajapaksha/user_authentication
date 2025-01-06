@@ -175,14 +175,12 @@ const AuthPage = () => {
                             setUsernameError("Entered Username is invalid, please check the username and try again.");
                         } else if (errorData.message.includes('password')) {
                             setPasswordError("Entered Password is invalid, please check the password and try again.");
-                        } else {
-                            setUsernameError("Entered Username is invalid, please check the username and try again.");
-                            setPasswordError("Entered Password is invalid, please check the password and try again.");
                         }
                     } else {
                         setUsernameError("Entered Username is invalid, please check the username and try again.");
                         setPasswordError("Entered Password is invalid, please check the password and try again.");
                     }
+
                 } catch (parseError) {
                     setUsernameError("Entered Username is invalid, please check the username and try again.");
                     setPasswordError("Entered Password is invalid, please check the password and try again.");
