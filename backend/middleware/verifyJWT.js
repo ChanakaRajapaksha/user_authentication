@@ -17,48 +17,24 @@ const verifyJWT = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         console.log('Decoded Token:', decoded);
 
-        let user = null;
-        let masterUser = null;
+        const user = decoded.roles.includes('masterUser')
+            ? await prisma.masterUser.findUnique({ where: { empId: String(decoded.id) } })
+            : await prisma.user.findUnique({ where: { username: decoded.username } });
 
-        if (decoded.id) {
-            user = await prisma.user.findUnique({
-                where: { username: decoded.username },
-            });
-        }
+        console.log('Fetched User:', user);
 
-        if (decoded.id) {
-            masterUser = await prisma.masterUser.findUnique({
-                where: { empId: String(decoded.id) }, // Convert to string to match schema type
-            });
-        }
-
-        console.log('User from User table:', user);
-        console.log('User from MasterUser table:', masterUser);
-
-        if (!user && !masterUser) {
+        if (!user) {
             console.log('User not found.');
             return res.status(403).json({ message: 'Forbidden: User not found.' });
         }
 
-        if (user) {
-            req.user = {
-                id: user.id,
-                username: user.username,
-                role: user.role,
-                branch: user.branch,
-                type: 'user',
-            };
-        } else if (masterUser) {
-            req.user = {
-                id: masterUser.id,
-                empId: masterUser.empId,
-                username: masterUser.username,
-                role: masterUser.role,
-                branch: masterUser.branch,
-                status: masterUser.status,
-                type: 'masterUser',
-            };
-        }
+        req.user = {
+            id: user.id || user.empId,
+            username: user.username,
+            role: user.role,
+            branch: user.branch,
+            type: decoded.roles.includes('masterUser') ? 'masterUser' : 'user',
+        };
 
         next();
     } catch (err) {

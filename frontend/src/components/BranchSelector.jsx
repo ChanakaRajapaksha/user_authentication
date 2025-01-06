@@ -59,7 +59,7 @@ const BranchSelector = ({ branches, onSelectBranch, onClose }) => {
                 <div className="mt-8 flex justify-end">
                     <button
                         onClick={onClose}
-                        className="bg-black px-4 py-2 text-white border border-gray-300 rounded hover:bg-gray-100 hover:border-gray-400 transition-colors duration-200 ease-in-out"
+                        className="bg-black px-4 py-2 text-white border border-gray-300 rounded transition-colors duration-200 ease-in-out"
                     >
                         Close
                     </button>

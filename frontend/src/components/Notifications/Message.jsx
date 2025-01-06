@@ -36,7 +36,7 @@ function Message({ isVisible, onClose, msg, type }) {
     if (!isVisible) return null;
     return (
         <ModalComponent isVisible={isVisible} onClose={onClose}>
-            <div className={`bg-white p-5 flex flex-col justify-center items-center gap-8 rounded-xl max-w-72`}>
+            <div className={`bg-white p-5 flex flex-col justify-center items-center gap-8 rounded-xl max-w-[500px]`}>
                 <div className={`border-4 p-2 rounded-full border-${borderColor} text-${textColor} ${transform}`}>
                     {/* <FaExclamation /> */}
                     {icon}

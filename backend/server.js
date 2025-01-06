@@ -2,6 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+const prisma = require('./database/prismaClient');
+
+// const { withAuth } = require('./middleware/authMiddleware')
+
 const authRoute = require('./routes/auth');
 const rolesRoute = require('./routes/roles');
 const patientRoute = require('./routes/patient');
@@ -41,6 +45,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
+
+// app.use(withAuth(prisma));
 
 app.use('/auth', authRoute);
 app.use('/api', rolesRoute);

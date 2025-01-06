@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaTimes } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 import useAuth from "../../hooks/useAuth";
 import Message from "./Notifications/Message";
 import { loginUserService } from "../services/authService";
 import BranchSelector from "./BranchSelector";
 import { motion } from 'framer-motion';
-import { FaTimes } from 'react-icons/fa';
 
 const branches = [
     { id: 1, name: "Dubai London Clinic and Speciality Hospital L.L.C." },
@@ -34,7 +32,6 @@ const modalVariants = {
 const AuthPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [visiblePassword, setVisiblePassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -46,19 +43,22 @@ const AuthPage = () => {
     const [authData, setAuthData] = useState(null);
     const [showForgotPasswordPopup, setShowForgotPasswordPopup] = useState(false);
     const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
-
+    const [isBlockedPopupVisible, setIsBlockedPopupVisible] = useState(false);
+    const [blockedMessage, setBlockedMessage] = useState('');
     const { setAuth } = useAuth();
     const navigate = useNavigate();
+    const [usernameError, setUsernameError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
 
-    const showMessage = (msg) => {
+    const showMessage = (msg, type = "error") => {
         setMessage(msg);
+        setType(type);
         setMessageVisible(true);
     };
 
     const closeMessage = () => {
         setMessageVisible(false);
     };
-
     useEffect(() => {
         const savedUsername = sessionStorage.getItem("rememberedUsername");
         if (savedUsername) {
@@ -68,30 +68,28 @@ const AuthPage = () => {
     }, []);
 
     const handlePasswordChange = (e) => {
-        const value = e.target.value;
-        const actualValue = password + value.slice(password.length);
-        setPassword(actualValue);
-        setVisiblePassword(actualValue.replace(/./g, "*"));
+        setPassword(e.target.value);
+        setPasswordError("");
     };
-
 
     const handleTogglePassword = () => {
         setShowPassword(!showPassword);
-        setVisiblePassword(!showPassword ? password : password.replace(/./g, "*"));
-    };
 
+    };
     const maskEmail = (email) => {
         if (!email) return '';
         const [localPart, domain] = email.split('@');
-        const visibleChars = 3; 
+        const visibleChars = 3;
         const maskedLocalPart = localPart.slice(0, visibleChars) + '*'.repeat(localPart.length - visibleChars);
         return `${maskedLocalPart}@${domain}`;
     };
-
     const handleForgotPasswordClick = async (e) => {
         e.preventDefault();
+        setUsernameError("");
+        setPasswordError("");
+
         if (!username) {
-            toast.error("Please provide your username to reset your password.", { position: "top-right" });
+            showMessage("Please provide your username to reset your password.");
             return;
         }
 
@@ -110,31 +108,31 @@ const AuthPage = () => {
                 setForgotPasswordEmail(data.email);
                 setShowForgotPasswordPopup(true);
             } else {
-                toast.error(data.message || "Error sending reset email.", { position: "top-right" });
+                showMessage(data.message || "Error sending reset email.");
             }
         } catch (error) {
             console.error("Forgot Password Error:", error);
-            toast.error("Something went wrong. Please try again.", { position: "top-right" });
+            showMessage("Something went wrong. Please try again.");
         } finally {
             setIsLoading(false);
         }
     };
-
     const handleLogin = async (e) => {
         e.preventDefault();
+        setUsernameError("");
+        setPasswordError("");
 
         if (!username) {
-            toast.error("Username cannot be empty.", { position: "top-right" });
+            setUsernameError("Username cannot be empty.");
             return;
         }
 
         if (!password) {
-            toast.error("Password cannot be empty.", { position: "top-right" });
+            setPasswordError("Password cannot be empty.");
             return;
         }
 
         setIsLoading(true);
-
         try {
             const data = await loginUserService(username, password);
             const { masterPassword, resetToken } = data;
@@ -143,13 +141,13 @@ const AuthPage = () => {
                 if (resetToken) {
                     navigate(`/reset-password/${resetToken}`);
                 } else {
-                    toast.error("Reset token is missing.", { position: "top-right" });
+                    showMessage("Reset token is missing.");
                 }
                 return;
             }
-
             setAuthData(data);
             setShowBranchSelector(true);
+
 
             if (rememberMe) {
                 sessionStorage.setItem("rememberedUsername", username);
@@ -158,15 +156,48 @@ const AuthPage = () => {
             }
         } catch (error) {
             if (error.status === 403) {
-                toast.error("Your account is inactive. Please contact the admin.", { position: "top-right" });
-            } else {
+                try {
+                    const errorData = JSON.parse(error.message);
+                    if (errorData.blocked) {
+                        setBlockedMessage(errorData.message);
+                        setIsBlockedPopupVisible(true);
+                    } else {
+                        showMessage(errorData.message || "Your account is inactive. Please contact the admin.");
+                    }
+                } catch (parseError) {
+                    showMessage(error.message || "An error occurred. Please try again.");
+                }
+            } else if (error.status === 401) {
+                try {
+                    const errorData = JSON.parse(error.message);
+                    if (errorData && errorData.message) {
+                        if (errorData.message.includes('username')) {
+                            setUsernameError("Entered Username is invalid, please check the username and try again.");
+                        } else if (errorData.message.includes('password')) {
+                            setPasswordError("Entered Password is invalid, please check the password and try again.");
+                        } else {
+                            setUsernameError("Entered Username is invalid, please check the username and try again.");
+                            setPasswordError("Entered Password is invalid, please check the password and try again.");
+                        }
+                    } else {
+                        setUsernameError("Entered Username is invalid, please check the username and try again.");
+                        setPasswordError("Entered Password is invalid, please check the password and try again.");
+                    }
+                } catch (parseError) {
+                    setUsernameError("Entered Username is invalid, please check the username and try again.");
+                    setPasswordError("Entered Password is invalid, please check the password and try again.");
+                }
+            }
+
+            else {
                 console.error("Error", error);
-                toast.error(error.message || "An error occurred. Please try again.", { position: "top-right" });
+                showMessage(error.message || "An error occurred. Please try again.");
             }
         } finally {
             setIsLoading(false);
         }
     };
+
 
     const handleBranchSelection = async (selectedBranch) => {
         setSelectedBranch(selectedBranch);
@@ -190,11 +221,11 @@ const AuthPage = () => {
                     handleRoleBasedRedirection({ ...authData, branch: updatedUserData.branch });
                 } else {
                     const errorMessage = await response.text();
-                    throw new Error(errorMessage || "Failed to update branch.")
+                    throw new Error(errorMessage || "Failed to update branch.");
                 }
             } catch (error) {
                 console.error("Error during branch update and role-based redirection:", error);
-                toast.error(error.message || "Redirection failed.", { position: "top-right" });
+                showMessage(error.message || "Redirection failed.");
             } finally {
                 setIsLoading(false);
             }
@@ -205,7 +236,7 @@ const AuthPage = () => {
     const handleRoleBasedRedirection = async (data) => {
         const { roles = [], accessToken, username, branch } = data;
         if (!roles.length) {
-            toast.error("User has no roles assigned!", { position: "top-right" });
+            showMessage("User has no roles assigned!");
             setIsLoading(false);
             return;
         }
@@ -255,7 +286,7 @@ const AuthPage = () => {
             }
         } catch (error) {
             console.error("Error during role-based redirection:", error);
-            toast.error(error.message || "Redirection failed.", { position: "top-right" });
+            showMessage(error.message || "Redirection failed.");
         } finally {
             setIsLoading(false);
         }
@@ -298,6 +329,42 @@ const AuthPage = () => {
             </motion.div>
         );
     };
+    const BlockedUserPopup = ({ message, onClose }) => {
+        return (
+            <motion.div
+                className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50"
+                variants={backdropVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+            >
+                <motion.div
+                    className="bg-gray-200 p-5 rounded-lg shadow-lg max-w-md w-full relative"
+                    variants={modalVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                >
+                    <button
+                        onClick={onClose}
+                        className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 focus:outline-none"
+                        aria-label="Close"
+                    >
+                        <FaTimes size={20} />
+                    </button>
+                    <div className="flex flex-col items-center text-center">
+                        <div className="mb-4 w-12 h-12">
+                            <img src="/lock_icon.png" alt="Lock Icon" className="w-full h-full object-contain" />
+                        </div>
+                        <p className="text-base mb-4">
+                            {message}
+                        </p>
+                    </div>
+                </motion.div>
+            </motion.div>
+        );
+    };
+
 
     return (
         <div className="flex flex-col lg:flex-row h-[100vh]">
@@ -311,30 +378,34 @@ const AuthPage = () => {
                 <div className="w-full max-w-lg">
                     <h1 className="text-center text-3xl lg:text-4xl font-bold mb-6 lg:mb-8">Welcome!</h1>
                     <form onSubmit={handleLogin}>
-                        <div className="flex flex-col gap-[4px] mb-8">
+                        <div className="flex flex-col gap-[4px] mb-4">
                             <label className="block text-gray-700 text-[14px] font-medium">Username</label>
                             <input
                                 type="text"
-                                className="w-full h-[48px] p-2 border rounded-lg focus:outline-none"
+                                className={`w-full h-[48px] p-2 border rounded-lg focus:outline-none ${usernameError ? 'border-red-500' : ''}`}
                                 value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                onChange={(e) => {
+                                    setUsername(e.target.value);
+                                    setUsernameError("");
+                                }}
                                 maxLength={15}
-                                required
                             />
+                            {usernameError && (
+                                <p className="text-red-500 text-sm mt-1">{usernameError}</p>
+                            )}
                         </div>
 
-                        <div className="flex flex-col gap-2 mb-8">
+                        <div className="flex flex-col gap-2 mb-4">
                             <label className="block text-gray-700 text-sm font-medium">
                                 Password
                             </label>
                             <div className="relative">
                                 <input
                                     type={showPassword ? "text" : "password"}
-                                    className="w-full h-12 p-2 border rounded-lg focus:outline-none"
-                                    value={visiblePassword}
+                                    className={`w-full h-12 p-2 border rounded-lg focus:outline-none ${passwordError ? 'border-red-500' : ''}`}
+                                    value={password}
                                     onChange={handlePasswordChange}
                                     maxLength={12}
-                                    required
                                 />
                                 <span
                                     className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
@@ -343,6 +414,9 @@ const AuthPage = () => {
                                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                                 </span>
                             </div>
+                            {passwordError && (
+                                <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+                            )}
                         </div>
 
                         <div className="flex justify-start items-center mb-6">
@@ -391,6 +465,12 @@ const AuthPage = () => {
                 <ForgotPasswordPopup
                     email={forgotPasswordEmail}
                     onClose={() => setShowForgotPasswordPopup(false)}
+                />
+            )}
+            {isBlockedPopupVisible && (
+                <BlockedUserPopup
+                    message={blockedMessage}
+                    onClose={() => setIsBlockedPopupVisible(false)}
                 />
             )}
             {/* Preloader */}

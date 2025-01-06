@@ -11,13 +11,16 @@ const { handleForgotPassword } = require('../controllers/forgotPasswordControlle
 const { handleResetPassword } = require('../controllers/resetPasswordController');
 const { handleVerifyOtp } = require('../controllers/verifyOTPController');
 
+// Public Routes
 router.post('/register', handleNewUser);
 router.post('/login', handleLogin);
-router.post('/update-branch', verifyJWT, updateBranch);
 router.get('/refresh', handleRefreshToken);
 router.get('/logout', handleLogout);
 router.post('/forgot-password', handleForgotPassword);
 router.post('/reset-password/:token', handleResetPassword);
 router.post('/verify-otp', handleVerifyOtp);
+
+// Protected Route (requires auth)
+router.post('/update-branch', verifyJWT, updateBranch);
 
 module.exports = router;
