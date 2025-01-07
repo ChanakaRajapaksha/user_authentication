@@ -34,10 +34,7 @@ const handleLogin = async (req, res) => {
             console.log(`Login failed: No user found for username: ${reqUsername}`);
             // Log failed attempt for non-existent users as well
             updateLoginAttempts(reqUsername, false);
-
-            return res
-                .status(401)
-                .json({ message: "Unauthorized: Invalid username or password." });
+            return res.status(401).json({ message: "Invalid username." });
         }
         let user, isMasterUser;
 
@@ -58,18 +55,29 @@ const handleLogin = async (req, res) => {
             user = foundUser;
         }
 
-
         // Check for blocked user
         const userIdentifier = isMasterUser ? user.email : user.username;
-        const attemptsData = loginAttempts.get(userIdentifier) || { attempts: 0, blockedUntil: null };
+        let attemptsData = loginAttempts.get(userIdentifier) || {
+            attempts: 0,
+            blockedUntil: null,
+        };
+
         if (attemptsData.blockedUntil && attemptsData.blockedUntil > new Date()) {
             console.log(`Login failed: Account blocked for username: ${reqUsername}`);
-            const remainingTime = Math.ceil((attemptsData.blockedUntil - new Date()) / 60000);
+            const remainingTime = Math.ceil(
+                (attemptsData.blockedUntil - new Date()) / 60000
+            );
 
             return res.status(403).json({
                 message: `The account has been blocked due to security reasons, please try again with the valid credentials after ${remainingTime} minutes.`,
-                blocked: true
+                blocked: true,
             });
+        }
+
+        // Reset attempts if blocked time has expired
+        if (attemptsData.blockedUntil && attemptsData.blockedUntil <= new Date()) {
+            loginAttempts.set(userIdentifier, { attempts: 0, blockedUntil: null });
+            attemptsData = { attempts: 0, blockedUntil: null };
         }
 
         let match;
@@ -99,19 +107,15 @@ const handleLogin = async (req, res) => {
             match = await bcrypt.compare(password, user.password);
         }
 
-
         if (!match) {
             console.log(
                 `Login failed: Password mismatch for username: ${reqUsername}`
             );
             updateLoginAttempts(userIdentifier, false);
-            return res
-                .status(401)
-                .json({ message: "Unauthorized: Invalid username or password." });
+            return res.status(401).json({ message: "Invalid password." });
         }
         // Reset attempts on successful login
         loginAttempts.delete(userIdentifier);
-
 
         const roles = [user.role || (isMasterUser ? "masterUser" : "user")];
         const payload = {
@@ -128,7 +132,6 @@ const handleLogin = async (req, res) => {
         });
 
         console.log("User authenticated. Generating tokens...");
-
 
         if (isMasterUser) {
             await prisma.masterUser.update({
@@ -203,22 +206,25 @@ const handleLogin = async (req, res) => {
     }
 };
 
-
 const updateLoginAttempts = (userIdentifier, successfulLogin) => {
-    const attemptsData = loginAttempts.get(userIdentifier) || { attempts: 0, blockedUntil: null };
+    const attemptsData = loginAttempts.get(userIdentifier) || {
+        attempts: 0,
+        blockedUntil: null,
+    };
     if (successfulLogin) {
         loginAttempts.delete(userIdentifier);
-        return
+        return;
     }
     attemptsData.attempts += 1;
 
     if (attemptsData.attempts >= 3) {
         attemptsData.blockedUntil = new Date(Date.now() + 5 * 60 * 1000); // Block for 5 minutes
-        console.log(`User ${userIdentifier} blocked until ${attemptsData.blockedUntil}`);
+        console.log(
+            `User ${userIdentifier} blocked until ${attemptsData.blockedUntil}`
+        );
     }
     loginAttempts.set(userIdentifier, attemptsData);
 };
-
 
 const updateBranch = async (req, res) => {
     const { branch } = req.body;

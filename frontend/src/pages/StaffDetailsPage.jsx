@@ -342,6 +342,92 @@ const StaffDetailsPage = () => {
         }
     }, []);
 
+    const handleFileChange = (e) => {
+        const { name, files } = e.target;
+        const file = files[0];
+
+        if (file) {
+            const previewUrl = URL.createObjectURL(file);
+            setPatientData((prev) => ({
+                ...prev,
+                [name]: {
+                    file: file,
+                    previewUrl: previewUrl,
+                    fileName: file.name,
+                    uploaded: true, 
+                },
+            }));
+        }
+    };
+
+    // Render the preview for image/file
+    const renderFilePreview = (field) => {
+        const uploadedFile = patientData[field.field_name];
+
+        if (uploadedFile && uploadedFile.uploaded) { // Show preview only if uploaded is true
+            return (
+                <div className="mt-2 flex items-center gap-4">
+                    {field.field_type === "image" ? (
+                        <div>
+                            <img
+                                src={uploadedFile.previewUrl}
+                                alt="Uploaded"
+                                className="w-10 h-10 rounded-md object-cover"
+                            />
+
+                            <p className="text-black font-semibold">{uploadedFile.fileName}</p>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                            <a
+                                href={uploadedFile.previewUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-black font-semibold underline"
+                            >
+                                {uploadedFile.fileName}
+                            </a>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+        return null;
+    };
+
+    const renderFileUploadUI = (field) => {
+        const uploadedFile = patientData[field.field_name];
+        const isUploaded = uploadedFile && uploadedFile.uploaded;
+
+        return (
+            <div className="relative">
+                <input
+                    type="file"
+                    id={field.field_name}
+                    name={field.field_name}
+                    className="mt-2 p-2 border rounded w-full opacity-0 absolute inset-0 cursor-pointer"
+                    onChange={handleFileChange}
+                    accept={field.field_type === "image" ? "image/*" : undefined}
+                />
+                <div
+                    className={`border-2 border-gray-200 rounded-md flex gap-2 items-center justify-center py-5 cursor-pointer`}
+                    onClick={() => document.getElementById(field.field_name).click()}
+                >
+                    {!isUploaded && ( // Conditionally render icon and text
+                        <>
+                            <AiOutlineCloudUpload className="w-8 h-8 text-gray-500" />
+                            <p className="text-gray-600 text-sm mt-2">
+                                Drop a {field.field_type === "image" ? "image" : "file"} here or click to upload
+                            </p>
+                        </>
+                    )}
+
+                    {renderFilePreview(field)}
+                </div>
+            </div>
+        )
+    }
+
     const handleSave = async () => {
         setLoading(true);
 
@@ -1299,47 +1385,14 @@ const StaffDetailsPage = () => {
                                                     </div>
                                                 </div>
                                             )}
+                                            {/* Image Upload */}
                                             {field.field_type === "image" && (
-                                                <div className="relative">
-                                                    <input
-                                                        type="file"
-                                                        id="imageUpload"
-                                                        name={field.field_name}
-                                                        className="mt-2 p-2 border rounded w-full opacity-0 absolute inset-0 cursor-pointer"
-                                                    />
-                                                    <div
-                                                        className="border-2 border-gray-200 rounded-md flex gap-2 items-center justify-center py-5 cursor-pointer"
-                                                        onClick={() =>
-                                                            document.getElementById("imageUpload").click()
-                                                        }
-                                                    >
-                                                        <AiOutlineCloudUpload className="w-8 h-8 text-gray-500" />
-                                                        <p className="text-gray-600 text-sm mt-2">
-                                                            Drop a file here or click
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                                renderFileUploadUI(field)
                                             )}
+
+                                            {/* File Upload */}
                                             {field.field_type === "file" && (
-                                                <div className="relative">
-                                                    <input
-                                                        type="file"
-                                                        id="fileUpload"
-                                                        name={field.field_name}
-                                                        className="mt-2 p-2 border rounded w-full opacity-0 absolute inset-0 cursor-pointer"
-                                                    />
-                                                    <div
-                                                        className="border-2 border-gray-200 rounded-md flex gap-2 items-center justify-center py-5 cursor-pointer"
-                                                        onClick={() =>
-                                                            document.getElementById("fileUpload").click()
-                                                        }
-                                                    >
-                                                        <AiOutlineCloudUpload className="w-8 h-8 text-gray-500" />
-                                                        <p className="text-gray-600 text-sm mt-2">
-                                                            Drop a file here or click
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                                renderFileUploadUI(field)
                                             )}
                                             <button
                                                 type="button"

@@ -43,8 +43,6 @@ const AuthPage = () => {
     const [authData, setAuthData] = useState(null);
     const [showForgotPasswordPopup, setShowForgotPasswordPopup] = useState(false);
     const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
-    const [isBlockedPopupVisible, setIsBlockedPopupVisible] = useState(false);
-    const [blockedMessage, setBlockedMessage] = useState('');
     const { setAuth } = useAuth();
     const navigate = useNavigate();
     const [usernameError, setUsernameError] = useState("");
@@ -168,34 +166,39 @@ const AuthPage = () => {
                     showMessage(error.message || "An error occurred. Please try again.");
                 }
             } else if (error.status === 401) {
-                try {
-                    const errorData = JSON.parse(error.message);
-                    if (errorData && errorData.message) {
-                        if (errorData.message.includes('username')) {
-                            setUsernameError("Entered Username is invalid, please check the username and try again.");
-                        } else if (errorData.message.includes('password')) {
-                            setPasswordError("Entered Password is invalid, please check the password and try again.");
-                        }
+                if (typeof error.message === "string") {
+                    const errorMessage = error.message;
+                    if (errorMessage === "Invalid username.") {
+                        setUsernameError(
+                            "Entered Username is invalid, please check the username and try again."
+                        );
+                    } else if (errorMessage === "Invalid password.") {
+                        setPasswordError(
+                            "Entered Password is invalid, please check the password and try again."
+                        );
                     } else {
-                        setUsernameError("Entered Username is invalid, please check the username and try again.");
-                        setPasswordError("Entered Password is invalid, please check the password and try again.");
+                        setUsernameError(
+                            "Entered Username is invalid, please check the username and try again."
+                        );
+                        setPasswordError(
+                            "Entered Password is invalid, please check the password and try again."
+                        );
                     }
-
-                } catch (parseError) {
-                    setUsernameError("Entered Username is invalid, please check the username and try again.");
-                    setPasswordError("Entered Password is invalid, please check the password and try again.");
+                } else {
+                    setUsernameError(
+                        "Entered Username is invalid, please check the username and try again."
+                    );
+                    setPasswordError(
+                        "Entered Password is invalid, please check the password and try again."
+                    );
                 }
-            }
-
-            else {
-                console.error("Error", error);
+            } else {
                 showMessage(error.message || "An error occurred. Please try again.");
             }
         } finally {
             setIsLoading(false);
         }
     };
-
 
     const handleBranchSelection = async (selectedBranch) => {
         setSelectedBranch(selectedBranch);
@@ -327,42 +330,6 @@ const AuthPage = () => {
             </motion.div>
         );
     };
-    const BlockedUserPopup = ({ message, onClose }) => {
-        return (
-            <motion.div
-                className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50"
-                variants={backdropVariants}
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-            >
-                <motion.div
-                    className="bg-gray-200 p-5 rounded-lg shadow-lg max-w-md w-full relative"
-                    variants={modalVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                >
-                    <button
-                        onClick={onClose}
-                        className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 focus:outline-none"
-                        aria-label="Close"
-                    >
-                        <FaTimes size={20} />
-                    </button>
-                    <div className="flex flex-col items-center text-center">
-                        <div className="mb-4 w-12 h-12">
-                            <img src="/lock_icon.png" alt="Lock Icon" className="w-full h-full object-contain" />
-                        </div>
-                        <p className="text-base mb-4">
-                            {message}
-                        </p>
-                    </div>
-                </motion.div>
-            </motion.div>
-        );
-    };
-
 
     return (
         <div className="flex flex-col lg:flex-row h-[100vh]">
@@ -465,12 +432,7 @@ const AuthPage = () => {
                     onClose={() => setShowForgotPasswordPopup(false)}
                 />
             )}
-            {isBlockedPopupVisible && (
-                <BlockedUserPopup
-                    message={blockedMessage}
-                    onClose={() => setIsBlockedPopupVisible(false)}
-                />
-            )}
+
             {/* Preloader */}
             {isLoading && (
                 <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
