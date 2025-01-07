@@ -428,6 +428,34 @@ const StaffDetailsPage = () => {
         )
     }
 
+    const clearDynamicFieldValues = () => {
+        customFields.forEach((field) => {
+            // Find the input by name and reset its value if exists
+            const inputElement = document.querySelector(`[name="${field.field_name}"]`);
+            if (inputElement) {
+                if (inputElement.type === 'radio') {
+                    // If it's a radio button, uncheck all of the group
+                    document.querySelectorAll(`[name="${field.field_name}"]`).forEach(radio => radio.checked = false);
+                } else if (inputElement.type === 'file') {
+                    // If it's a file input, clear it
+                    setPatientData((prev) => ({
+                        ...prev,
+                        [field.field_name]: {
+                            file: null,
+                            previewUrl: null,
+                            fileName: null,
+                            uploaded: false,
+                        },
+                    }));
+                }
+                else {
+                    inputElement.value = ''; // Reset text input values
+                }
+
+            }
+        });
+    };
+
     const handleSave = async () => {
         setLoading(true);
 
@@ -564,7 +592,7 @@ const StaffDetailsPage = () => {
                     deductibles: { ...initialDeductibleCopayData },  // Reset deductibles
                 });
 
-                setCustomFields([]);
+                clearDynamicFieldValues();
                 setInsuranceList([]);
                 localStorage.removeItem("customFields");
 
